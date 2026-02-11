@@ -9,3 +9,7 @@ export const registerApi = async (reqBody) => {
 export const verifyEmailApi = async (reqBody) => {
     return await commonApi('POST',`${serverurl}/verify-email`,reqBody)
 }
+
+export const loginApi = async (reqBody) => {
+    return await commonApi('POST',`${serverurl}/login`,reqBody)
+}

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import Register from "../components/Register"
+import UserAuth from "../components/UserAuth"
 
 
 const CreateCv = () => {
@@ -398,7 +398,7 @@ const CreateCv = () => {
 
                 </div>
             </div>
-            <Register
+            <UserAuth
                 isOpen={open}
                 onClose={() => setOpen(false)}
             />

@@ -1,7 +1,7 @@
-import React from 'react'
 import Navbar from '../components/Navbar'
 
 const Home = () => {
+    
     return (
         <div>
             <Navbar />
@@ -11,7 +11,9 @@ const Home = () => {
                 <h1 className='hero-title'>Same CV? Same rejections.</h1>
                 <div className='w-[500px] mx-48 text-center'>
                 <p className='hero-para'>Upload your details, paste the job description, and let our system build a CV tailored for that role.</p>
-                <button className='hero-btn'>Start Building</button>
+                <a href="/create-cv">
+                    <button className='hero-btn'>Create CV</button>
+                </a>
                 </div>
             </div>
             </div>
@@ -21,7 +23,8 @@ const Home = () => {
                 </div>
             </div>
             
-        </section>    
+        </section> 
+        
         </div>
     )
 }

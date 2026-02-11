@@ -1,12 +1,11 @@
-import { useState } from "react"
-import Modal from "../../Modal"
-import { registerApi, verifyEmailApi } from "../../services/allApi";
+import { useState } from "react";
+import Modal from "../../Modal";
 import { useNavigate } from "react-router-dom";
+import { loginApi, registerApi, verifyEmailApi } from "../../services/allApi";
 
 
-const Register = ({ isOpen, onClose }) => {
-
-const [sentOtp,setSentOtp] = useState(false);
+const UserAuth = ({ isOpen, onClose,mode }) => {
+    const [sentOtp,setSentOtp] = useState(false);
 const [userOtp,setUserOtp] = useState("");
 const [userDetails,setUserDetails] = useState({
     email:"",
@@ -83,12 +82,28 @@ const registration = async () => {
   
 };
 
-
-
-
+const login = async() => {
+    const result = await loginApi({
+        email:userDetails.email,
+        password:userDetails.password
+    });
+    if(result.status == 200){
+        alert(result.data.message);
+    }
+    else if(result.status == 400 || result.status == 401){
+        alert(result.response.data.message);
+    }
+    else {
+        alert("somethimg went wrong")
+    }
+    onClose();
+    console.log(result);
+    navigate(`/user-profile/${result.data.user._id}`)
+}
   return (
-<Modal isOpen={isOpen} onClose={onClose}>
-    { !sentOtp? <div><h2 className="font-semibold">Account</h2>
+    <>
+    <Modal isOpen={isOpen} onClose={onClose}>
+    { !sentOtp? <div>
       <div className="grid grid-cols-2 gap-2">
         <input type="text" placeholder="Email"  onChange={(e)=>setUserDetails({...userDetails,email: e.target.value})} className={`border p-2  ${errors.email ? "border-red-500" : "border-gray-300"}`}/>
         {errors.email && (
@@ -98,7 +113,10 @@ const registration = async () => {
          {errors.password && (
           <p className="text-red-500 text-sm">{errors.password}</p>
         )}
-        <button className="rounded-lg mt-3  px-2 py-3 bg-blue-600 text-white" onClick={handleSendOtp}>Sent OTP</button>
+        { mode === "register" ?
+            <button className="rounded-lg mt-3  px-2 py-3 bg-blue-600 text-white" onClick={handleSendOtp}>Sent OTP</button> : 
+            <button className="rounded-lg mt-3  px-2 py-3 bg-blue-600 text-white" onClick={login}>Login</button>
+            }
       </div></div>
       :
       <div>
@@ -108,8 +126,9 @@ const registration = async () => {
         }
 </Modal>
 
+
+    </>
   )
 }
 
- 
-export default Register
+export default UserAuth
