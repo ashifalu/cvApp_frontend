@@ -1,55 +1,73 @@
 import { useState } from "react"
 import UserAuth from "../components/UserAuth"
+import { useDispatch, useSelector } from "react-redux"
+import { addAwards, addEducation, addExperience, addLanguages, addPersonalInfo, addProfessionalSummary, addProjects, addSkills } from "../../state/cvSlice"
+import TemplateOne from "../../templates/Template1"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 const CreateCv = () => {
 
+    const experience = useSelector((state) => state.cv.cvData.experience)
+    const education = useSelector((state) => state.cv.cvData.education)
+    const skills = useSelector((state) => state.cv.cvData.skills)
+    const languages = useSelector((state) => state.cv.cvData.languages)
+    const projects = useSelector((state) => state.cv.cvData.projects)
+    const awards = useSelector((state) => state.cv.cvData.awards)
+
+    const steps = ["personalInfo", "professionalSummary", "experience", "education", "projects", "skills","languages", "awards"];
+    const levels = ["Beginner", "Basic", "Skillful", "Advanced", "Expert"];
+
+
+    const dispatch = useDispatch()
+    const [responsibility, setResponsibility] = useState('')
     const [open, setOpen] = useState(false)
     const [personalInfo, setPersonalInfo] = useState({
         firstName: "",
         lastName: "",
         role: "",
         photo: "",
-        professionalSummary: "",
+        linkedInUrl: "",
         email: "",
         phone: "",
         country: "",
         city: "",
         nationality: "",
-        language: ""
     })
-    const [education, setEducation] = useState([])
+    const [professionalSummary, setProfessionalSummary] = useState("")
     const [educationForm, setEducationForm] = useState({
         school: "",
         degree: "",
         fieldOfStudy: "",
         grade: "",
-        startDate: "",
-        endDate: "",
+        startDate: null,
+        endDate: null,
         country: "",
         city: ""
     })
-    const [experience, setExperience] = useState([])
     const [experienceForm, setExperienceForm] = useState({
         jobTitle: "",
         employer: "",
-        startDate: "",
-        endDate: "",
+        startDate: null,
+        endDate: null,
         country: "",
-        city: ""
+        city: "",
+        responsibilities: []
     })
-    const [skills, setSkills] = useState([])
     const [skillForm, setSkillForm] = useState({
         skill: "",
-        level: "",
+        level: 2,
     })
-    const [projects, setProjects] = useState([])
+    const [languageForm, setLanguageForm] = useState({
+        language: "",
+        level: 2,
+    })
     const [projectForm, setProjectForm] = useState({
         projectTitle: "",
         projectDescription: "",
         projectUrl: ""
     })
-    const [awards, setAwards] = useState([])
     const [awardForm, setAwardForm] = useState({
         awardName: "",
         issueingOrg: "",
@@ -59,6 +77,7 @@ const CreateCv = () => {
     const [photoPreview, setPhotoPreview] = useState("")
 
     const [currentStep, setCurrentStep] = useState("personalInfo")
+
 
     const handlePhotoUpload = (e) => {
         setPersonalInfo({ ...personalInfo, photo: e.target.files[0] })
@@ -73,14 +92,15 @@ const CreateCv = () => {
             form: experienceForm,
             setForm: setExperienceForm,
             list: experience,
-            setList: setExperience,
+            setList: addExperience,
             emptyForm: {
                 jobTitle: "",
                 employer: "",
                 startDate: "",
                 endDate: "",
                 city: "",
-                country: ""
+                country: "",
+                responsibilities: []
             },
             requiredKey: "jobTitle"
         },
@@ -89,7 +109,7 @@ const CreateCv = () => {
             form: educationForm,
             setForm: setEducationForm,
             list: education,
-            setList: setEducation,
+            setList: addEducation,
             emptyForm: {
                 degree: "",
                 institute: "",
@@ -103,7 +123,7 @@ const CreateCv = () => {
             form: projectForm,
             setForm: setProjectForm,
             list: projects,
-            setList: setProjects,
+            setList: addProjects,
             emptyForm: {
                 projectTitle: "",
                 projectDescription: "",
@@ -115,18 +135,29 @@ const CreateCv = () => {
             form: skillForm,
             setForm: setSkillForm,
             list: skills,
-            setList: setSkills,
+            setList: addSkills,
             emptyForm: {
                 skill: "",
-                level: ""
+                level: 2
             },
             requiredKey: "skill"
+        },
+        languages: {
+            form: languageForm,
+            setForm: setLanguageForm,
+            list: languages,
+            setList: addLanguages,
+            emptyForm: {
+                language: "",
+                level: 2
+            },
+            requiredKey: "language"
         },
         awards: {
             form: awardForm,
             setForm: setAwardForm,
             list: awards,
-            setList: setAwards,
+            setList: addAwards,
             emptyForm: {
                 awardName: "",
                 issueingOrg: "",
@@ -138,62 +169,104 @@ const CreateCv = () => {
 
     };
 
-    const steps = ["experience", "education", "projects", "skills","awards"];
+    const addresponsibilities = () => {
 
-    
+        if (!responsibility.trim()) return;
+        setExperienceForm({ ...experienceForm, responsibilities: [...experienceForm.responsibilities, responsibility] })
+        setResponsibility("");
+
+    }
+
+    const formatMonthYear = (date) => {
+        const month = date.toLocaleString("en-US", { month: "short" });
+        const year = date.getFullYear();
+        return `${month} ${year}`;
+    };
+
+
+
     const goToNextStep = () => {
         const currentIndex = steps.indexOf(currentStep);
-        if(currentIndex < steps.length - 1){
-            setCurrentStep(steps[currentIndex+1]);
+        if (currentIndex < steps.length - 1) {
+            setCurrentStep(steps[currentIndex + 1]);
         }
     }
 
     const handleNext = () => {
         const step = stepConfig[currentStep];
-        if(!step) return;
-        const{form, setForm, emptyForm, list, setList, requiredKey} = step;
+        if (!step) return;
+        console.log(step);
 
-        if(form[requiredKey]){
-        const isDuplicate = list.some(
-            (item)=>{JSON.stringify(item) === JSON.stringify(form)}
-        )
-        if(!isDuplicate){
-            setList(prev => [...prev,form])
+        const { form, setForm, emptyForm, list, setList, requiredKey } = step;
+
+        if (form[requiredKey]) {
+
+            const isDuplicate = list.some(
+                (item) => JSON.stringify(item) === JSON.stringify(form)
+            );
+
+            if (!isDuplicate) {
+                dispatch(setList(form));
+            }
+
+            setForm(emptyForm);
+            goToNextStep();
+        } else {
+            goToNextStep();
         }
-        setForm(emptyForm)
-    }
-    goToNextStep();
     };
 
     const createCv = () => {
-        setAwards((prev) =>[...prev,awardForm])
-        setOpen(true)
         console.log(experience);
         console.log(education);
         console.log(skills);
-        console.log(awards);
+        console.log(languages);
         console.log(projects);
+        console.log(awards);
 
 
 
-
+        setOpen(true)
 
     }
 
-    const addExperience = () => {
-        setExperience([...experience, experienceForm])
+    const addExperienceHandler = () => {
+        if (!experienceForm.jobTitle.trim()) return;
+
+        let updatedResponsibilities = [...experienceForm.responsibilities]
+
+        if (responsibility.trim()) {
+
+            const isDuplicate = updatedResponsibilities.some(
+                (item) => item === responsibility
+
+            );
+            if (!isDuplicate) {
+                updatedResponsibilities.push(responsibility.trim())
+                setResponsibility("")
+            }
+        }
+
+        const updatedExperienceForm = { ...experienceForm, responsibilities: updatedResponsibilities }
+
+        dispatch(addExperience(updatedExperienceForm))
+
         setExperienceForm({
             jobTitle: "",
             employer: "",
             startDate: "",
             endDate: "",
             country: "",
-            city: ""
+            city: "",
+            responsibilities: []
         })
     }
 
-    const addEducation = () => {
-        setEducation([...education, educationForm]);
+    const addEducationHandler = () => {
+        if (!educationForm.degree.trim()) return;
+
+        dispatch(addEducation(educationForm));
+
         setEducationForm({
             school: "",
             degree: "",
@@ -206,16 +279,36 @@ const CreateCv = () => {
         })
     }
 
-    const addSkills = () => {
-        setSkills([...skills, skillForm]);
+    const addSkillsHandler = () => {
+
+        if (!skillForm.skill.trim()) return;
+
+        dispatch(addSkills(skillForm))
+
         setSkillForm({
             skill: "",
-            level: "",
+            level: 2,
+        })
+    }
+    const addLanguageHandler = () => {
+
+        if (!languageForm.language.trim()) return;
+
+        dispatch(addLanguages(languageForm))
+
+        setLanguageForm({
+            language: "",
+            level: 2,
         })
     }
 
-    const addProjects = () => {
-        setProjects([...projects, projectForm]);
+    const addProjectsHandler = () => {
+
+        if (!projectForm.projectTitle.trim()) return;
+
+
+        dispatch(addProjects(projectForm));
+
         setProjectForm({
             projectTitle: "",
             projectDescription: "",
@@ -223,14 +316,24 @@ const CreateCv = () => {
         })
     }
 
-    const addAwards = () => {
-        setAwards([...awards, awardForm]);
+    const addAwardsHandler = () => {
+
+        if (!awardForm.awardName.trim()) return;
+
+        dispatch(addAwards(awardForm))
         setAwardForm({
             awardName: "",
             issueingOrg: "",
             issueingDate: "",
             expirationDate: "",
         })
+    }
+
+    const handleBack = () => {
+        const currentIndex = steps.indexOf(currentStep);
+        if (currentIndex > 0) {
+            setCurrentStep(steps[currentIndex - 1]);
+        }
     }
 
     return (
@@ -255,14 +358,16 @@ const CreateCv = () => {
                         <input className="border p-2" placeholder="First Name" required onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })} />
                         <input className="border p-2" placeholder="Last Name" onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })} />
                         <input className="border p-2" placeholder="Role" onChange={(e) => setPersonalInfo({ ...personalInfo, role: e.target.value })} />
+                        <input className="border p-2" placeholder="LinkedIn Url" onChange={(e) => setPersonalInfo({ ...personalInfo, linkedInUrl: e.target.value })} />
                         <input className="border p-2" placeholder="Email" onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })} />
                         <input className="border p-2" placeholder="Phone" onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })} />
                         <input className="border p-2" placeholder="Country" onChange={(e) => setPersonalInfo({ ...personalInfo, country: e.target.value })} />
                         <input className="border p-2" placeholder="City" onChange={(e) => setPersonalInfo({ ...personalInfo, city: e.target.value })} />
                         <input className="border p-2" placeholder="Nationality" onChange={(e) => setPersonalInfo({ ...personalInfo, nationality: e.target.value })} />
-                        <input className="border p-2" placeholder="Language" onChange={(e) => setPersonalInfo({ ...personalInfo, language: e.target.value })} />
                         <div className="flex justify-end">
-                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={()=>setCurrentStep("professionalSummary")}>Next</button>
+                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => {
+                                dispatch(addPersonalInfo(personalInfo)); setCurrentStep("professionalSummary")
+                            }}>Next</button>
                         </div>
                     </div>
 
@@ -270,24 +375,71 @@ const CreateCv = () => {
                 {currentStep == "professionalSummary" && <div>
                     {/* Professional Summary */}
                     <h2 className="font-semibold">Professional Summary</h2>
-                    <textarea className="border p-2 w-full" rows="3" placeholder="Professional Summary" onChange={(e) => setPersonalInfo({ ...personalInfo, professionalSummary: e.target.value })} />
-                    <div className="flex justify-end">
-                        <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={()=>setCurrentStep("experience")}>Next</button>
+                    <textarea className="border p-2 w-full" rows="3" placeholder="Professional Summary" onChange={(e) => setProfessionalSummary(e.target.value)} />
+                    <div className="flex justify-between">
+                        <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
+                        <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => {
+                            dispatch(addProfessionalSummary(professionalSummary));
+                            setCurrentStep("experience")
+                        }}>Next</button>
                     </div>
+
                 </div>
                 }
                 {/* Experience */}
                 {currentStep == "experience" && <div>
-                    <h2 className="font-semibold">Experience</h2>
-                    <div className="grid grid-cols-2 gap-2">
-                        <input className="border p-2" placeholder="Job Title" value={experienceForm.jobTitle} onChange={(e) => setExperienceForm({ ...experienceForm, jobTitle: e.target.value })} />
-                        <input className="border p-2" placeholder="Employer" value={experienceForm.employer} onChange={(e) => setExperienceForm({ ...experienceForm, employer: e.target.value })} />
-                        <input className="border p-2" placeholder="Start Date" value={experienceForm.startDate} onChange={(e) => setExperienceForm({ ...experienceForm, startDate: e.target.value })} />
-                        <input className="border p-2" placeholder="End Date" value={experienceForm.endDate} onChange={(e) => setExperienceForm({ ...experienceForm, endDate: e.target.value })} />
-                        <input className="border p-2" placeholder="Country" value={experienceForm.country} onChange={(e) => setExperienceForm({ ...experienceForm, country: e.target.value })} />
-                        <input className="border p-2" placeholder="City" value={experienceForm.city} onChange={(e) => setExperienceForm({ ...experienceForm, city: e.target.value })} />
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addExperience}>Add one more experience</button>
-                        <div className="flex justify-end">
+                    <div>
+                        <h2 className="font-semibold">Experience</h2>
+                        <div className=" border border-gray-200 bg-white rounded p-10 w-full">
+                            <div className="grid grid-cols-2 gap-4 py-2">
+                                <input className="border bg-gray-100 p-2" placeholder="Job Title" value={experienceForm.jobTitle} onChange={(e) => setExperienceForm({ ...experienceForm, jobTitle: e.target.value })} />
+                                <input className="border p-2 bg-gray-100" placeholder="Employer" value={experienceForm.employer} onChange={(e) => setExperienceForm({ ...experienceForm, employer: e.target.value })} />
+
+                                <DatePicker
+                                    selected={experienceForm.startDate}
+                                    onChange={(date) => {
+                                        const formatted = formatMonthYear(date);
+                                        setExperienceForm({
+                                            ...experienceForm,
+                                            startDate: formatted,
+                                        });
+                                    }}
+                                    dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                                    showMonthYearPicker          // 👈 only month + year
+                                    className="border p-2 rounded-md"
+                                    placeholderText="Select month & year"
+                                />
+                                <DatePicker
+                                    selected={experienceForm.endDate}
+                                    onChange={(date) => {
+                                        const formatted = formatMonthYear(date);
+                                        setExperienceForm({
+                                            ...experienceForm,
+                                            endDate: formatted,
+                                        });
+                                    }}
+                                    dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                                    showMonthYearPicker          // 👈 only month + year
+                                    className="border p-2 rounded-md"
+                                    placeholderText="Select month & year"
+                                />
+
+                                <input className="border p-2" placeholder="Country" value={experienceForm.country} onChange={(e) => setExperienceForm({ ...experienceForm, country: e.target.value })} />
+                                <input className="border p-2" placeholder="City" value={experienceForm.city} onChange={(e) => setExperienceForm({ ...experienceForm, city: e.target.value })} />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 py-2">
+
+                            </div>
+
+                            <div className="flex gap-2 items-start">
+                                <textarea className="border p-2 w-full" rows="1" placeholder="Highlites" value={responsibility} onChange={(e) => setResponsibility(e.target.value)} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500" onClick={addresponsibilities}>+</button>
+                            </div>
+                            <div className="bg-white pt-2 pb-5">
+                                <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addExperienceHandler}>Add more</button>
+                            </div>
+                        </div>
+                        <div className="flex justify-between w-full my-2 py-4 rounded shadow">
+                            <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
                             <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
                         </div>
                     </div>
@@ -301,12 +453,39 @@ const CreateCv = () => {
                         <input className="border p-2" placeholder="Degree" value={educationForm.degree} onChange={(e) => setEducationForm({ ...educationForm, degree: e.target.value })} />
                         <input className="border p-2" placeholder="Field of Study" value={educationForm.fieldOfStudy} onChange={(e) => setEducationForm({ ...educationForm, fieldOfStudy: e.target.value })} />
                         <input className="border p-2" placeholder="Grade" value={educationForm.grade} onChange={(e) => setEducationForm({ ...educationForm, grade: e.target.value })} />
-                        <input className="border p-2" placeholder="Start Date" value={educationForm.startDate} onChange={(e) => setEducationForm({ ...educationForm, startDate: e.target.value })} />
-                        <input className="border p-2" placeholder="End Date" value={educationForm.endDate} onChange={(e) => setEducationForm({ ...educationForm, endDate: e.target.value })} />
+                        <DatePicker
+                            selected={experienceForm.startDate}
+                            onChange={(date) => {
+                                const formatted = formatMonthYear(date);
+                                setExperienceForm({
+                                    ...experienceForm,
+                                    startDate: formatted,
+                                });
+                            }}
+                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                            showMonthYearPicker          // 👈 only month + year
+                            className="border p-2 rounded-md"
+                            placeholderText="Select month & year"
+                        />
+                        <DatePicker
+                            selected={experienceForm.endDate}
+                            onChange={(date) => {
+                                const formatted = formatMonthYear(date);
+                                setExperienceForm({
+                                    ...experienceForm,
+                                    endDate: formatted,
+                                });
+                            }}
+                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                            showMonthYearPicker          // 👈 only month + year
+                            className="border p-2 rounded-md"
+                            placeholderText="Select month & year"
+                        />
                         <input className="border p-2" placeholder="Country" value={educationForm.country} onChange={(e) => setEducationForm({ ...educationForm, country: e.target.value })} />
                         <input className="border p-2" placeholder="City" value={educationForm.city} onChange={(e) => setEducationForm({ ...educationForm, city: e.target.value })} />
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addEducation}>Add one more education</button>
-                        <div className="flex justify-end">
+                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addEducationHandler}>Add one more education</button>
+                        <div className="flex justify-between">
+                            <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
                             <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
                         </div>
                     </div>
@@ -319,25 +498,110 @@ const CreateCv = () => {
                         <input className="border p-2 w-full" placeholder="Project Title" value={projectForm.projectTitle} onChange={(e) => setProjectForm({ ...projectForm, projectTitle: e.target.value })} />
                         <textarea className="border p-2 w-full" rows="2" placeholder="Project Description" value={projectForm.projectDescription} onChange={(e) => setProjectForm({ ...projectForm, projectDescription: e.target.value })} />
                         <input className="border p-2 w-full" placeholder="Project URL" value={projectForm.projectUrl} onChange={(e) => setProjectForm({ ...projectForm, projectUrl: e.target.value })} />
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addProjects}>Add one more project</button>
-                        <div className="flex justify-end">
-                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
+                        <button type="button" className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addProjectsHandler}>Add one more project</button>
+                        <div className="flex justify-between">
+                            <button type="button" className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
+                            <button type="button" className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
                         </div>
                     </div>
                 </div>}
 
                 {/* Skills */}
                 {currentStep == "skills" && <div>
-                    <h2 className="font-semibold">Skills</h2>
-                    <div className="grid grid-cols-2 gap-2">
-                        <input className="border p-2" placeholder="Skill" value={skillForm.skill} onChange={(e) => setSkillForm({ ...skillForm, skill: e.target.value })} />
-                        <input className="border p-2" placeholder="Level" value={skillForm.level} onChange={(e) => setSkillForm({ ...skillForm, level: e.target.value })} />
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addSkills}>Add one more skill</button>
-                        <div className="flex justify-end">
+                    <h2 className="font-semibold p-10 text-lg">Skills</h2>
+                    <div className="grid grid-cols-2 gap-4 w-200">
+                        <input className="border p-2 h-10 w-50 rounded" placeholder="Skill" value={skillForm.skill} onChange={(e) => setSkillForm({ ...skillForm, skill: e.target.value })} />
+                        <div>
+
+                            {/* Bar */}
+                            <div className="relative flex bg-[#E8D9B5] rounded-xl h-10 overflow-hidden">
+
+                                {/* Active Highlight */}
+                                <div
+                                    className="absolute top-0 h-full bg-orange-500 rounded-xl transition-all duration-300"
+                                    style={{
+                                        width: `${100 / levels.length}%`,
+                                        left: `${(100 / levels.length) * skillForm.level}%`
+                                    }}
+                                />
+
+                                {/* Click Areas */}
+                                {levels.map((level, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setSkillForm({ ...skillForm, level: index })}
+                                        className="flex-1 relative z-10 flex items-center justify-center"
+                                    >
+                                        {/* Separator */}
+                                        {index !== 0 && (
+                                            <div className="absolute left-0 h-6 w-[2px] bg-orange-400 opacity-50" />
+                                        )}
+                                    </button>
+                                ))}
+                                
+                            </div>
+                            {/* Label */}
+                            <p className="text-lg font-medium text-gray-600 mb-3">
+                                Level — <span className="text-orange-500">{levels[skillForm.level]}</span>
+                            </p>
+                        </div>
+                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addSkillsHandler}>Add one more skill</button>
+                        <div className="flex justify-between">
+                            <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
                             <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
                         </div>
                     </div>
+
                 </div>}
+
+                {/* language */}
+                {currentStep == "languages"&& <div>
+                    <h2 className="font-semibold p-10 text-lg">Languages</h2>
+                    <div className="grid grid-cols-2 gap-4 w-200">
+                        <input className="border p-2 h-10 w-50 rounded" placeholder="Language" value={languageForm.language} onChange={(e) => setLanguageForm({...languageForm,language:e.target.value})} />
+                        <div>
+
+                            {/* Bar */}
+                            <div className="relative flex bg-[#E8D9B5] rounded-xl h-10 overflow-hidden">
+
+                                {/* Active Highlight */}
+                                <div
+                                    className="absolute top-0 h-full bg-orange-500 rounded-xl transition-all duration-300"
+                                    style={{
+                                        width: `${100 / levels.length}%`,
+                                        left: `${(100 / levels.length) * languageForm.level}%`
+                                    }}
+                                />
+
+                                {/* Click Areas */}
+                                {levels.map((level, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setLanguageForm({ ...languageForm, level: index })}
+                                        className="flex-1 relative z-10 flex items-center justify-center"
+                                    >
+                                        {/* Separator */}
+                                        {index !== 0 && (
+                                            <div className="absolute left-0 h-6 w-[2px] bg-orange-400 opacity-50" />
+                                        )}
+                                    </button>
+                                ))}
+                                
+                            </div>
+                            {/* Label */}
+                            <p className="text-lg font-medium text-gray-600 mb-3">
+                                Level — <span className="text-orange-500">{levels[languageForm.level]}</span>
+                            </p>
+                        </div>
+                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addLanguageHandler}>Add one more skill</button>
+                        <div className="flex justify-between">
+                            <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
+                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
+                        </div>
+                    </div>
+
+                </div>}
+
 
 
                 {/* Awards */}
@@ -346,57 +610,57 @@ const CreateCv = () => {
                     <div className="grid grid-cols-2 gap-2">
                         <input className="border p-2" placeholder="Award Name" value={awardForm.awardName} onChange={(e) => setAwardForm({ ...awardForm, awardName: e.target.value })} />
                         <input className="border p-2" placeholder="Issuing Organisation" value={awardForm.issueingOrg} onChange={(e) => setAwardForm({ ...awardForm, issueingOrg: e.target.value })} />
-                        <input className="border p-2" placeholder="Issuing Date" value={awardForm.issueingDate} onChange={(e) => setAwardForm({ ...awardForm, issueingDate: e.target.value })} />
-                        <input className="border p-2" placeholder="Expiration Date" value={awardForm.expirationDate} onChange={(e) => setAwardForm({ ...awardForm, expirationDate: e.target.value })} />
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addAwards}>Add one more award</button>
+                        {/* <input className="border p-2" placeholder="Issuing Date" value={awardForm.issueingDate} onChange={(e) => setAwardForm({ ...awardForm, issueingDate: e.target.value })} />
+                        <input className="border p-2" placeholder="Expiration Date" value={awardForm.expirationDate} onChange={(e) => setAwardForm({ ...awardForm, expirationDate: e.target.value })} /> */}
+                        <DatePicker
+                            selected={awardForm.issueingDate}
+                            onChange={(date) => {
+                                const formatted = formatMonthYear(date);
+                                setAwardForm({
+                                    ...awardForm,
+                                    issueingDate: formatted,
+                                });
+                            }}
+                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                            showMonthYearPicker          // 👈 only month + year
+                            className="border p-2 rounded-md"
+                            placeholderText="Issued Date"
+                        />
+                        <DatePicker
+                            selected={awardForm.expirationDate}
+                            onChange={(date) => {
+                                const formatted = formatMonthYear(date);
+                                setAwardForm({
+                                    ...awardForm,
+                                    expirationDate: formatted,
+                                });
+                            }}
+                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                            showMonthYearPicker          // 👈 only month + year
+                            className="border p-2 rounded-md"
+                            placeholderText="Expiration Date"
+                        />
+                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addAwardsHandler}>Add one more award</button>
                     </div>
-                    <button className="border px-4 py-2" onClick={createCv}>
-                        Save CV
-                    </button>
+                    <div className="justify-between">
+                        <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
+                        <button className="border px-4 py-2" onClick={() => {
+                            if (awardForm.awardName.trim()) {
+                                dispatch(addAwards(awardForm));
+                            }
+
+                            createCv();
+                        }}>
+                            Save CV
+                        </button>
+
+                    </div>
+
                 </div>}
 
             </div>
-            <div className="w-1/2 p-10 text-center">
-                {photoPreview && <div className="p-10">
-                    <img src={photoPreview} alt="" className="w-20 h-20" />
-                </div>}
-                <div className="p-5">
-                    <p>{personalInfo.firstName}</p>
-                    <p>{personalInfo.lastName}</p>
-                    <p>{personalInfo.role}</p>
-                    <p>{personalInfo.professionalSummary}</p>
-                    <p>{personalInfo.email}</p>
-                    <p>{personalInfo.phone}</p>
-                    <p>{personalInfo.country}</p>
-                    <p>{personalInfo.city}</p>
-
-                </div>
-                <div className="p-5">
-                    <p>{experienceForm.jobTitle}</p>
-                    <p>{experienceForm.employer}</p>
-                    <p>{experienceForm.startDate}</p>
-                    <p>{experienceForm.endDate}</p>
-
-                </div>
-                <div className="p-5">
-                    {educationForm.school}
-                    {educationForm.degree}
-                    {educationForm.startDate}
-                    {educationForm.endDate}
-
-                </div>
-                <div className="p-5">
-                    {skillForm.skill}
-                    {skillForm.level}
-
-                </div>
-                <div className="p-5">
-                    {awardForm.awardName}
-                    {awardForm.issueingOrg}
-                    {awardForm.issueingDate}
-                    {awardForm.expirationDate}
-
-                </div>
+            <div className="w-1/2">
+                <TemplateOne />
             </div>
             <UserAuth
                 isOpen={open}
