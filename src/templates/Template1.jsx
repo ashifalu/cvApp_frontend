@@ -12,13 +12,13 @@ const TemplateOne = () => {
   const awardsData = useSelector((state) => state.cv.cvData.awards)
 
 
-  
+
 
 
   return (
     <div className=" min-h-screen py-10">
       {/* A4 Page */}
-      <div className="w-[210mm] min-h-[297mm] mx-auto bg-white shadow-md font-[Quicksand]">
+      <div className="w-[210mm] mx-auto bg-white shadow-md font-[Quicksand] resume-container">
 
         {/* Header */}
         {personalInfoData.firstName && <div className="bg-[#000042] text-white p-6 flex justify-between">
@@ -55,7 +55,7 @@ const TemplateOne = () => {
         <div className="p-6 space-y-4">
 
           {/* Summary */}
-          {professionalSummaryData && <section>
+          {professionalSummaryData && <section className="section">
             <h2 className="text-sm font-bold text-[#5F53F5] mb-1">
               Professional Summary
             </h2>
@@ -66,7 +66,7 @@ const TemplateOne = () => {
           </section>}
 
           {/* Education */}
-          {educationaData[0] && <section>
+          {educationaData[0] && <section className="section">
             <h2 className="text-sm font-bold text-[#5F53F5] mb-1">
               Education
             </h2>
@@ -85,7 +85,7 @@ const TemplateOne = () => {
                       </p>
                     </div>
                     <div>
-                      <p className="font-semibold text-xs">{e.startDate}-{e.endDate}</p>
+                      <p className="font-semibold text-xs">{`${e.startDate} - ${e.endDate || "Present"} `}</p>
                     </div>
                   </div>
                   {educationaData.indexOf(e) < educationaData.length - 1 && <div className="my-2 h-[1px] w-full bg-gray-200"></div>}
@@ -97,16 +97,16 @@ const TemplateOne = () => {
           </section>}
 
           {/* experience */}
-          {experienceData[0] && <section>
-            <h2 className="text-sm font-bold text-[#5F53F5] mb-1">
+          {experienceData[0] && <section className="section description"> 
+            <h2 className="text-sm font-bold text-[#5F53F5] mb-2">
               Experiance
             </h2>
             {
-              experienceData.map((exp) => (
-                <div key={exp}>
+              experienceData.map((exp, index) => (
+                <div key={index}>
                   <div className="flex justify-between">
                     <div>
-                      <p className="font-semibold text-xs">
+                      <p className="font-bold text-xs mb-1">
                         {exp.jobTitle}
                       </p>
                       <p className="text-xs">
@@ -124,7 +124,7 @@ const TemplateOne = () => {
                   </div>
                   <div>
                     {exp.responsibilities && (
-                      <ul className="mt-3 space-y-2 text-sm text-gray-700 list-disc list-inside marker:text-[#5F53F5]">
+                      <ul className="mt-3 space-y-2 text-xs text-[#666666] list-disc list-inside marker:text-[#5F53F5]">
                         {exp.responsibilities.map((point, i) => (
                           <li key={i}>{point}</li>
                         ))}
@@ -142,28 +142,36 @@ const TemplateOne = () => {
           }
 
           {/* projects */}
-          {projectsData[0] && <section>
+          {projectsData[0] && <section className="description">
             <h2 className="text-sm font-bold text-[#5F53F5] mb-1">
               Projects
             </h2>
             {
               projectsData.map((p) => (
                 <div key={p}>
-                  <div className="flex justify-between">
+                  <div className="">
                     <div>
                       <p className="font-semibold text-xs">
                         {p.projectTitle}
                       </p>
 
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        {p.projectDescription}
-                      </p>
+                      <div>
+                        {p.keyFeatures && (
+                          <ul className="mt-3 space-y-2 text-sm text-[#666666] list-disc list-inside marker:text-[#948CF8]">
+                            {p.keyFeatures.map((point, i) => (
+                              <li key={i}>{point}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-xs text-blue-500">
-                        {p.projectUrl}
+                    {p.projectUrl && <div className="p-2">
+                      <p className="font-semibold text-xs">Live Demo :
+                        <a href={p.projectUrl.startsWith("http") ? p.projectUrl : `https://${p.projectUrl}`} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-700">
+                          {p.projectUrl}
+                        </a>
                       </p>
-                    </div>
+                    </div>}
                   </div>
                   {projectsData.indexOf(p) < projectsData.length - 1 && <div className="my-2 h-[1px] w-full bg-gray-200"></div>}
                 </div>
@@ -176,8 +184,8 @@ const TemplateOne = () => {
           }
 
           {/* awards */}
-          {awardsData[0] && <section>
-            <h2 className="text-sm font-bold text-[#5F53F5] mb-1">
+          {awardsData[0] && <section className="description page-break">
+            <h2 className="text-sm font-bold text-[#5F53F5] mb-2">
               Awards
             </h2>
             {
@@ -185,18 +193,23 @@ const TemplateOne = () => {
                 <div key={a}>
                   <div className="flex justify-between">
                     <div>
-                      <p className="font-semibold text-xs">
+                      <p className="font-bold text-xs mb-1">
                         {a.awardName}
                       </p>
-                      <p className="text-xs">
+                      <p className="text-xs mb-1">
                         {a.issueingOrg}
                       </p>
                     </div>
                     <div>
-                      <p className="font-semibold text-xs">
+                      {a.issueingDate && <p className="font-semibold text-xs">
                         {`${a.issueingDate} - ${a.expirationDate}`}
-                      </p>
+                      </p>}
                     </div>
+                  </div>
+                  <div>
+                    <p className="text-[#666666] text-xs">
+                      {a.description}
+                    </p>
                   </div>
                   {awardsData.indexOf(a) < awardsData.length - 1 && <div className="my-2 h-[1px] w-full bg-gray-200"></div>}
                 </div>
@@ -209,57 +222,57 @@ const TemplateOne = () => {
           }
 
           {/* Skills */}
-          {skillsData[0] && <section>
+          {skillsData[0] && <section className="description">
             <h2 className="text-sm font-bold text-[#5F53F5] mb-2">
               Skills
             </h2>
 
 
-            
-              <div className="grid grid-cols-5 gap-4">
-                {skillsData.map((s, index) => (
-                  <div key={index} className="mb-2 ">
-                    <p className=" text-xs">{s.skill}</p>
 
-                    <div className="flex gap-1 mt-1">
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <div
-                          key={i}
-                          className={`w-2 h-2 rounded-full border border-[#5D5CFF]
+            <div className="grid grid-cols-5 gap-4">
+              {skillsData.map((s, index) => (
+                <div key={index} className="mb-2 ">
+                  <p className=" text-xs">{s.skill}</p>
+
+                  <div className="flex gap-1 mt-1">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i + index}
+                        className={`w-2 h-2 rounded-full border border-[#5D5CFF]
                             ${i <= s.level ? "bg-[#5D5CFF]" : ""}`}
-                        ></div>
-                      ))}
-                    </div>
+                      ></div>
+                    ))}
                   </div>
-                ))}
-                
-              </div>
-              <div className="mt-2 h-[2px] w-full bg-[#5D5CFF]"></div>
+                </div>
+              ))}
+
+            </div>
+            <div className="mt-2 h-[2px] w-full bg-[#5D5CFF]"></div>
           </section>}
 
-          {languageData[0] && <section>
+          {languageData[0] && <section className="description">
             <h2 className="text-sm font-bold text-[#5F53F5] mb-2">
               Languages
             </h2>
             <div className="grid grid-cols-5 gap-4">
-                {languageData.map((l, index) => (
-                  <div key={index} className="mb-2 ">
-                    <p className=" text-xs">{l.language}</p>
+              {languageData.map((l, index) => (
+                <div key={index} className="mb-2 ">
+                  <p className=" text-xs">{l.language}</p>
 
-                    <div className="flex gap-1 mt-1">
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <div
-                          key={i}
-                          className={`w-2 h-2 rounded-full border border-[#5D5CFF]
+                  <div className="flex gap-1 mt-1">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className={`w-2 h-2 rounded-full border border-[#5D5CFF]
                             ${i <= l.level ? "bg-[#5D5CFF]" : ""}`}
-                        ></div>
-                      ))}
-                    </div>
+                      ></div>
+                    ))}
                   </div>
-                ))}
-            
-              </div>
-∫          </section>}
+                </div>
+              ))}
+
+            </div>
+          </section>}
         </div>
       </div>
     </div>

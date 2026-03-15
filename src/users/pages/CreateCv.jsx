@@ -1,7 +1,7 @@
 import { useState } from "react"
 import UserAuth from "../components/UserAuth"
 import { useDispatch, useSelector } from "react-redux"
-import { addAwards, addEducation, addExperience, addLanguages, addPersonalInfo, addProfessionalSummary, addProjects, addSkills } from "../../state/cvSlice"
+import { addToList, addPersonalInfo, addProfessionalSummary, updateList, removeFromList } from "../../state/cvSlice"
 import TemplateOne from "../../templates/Template1"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,12 +16,13 @@ const CreateCv = () => {
     const projects = useSelector((state) => state.cv.cvData.projects)
     const awards = useSelector((state) => state.cv.cvData.awards)
 
-    const steps = ["personalInfo", "professionalSummary", "experience", "education", "projects", "skills","languages", "awards"];
+    const steps = ["personalInfo", "professionalSummary","education","experience", "projects","awards", "skills", "languages"];
     const levels = ["Beginner", "Basic", "Skillful", "Advanced", "Expert"];
 
-
     const dispatch = useDispatch()
+    const [editingIndex, setEditingIndex] = useState(null)
     const [responsibility, setResponsibility] = useState('')
+    const [keyFeature, setKeyFeature] = useState('')
     const [open, setOpen] = useState(false)
     const [personalInfo, setPersonalInfo] = useState({
         firstName: "",
@@ -65,18 +66,20 @@ const CreateCv = () => {
     })
     const [projectForm, setProjectForm] = useState({
         projectTitle: "",
-        projectDescription: "",
+        keyFeatures: [],
         projectUrl: ""
     })
     const [awardForm, setAwardForm] = useState({
         awardName: "",
         issueingOrg: "",
+        description: "",
         issueingDate: "",
         expirationDate: "",
     })
     const [photoPreview, setPhotoPreview] = useState("")
 
     const [currentStep, setCurrentStep] = useState("personalInfo")
+
 
 
     const handlePhotoUpload = (e) => {
@@ -92,7 +95,7 @@ const CreateCv = () => {
             form: experienceForm,
             setForm: setExperienceForm,
             list: experience,
-            setList: addExperience,
+            setList: addToList,
             emptyForm: {
                 jobTitle: "",
                 employer: "",
@@ -109,12 +112,16 @@ const CreateCv = () => {
             form: educationForm,
             setForm: setEducationForm,
             list: education,
-            setList: addEducation,
+            setList: addToList,
             emptyForm: {
+                school: "",
                 degree: "",
-                institute: "",
-                startDate: "",
-                endDate: ""
+                fieldOfStudy: "",
+                grade: "",
+                startDate: null,
+                endDate: null,
+                country: "",
+                city: ""
             },
             requiredKey: "degree"
         },
@@ -123,10 +130,10 @@ const CreateCv = () => {
             form: projectForm,
             setForm: setProjectForm,
             list: projects,
-            setList: addProjects,
+            setList: addToList,
             emptyForm: {
                 projectTitle: "",
-                projectDescription: "",
+                keyFeatures: [],
                 projectUrl: ""
             },
             requiredKey: "projectTitle"
@@ -135,7 +142,7 @@ const CreateCv = () => {
             form: skillForm,
             setForm: setSkillForm,
             list: skills,
-            setList: addSkills,
+            setList: addToList,
             emptyForm: {
                 skill: "",
                 level: 2
@@ -146,7 +153,7 @@ const CreateCv = () => {
             form: languageForm,
             setForm: setLanguageForm,
             list: languages,
-            setList: addLanguages,
+            setList: addToList,
             emptyForm: {
                 language: "",
                 level: 2
@@ -157,10 +164,10 @@ const CreateCv = () => {
             form: awardForm,
             setForm: setAwardForm,
             list: awards,
-            setList: addAwards,
             emptyForm: {
                 awardName: "",
                 issueingOrg: "",
+                description: "",
                 issueingDate: "",
                 expirationDate: "",
             },
@@ -169,13 +176,60 @@ const CreateCv = () => {
 
     };
 
+    const step = stepConfig[currentStep] || {};
+
+    // console.log(step);
+
+
+    const {
+        form,
+        setForm,
+        emptyForm,
+        list,
+        requiredKey,
+    } = step;
+
+
+
     const addresponsibilities = () => {
-
         if (!responsibility.trim()) return;
-        setExperienceForm({ ...experienceForm, responsibilities: [...experienceForm.responsibilities, responsibility] })
-        setResponsibility("");
 
-    }
+        const isDuplicate = experienceForm.responsibilities.some(
+            (item) => item === responsibility.trim()
+        );
+
+        if (!isDuplicate) {
+            setExperienceForm({
+                ...experienceForm,
+                responsibilities: [
+                    ...experienceForm.responsibilities,
+                    responsibility.trim()
+                ]
+            });
+
+            setResponsibility("");
+        }
+    };
+
+    const addKeyFeatures = () => {
+        if (!keyFeature.trim()) return;
+
+        const isDuplicate = projectForm.keyFeatures.some(
+            (item) => item === keyFeature.trim()
+        );
+
+        if (!isDuplicate) {
+            setProjectForm({
+                ...projectForm,
+                keyFeatures: [
+                    ...projectForm.keyFeatures,
+                    keyFeature.trim()
+                ]
+            });
+
+            setKeyFeature("");
+        }
+    };
 
     const formatMonthYear = (date) => {
         const month = date.toLocaleString("en-US", { month: "short" });
@@ -193,20 +247,45 @@ const CreateCv = () => {
     }
 
     const handleNext = () => {
-        const step = stepConfig[currentStep];
         if (!step) return;
         console.log(step);
 
-        const { form, setForm, emptyForm, list, setList, requiredKey } = step;
-
         if (form[requiredKey]) {
 
+            let updatedForm = { ...form };
+
+            if (currentStep === "experience" && responsibility.trim()) {
+                updatedForm = {
+                    ...form,
+                    responsibilities: [
+                        ...form.responsibilities,
+                        responsibility.trim()
+                    ]
+                };
+                setResponsibility("");
+            }
+            if (currentStep === "projects" && keyFeature.trim()) {
+                updatedForm = {
+                    ...form,
+                    keyFeatures: [
+                        ...form.keyFeatures,
+                        keyFeature.trim()
+                    ]
+                };
+                setKeyFeature("");
+            }
+
             const isDuplicate = list.some(
-                (item) => JSON.stringify(item) === JSON.stringify(form)
+                (item) => JSON.stringify(item) === JSON.stringify(updatedForm)
             );
 
             if (!isDuplicate) {
-                dispatch(setList(form));
+                console.log(form);
+
+                dispatch(addToList({
+                    form: updatedForm,
+                    step: currentStep
+                }));
             }
 
             setForm(emptyForm);
@@ -230,103 +309,80 @@ const CreateCv = () => {
 
     }
 
-    const addExperienceHandler = () => {
-        if (!experienceForm.jobTitle.trim()) return;
+    const addMoreHandler = () => {
+        console.log(form);
 
-        let updatedResponsibilities = [...experienceForm.responsibilities]
+        if (!form[requiredKey]) return;
 
-        if (responsibility.trim()) {
+        let updatedForm = { ...form };
 
-            const isDuplicate = updatedResponsibilities.some(
-                (item) => item === responsibility
-
-            );
-            if (!isDuplicate) {
-                updatedResponsibilities.push(responsibility.trim())
-                setResponsibility("")
-            }
+        if (currentStep === "experience" && responsibility.trim()) {
+            updatedForm = {
+                ...form,
+                responsibilities: [
+                    ...form.responsibilities,
+                    responsibility.trim()
+                ]
+            };
+            setResponsibility("");
+        }
+        if (currentStep === "projects" && keyFeature.trim()) {
+            updatedForm = {
+                ...form,
+                keyFeatures: [
+                    ...form.keyFeatures,
+                    keyFeature.trim()
+                ]
+            };
+            setKeyFeature("");
         }
 
-        const updatedExperienceForm = { ...experienceForm, responsibilities: updatedResponsibilities }
+        dispatch(addToList({
+            form: updatedForm,
+            step: currentStep
+        }))
 
-        dispatch(addExperience(updatedExperienceForm))
-
-        setExperienceForm({
-            jobTitle: "",
-            employer: "",
-            startDate: "",
-            endDate: "",
-            country: "",
-            city: "",
-            responsibilities: []
-        })
+        setForm(emptyForm)
     }
 
-    const addEducationHandler = () => {
-        if (!educationForm.degree.trim()) return;
+    const handleEdit = (index) => {
+        const step = stepConfig[currentStep];
+        if (!step) return;
+        setForm(list[index])
+        setEditingIndex(index);
 
-        dispatch(addEducation(educationForm));
-
-        setEducationForm({
-            school: "",
-            degree: "",
-            fieldOfStudy: "",
-            grade: "",
-            startDate: "",
-            endDate: "",
-            country: "",
-            city: ""
-        })
     }
 
-    const addSkillsHandler = () => {
+    const updateData = () => {
+        let updatedForm = { ...form };
 
-        if (!skillForm.skill.trim()) return;
-
-        dispatch(addSkills(skillForm))
-
-        setSkillForm({
-            skill: "",
-            level: 2,
-        })
-    }
-    const addLanguageHandler = () => {
-
-        if (!languageForm.language.trim()) return;
-
-        dispatch(addLanguages(languageForm))
-
-        setLanguageForm({
-            language: "",
-            level: 2,
-        })
-    }
-
-    const addProjectsHandler = () => {
-
-        if (!projectForm.projectTitle.trim()) return;
-
-
-        dispatch(addProjects(projectForm));
-
-        setProjectForm({
-            projectTitle: "",
-            projectDescription: "",
-            projectUrl: ""
-        })
-    }
-
-    const addAwardsHandler = () => {
-
-        if (!awardForm.awardName.trim()) return;
-
-        dispatch(addAwards(awardForm))
-        setAwardForm({
-            awardName: "",
-            issueingOrg: "",
-            issueingDate: "",
-            expirationDate: "",
-        })
+        if (currentStep === "experience" && responsibility.trim()) {
+            updatedForm = {
+                ...form,
+                responsibilities: [
+                    ...form.responsibilities,
+                    responsibility.trim()
+                ]
+            };
+            setResponsibility("");
+        }
+        if (currentStep === "projects" && keyFeature.trim()) {
+            updatedForm = {
+                ...form,
+                keyFeatures: [
+                    ...form.keyFeatures,
+                    keyFeature.trim()
+                ]
+            };
+            setKeyFeature("");
+        }
+        dispatch(updateList({
+            index: editingIndex,
+            data: updatedForm,
+            step: currentStep
+        }));
+        setForm(emptyForm)
+        setEditingIndex(null)
     }
 
     const handleBack = () => {
@@ -341,7 +397,7 @@ const CreateCv = () => {
 
             <div className="max-w-3xl mx-auto p-4 space-y-6">
 
-                <div className='my-10 flex justify-center items-center'>
+                {/* <div className='my-10 flex justify-center items-center'>
                     <label htmlFor="photo">
                         <input type="file" onChange={(e) => handlePhotoUpload(e)} id='photo' className='hidden' />
                         <div className='relative'>
@@ -349,7 +405,7 @@ const CreateCv = () => {
 
                         </div>
                     </label>
-                </div>
+                </div> */}
 
                 {/* Basic Info */}
                 {currentStep == "personalInfo" && <div>
@@ -380,14 +436,100 @@ const CreateCv = () => {
                         <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
                         <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => {
                             dispatch(addProfessionalSummary(professionalSummary));
-                            setCurrentStep("experience")
+                            setCurrentStep("education")
                         }}>Next</button>
                     </div>
 
                 </div>
                 }
+
+                {/* Education */}
+                {currentStep == "education" && <div>
+                    <h2 className="font-semibold">Education</h2>
+                    <div className="grid grid-cols-2 gap-2">
+                        <input className="border p-2" placeholder="School" value={educationForm.school} onChange={(e) => setEducationForm({ ...educationForm, school: e.target.value })} />
+                        <input className="border p-2" placeholder="Degree" value={educationForm.degree} onChange={(e) => setEducationForm({ ...educationForm, degree: e.target.value })} />
+                        <input className="border p-2" placeholder="Field of Study" value={educationForm.fieldOfStudy} onChange={(e) => setEducationForm({ ...educationForm, fieldOfStudy: e.target.value })} />
+                        <input className="border p-2" placeholder="Grade" value={educationForm.grade} onChange={(e) => setEducationForm({ ...educationForm, grade: e.target.value })} />
+                        <DatePicker
+                            selected={educationForm.startDate}
+                            onChange={(date) => {
+                                const formatted = formatMonthYear(date);
+                                setEducationForm({
+                                    ...educationForm,
+                                    startDate: formatted,
+                                });
+                            }}
+                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                            showMonthYearPicker          // 👈 only month + year
+                            className="border p-2 rounded-md"
+                            placeholderText="Select month & year"
+                        />
+                        <DatePicker
+                            selected={educationForm.endDate}
+                            onChange={(date) => {
+                                const formatted = formatMonthYear(date);
+                                setEducationForm({
+                                    ...educationForm,
+                                    endDate: formatted,
+                                });
+                            }}
+                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                            showMonthYearPicker          // 👈 only month + year
+                            className="border p-2 rounded-md"
+                            placeholderText="Select month & year"
+                        />
+                        <input className="border p-2" placeholder="Country" value={educationForm.country} onChange={(e) => setEducationForm({ ...educationForm, country: e.target.value })} />
+                        <input className="border p-2" placeholder="City" value={educationForm.city} onChange={(e) => setEducationForm({ ...educationForm, city: e.target.value })} />
+                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addMoreHandler}>Add one more education</button>
+                        <div className="flex justify-between">
+                            <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
+                            {editingIndex === null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button> :
+                                <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>}
+                        </div>
+                    </div>
+                    {education[0] && <div>
+                        <div>
+                            {
+                                education.map((e, index) => (
+                                    <div key={index} className="bg-blue-100 rounded p-5 mb-2">
+                                        <div className="flex justify-between ">
+                                            <div>
+                                                <p className="font-semibold text-xs">
+                                                    {`${e.degree} in ${e.fieldOfStudy}`}</p>
+                                                <p className="font-semibold text-xs text-gray-800">{`${[e.school, e.city, e.country]
+                                                    .filter(Boolean)
+                                                    .join(", ")}`}</p>
+
+
+                                            </div>
+                                            <div>
+                                                {e.startDate && <p className="font-semibold text-xs">
+                                                    {`${e.startDate} - ${e.endDate || "Present"} `}
+                                                </p>}
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-end gap-2">
+                                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => handleEdit(index)}>Edit</button>
+                                            <button className="px-3 py-1 text-white bg-red-500 rounded" onClick={() => dispatch(removeFromList({
+                                                index,
+                                                step: currentStep
+                                            }))}>Delete</button>
+                                        </div>
+                                    </div>
+
+                                )
+                                )
+                            }
+                        </div>
+
+                    </div>}
+                </div>}
+
+
                 {/* Experience */}
                 {currentStep == "experience" && <div>
+
                     <div>
                         <h2 className="font-semibold">Experience</h2>
                         <div className=" border border-gray-200 bg-white rounded p-10 w-full">
@@ -430,65 +572,85 @@ const CreateCv = () => {
                             <div className="grid grid-cols-2 gap-4 py-2">
 
                             </div>
+                            {experienceForm.responsibilities[0] && experienceForm.responsibilities.map((r, index) => (
+                                <div className="flex gap-2 items-start mb-1" key={index}>
+                                    <textarea key={index} className="border p-2 w-full" rows="1" value={r} onChange={(e) => {
+                                        const updatedResponsibilities = [...experienceForm.responsibilities];
+                                        updatedResponsibilities[index] = e.target.value;
 
+                                        setExperienceForm({
+                                            ...experienceForm,
+                                            responsibilities: updatedResponsibilities
+                                        });
+                                    }} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500 " onClick={() => {
+          const updatedResponsibilities = experienceForm.responsibilities.filter(
+            (_, i) => i !== index
+          );
+
+          setExperienceForm({
+            ...experienceForm,
+            responsibilities: updatedResponsibilities
+          });
+        }}>-</button>
+                                </div>
+                            ))}
                             <div className="flex gap-2 items-start">
-                                <textarea className="border p-2 w-full" rows="1" placeholder="Highlites" value={responsibility} onChange={(e) => setResponsibility(e.target.value)} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500" onClick={addresponsibilities}>+</button>
+                                <textarea className="border p-2 w-full" rows="1" placeholder="Responsibilities" value={responsibility} onChange={(e) => setResponsibility(e.target.value)} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500" onClick={addresponsibilities}>+</button>
                             </div>
-                            <div className="bg-white pt-2 pb-5">
-                                <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addExperienceHandler}>Add more</button>
-                            </div>
+                            {editingIndex === null && <div className="bg-white pt-2 pb-5">
+                                <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addMoreHandler}>Add one more experience</button>
+                            </div>}
                         </div>
                         <div className="flex justify-between w-full my-2 py-4 rounded shadow">
                             <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
-                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
+                            {editingIndex === null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button> :
+                                <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>}
                         </div>
                     </div>
-                </div>}
+                    {experience[0] && <div>
+                        <div>
+                            {
+                                experience.map((exp, index) => (
+                                    <div key={index} className="bg-blue-100 rounded p-5 mb-2">
+                                        <div className="flex justify-between ">
+                                            <div>
+                                                <p className="font-semibold text-xs">
+                                                    {`${exp.jobTitle} at ${[exp.employer, exp.city, exp.country]
+                                                        .filter(Boolean)
+                                                        .join(", ")}`}
+                                                </p>
 
-                {/* Education */}
-                {currentStep == "education" && <div>
-                    <h2 className="font-semibold">Education</h2>
-                    <div className="grid grid-cols-2 gap-2">
-                        <input className="border p-2" placeholder="School" value={educationForm.school} onChange={(e) => setEducationForm({ ...educationForm, school: e.target.value })} />
-                        <input className="border p-2" placeholder="Degree" value={educationForm.degree} onChange={(e) => setEducationForm({ ...educationForm, degree: e.target.value })} />
-                        <input className="border p-2" placeholder="Field of Study" value={educationForm.fieldOfStudy} onChange={(e) => setEducationForm({ ...educationForm, fieldOfStudy: e.target.value })} />
-                        <input className="border p-2" placeholder="Grade" value={educationForm.grade} onChange={(e) => setEducationForm({ ...educationForm, grade: e.target.value })} />
-                        <DatePicker
-                            selected={experienceForm.startDate}
-                            onChange={(date) => {
-                                const formatted = formatMonthYear(date);
-                                setExperienceForm({
-                                    ...experienceForm,
-                                    startDate: formatted,
-                                });
-                            }}
-                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
-                            showMonthYearPicker          // 👈 only month + year
-                            className="border p-2 rounded-md"
-                            placeholderText="Select month & year"
-                        />
-                        <DatePicker
-                            selected={experienceForm.endDate}
-                            onChange={(date) => {
-                                const formatted = formatMonthYear(date);
-                                setExperienceForm({
-                                    ...experienceForm,
-                                    endDate: formatted,
-                                });
-                            }}
-                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
-                            showMonthYearPicker          // 👈 only month + year
-                            className="border p-2 rounded-md"
-                            placeholderText="Select month & year"
-                        />
-                        <input className="border p-2" placeholder="Country" value={educationForm.country} onChange={(e) => setEducationForm({ ...educationForm, country: e.target.value })} />
-                        <input className="border p-2" placeholder="City" value={educationForm.city} onChange={(e) => setEducationForm({ ...educationForm, city: e.target.value })} />
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addEducationHandler}>Add one more education</button>
-                        <div className="flex justify-between">
-                            <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
-                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
+                                            </div>
+                                            <div>
+                                                {exp.startDate && <p className="font-semibold text-xs">
+                                                    {`${exp.startDate} - ${exp.endDate || "Present"} `}
+                                                </p>}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {exp.responsibilities && (
+                                                <ul className="mt-3 space-y-2 text-sm text-gray-700 list-disc list-inside marker:text-[#5F53F5]">
+                                                    {exp.responsibilities.map((point, i) => (
+                                                        <li key={i}>{point}</li>
+                                                    ))}
+                                                </ul>
+                                            )}
+                                        </div>
+                                        <div className="flex justify-end mt-2 gap-2 p-2">
+                                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => handleEdit(index)}>Edit</button>
+                                            <button className="px-3 py-1 text-white bg-red-500 rounded" onClick={() => dispatch(removeFromList({
+                                                index,
+                                                step: currentStep
+                                            }))}>Delete</button>
+                                        </div>
+                                    </div>
+
+                                )
+                                )
+                            }
                         </div>
-                    </div>
+
+                    </div>}
                 </div>}
 
                 {/* Projects */}
@@ -496,15 +658,177 @@ const CreateCv = () => {
                     <h2 className="font-semibold">Projects</h2>
                     <div className="space-y-2">
                         <input className="border p-2 w-full" placeholder="Project Title" value={projectForm.projectTitle} onChange={(e) => setProjectForm({ ...projectForm, projectTitle: e.target.value })} />
-                        <textarea className="border p-2 w-full" rows="2" placeholder="Project Description" value={projectForm.projectDescription} onChange={(e) => setProjectForm({ ...projectForm, projectDescription: e.target.value })} />
+                        {projectForm.keyFeatures[0] && projectForm.keyFeatures.map((kf,index) => (
+                            <div key={index} className="flex gap-2 items-start">
+                                <textarea className="border p-2 w-full" rows="1"  value={kf} onChange={(e) => {
+                                    const updatedKeyFeatures = [...projectForm.keyFeatures]
+                                    updatedKeyFeatures[index] = e.target.value;
+                                    setProjectForm({...projectForm,keyFeatures:updatedKeyFeatures})
+                                }} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500" onClick={() => {
+                                    const updatedKeyFeatures = projectForm.keyFeatures.filter((_,i)=> i!=index)
+                                    setProjectForm({...projectForm,keyFeatures:updatedKeyFeatures})
+                                }
+                                    
+                                }>-</button>
+                            </div>
+                        ))}
+                        <div className="flex gap-2 items-start">
+                            <textarea className="border p-2 w-full" rows="1" placeholder="Key Features" value={keyFeature} onChange={(e) => setKeyFeature(e.target.value)} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500" onClick={addKeyFeatures}>+</button>
+                        </div>
                         <input className="border p-2 w-full" placeholder="Project URL" value={projectForm.projectUrl} onChange={(e) => setProjectForm({ ...projectForm, projectUrl: e.target.value })} />
-                        <button type="button" className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addProjectsHandler}>Add one more project</button>
+                        <button type="button" className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addMoreHandler}>Add one more project</button>
                         <div className="flex justify-between">
                             <button type="button" className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
-                            <button type="button" className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
+                            {editingIndex === null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button> :
+                                <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>}
                         </div>
                     </div>
+                    {projects[0] && <div>
+                        <div>
+                            {
+                                projects.map((p, index) => (
+                                    <div key={index} className="bg-blue-100 rounded p-5 mb-2">
+                                        <div className="p-2">
+                                            <div>
+                                                <p className="font-semibold text-xs">
+                                                    {p.projectTitle}</p>
+                                                <div className="pb-2">
+                                                    {p.keyFeatures && (
+                                                        <ul className="mt-3 space-y-2 text-sm text-gray-700 list-disc list-inside marker:text-[#5F53F5]">
+                                                            {p.keyFeatures.map((point, i) => (
+                                                                <li key={i}>{point}</li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+
+
+                                            </div>
+                                            {p.projectUrl && <div className="pb-2">
+                                                <p className="font-semibold text-xs"> Live Demo :
+                                                    <a href={p.projectUrl.startsWith("http") ? p.projectUrl : `https://${p.projectUrl}`} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-700">
+                                                        {p.projectUrl}
+                                                    </a>
+                                                </p>
+                                            </div>}
+                                        </div>
+                                        <div className="flex justify-end gap-2">
+                                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => handleEdit(index)}>Edit</button>
+                                            <button className="px-3 py-1 text-white bg-red-500 rounded" onClick={() => dispatch(removeFromList({
+                                                index,
+                                                step: currentStep
+                                            }))}>Delete</button>
+                                        </div>
+                                    </div>
+
+                                )
+                                )
+                            }
+                        </div>
+
+                    </div>}
                 </div>}
+
+                {/* Awards */}
+                {currentStep == "awards" && <div>
+                    <h2 className="font-semibold">Awards</h2>
+                    <div className="py-8">
+                        <div className="mb-2 flex gap-2">
+                            <input className="border p-2" placeholder="Award Name" value={awardForm.awardName} onChange={(e) => setAwardForm({ ...awardForm, awardName: e.target.value })} />
+                            <input className="border p-2" placeholder="Issuing Organisation" value={awardForm.issueingOrg} onChange={(e) => setAwardForm({ ...awardForm, issueingOrg: e.target.value })} />
+                        </div>
+                        <div className="mb-2">
+                            <textarea className="border p-2 w-full" placeholder="Description" value={awardForm.description} onChange={(e) => setAwardForm({ ...awardForm, description: e.target.value })}></textarea>
+                        </div>
+                        <div className="mb-2 flex gap-2">
+                            <DatePicker
+                                selected={awardForm.issueingDate}
+                                onChange={(date) => {
+                                    const formatted = formatMonthYear(date);
+                                    setAwardForm({
+                                        ...awardForm,
+                                        issueingDate: formatted,
+                                    });
+                                }}
+                                dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                                showMonthYearPicker          // 👈 only month + year
+                                className="border p-2 rounded-md"
+                                placeholderText="Issued Date"
+                            />
+                            <DatePicker
+                                selected={awardForm.expirationDate}
+                                onChange={(date) => {
+                                    const formatted = formatMonthYear(date);
+                                    setAwardForm({
+                                        ...awardForm,
+                                        expirationDate: formatted,
+                                    });
+                                }}
+                                dateFormat="MMM yyyy"        // 👈 Jan 2026 format
+                                showMonthYearPicker          // 👈 only month + year
+                                className="border p-2 rounded-md"
+                                placeholderText="Expiration Date"
+                            />
+                        </div>
+                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addMoreHandler}>Add one more award</button>
+                    </div>
+                    <div className="justify-between">
+                        <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
+                        {editingIndex === null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button> :
+                                <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>}
+                        {/* {editingIndex !== null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>
+                            :
+                            <button className="border px-4 py-2" onClick={() => {
+                                if (awardForm.awardName.trim()) {
+                                    dispatch(addToList({
+                                        awardForm,
+                                        step: currentStep
+                                    }));
+                                }
+
+                                createCv();
+                            }}>
+                                Save CV
+                            </button>
+                        } */}
+
+                    </div>
+                    {awards[0] && <div>
+                        <div>
+                            {
+                                awards.map((a, index) => (
+                                    <div key={index} className="bg-blue-100 rounded p-5 mb-2">
+                                        <div className="flex justify-between ">
+                                            <div className="mb-2">
+                                                <p className="font-semibold text-s">
+                                                    {a.awardName} <span className=" text-xs">Issued By</span> {a.issueingOrg}</p>
+                                            </div>
+                                            <div>
+                                                {a.issueingDate && <p className="font-semibold text-xs">
+                                                    {`${a.issueingDate} - ${a.expirationDate || "Present"} `}
+                                                </p>}
+                                            </div>
+                                        </div>
+                                        <div className="text-[#666666] text-xs">
+                                            {a.description}
+                                        </div>
+                                        <div className="flex justify-end gap-2">
+                                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => handleEdit(index)}>Edit</button>
+                                            <button className="px-3 py-1 text-white bg-red-500 rounded" onClick={() => dispatch(removeFromList({
+                                                index,
+                                                step: currentStep
+                                            }))}>Delete</button>
+                                        </div>
+                                    </div>
+
+                                )
+                                )
+                            }
+                        </div>
+
+                    </div>}
+                </div>}
+
 
                 {/* Skills */}
                 {currentStep == "skills" && <div>
@@ -538,27 +862,59 @@ const CreateCv = () => {
                                         )}
                                     </button>
                                 ))}
-                                
+
                             </div>
                             {/* Label */}
                             <p className="text-lg font-medium text-gray-600 mb-3">
                                 Level — <span className="text-orange-500">{levels[skillForm.level]}</span>
                             </p>
                         </div>
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addSkillsHandler}>Add one more skill</button>
+                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addMoreHandler}>Add one more skill</button>
                         <div className="flex justify-between">
                             <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
-                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
+                            {editingIndex === null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button> :
+                                <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>}
                         </div>
                     </div>
+                    {skills[0] && <div>
+                        <div className="m-10">
+                            {
+                                skills.map((s, index) => (
+                                    <div key={index} className="bg-blue-100 rounded px-8 py-4 mb-4">
+                                        <div className="py-2 grid grid-cols-2">
+                                            <div className="p-2">
+                                                <p className="font-semibold text-m">
+                                                    {s.skill}</p>
+                                                <div className="pb-2 flex">
+                                                    <p className="text-m font-medium text-gray-600 mb-3">
+                                                        Level — <span className="text-orange-500">{levels[s.level]}</span>
+                                                    </p>
 
+                                                </div>
+                                            </div>
+                                            <div className="ms-10 my-5">
+                                                <button className="px-2 py-1 text-xs text-white bg-blue-500 me-2 rounded" onClick={() => handleEdit(index)}>Edit</button>
+                                                <button className="px-2 py-1 text-xs text-white bg-red-500 rounded" onClick={() => dispatch(removeFromList({
+                                                    index,
+                                                    step: currentStep
+                                                }))}>Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                )
+                                )
+                            }
+                        </div>
+
+                    </div>}
                 </div>}
 
                 {/* language */}
-                {currentStep == "languages"&& <div>
+                {currentStep == "languages" && <div>
                     <h2 className="font-semibold p-10 text-lg">Languages</h2>
                     <div className="grid grid-cols-2 gap-4 w-200">
-                        <input className="border p-2 h-10 w-50 rounded" placeholder="Language" value={languageForm.language} onChange={(e) => setLanguageForm({...languageForm,language:e.target.value})} />
+                        <input className="border p-2 h-10 w-50 rounded" placeholder="Language" value={languageForm.language} onChange={(e) => setLanguageForm({ ...languageForm, language: e.target.value })} />
                         <div>
 
                             {/* Bar */}
@@ -586,78 +942,72 @@ const CreateCv = () => {
                                         )}
                                     </button>
                                 ))}
-                                
+
                             </div>
                             {/* Label */}
                             <p className="text-lg font-medium text-gray-600 mb-3">
                                 Level — <span className="text-orange-500">{levels[languageForm.level]}</span>
                             </p>
                         </div>
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addLanguageHandler}>Add one more skill</button>
+                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addMoreHandler}>Add one more skill</button>
                         <div className="flex justify-between">
                             <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
-                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button>
+                            {editingIndex !== null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>
+                            :
+                            <button className="border px-4 py-2" onClick={() => {
+                                console.log(form);
+                                
+                                if (form.requiredKey) {
+                                    dispatch(addToList({
+                                        form,
+                                        step: currentStep
+                                    }));
+                                }
+
+                                createCv();
+                            }}>
+                                Save CV
+                            </button>
+                        }
                         </div>
                     </div>
+                    {languages[0] && <div>
+                        <div className="m-10">
+                            {
+                                languages.map((l, index) => (
+                                    <div key={index} className="bg-blue-100 rounded px-8 py-4 mb-4">
+                                        <div className="py-2 grid grid-cols-2">
+                                            <div className="p-2">
+                                                <p className="font-semibold text-m">
+                                                    {l.language}</p>
+                                                <div className="pb-2 flex">
+                                                    <p className="text-m font-medium text-gray-600 mb-3">
+                                                        Level — <span className="text-orange-500">{levels[l.level]}</span>
+                                                    </p>
 
-                </div>}
+                                                </div>
+                                            </div>
+                                            <div className="ms-10 my-5">
+                                                <button className="px-2 py-1 text-xs text-white bg-blue-500 me-2 rounded" onClick={() => handleEdit(index)}>Edit</button>
+                                                <button className="px-2 py-1 text-xs text-white bg-red-500 rounded" onClick={() => dispatch(removeFromList({
+                                                    index,
+                                                    step: currentStep
+                                                }))}>Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-
-
-                {/* Awards */}
-                {currentStep == "awards" && <div>
-                    <h2 className="font-semibold">Awards</h2>
-                    <div className="grid grid-cols-2 gap-2">
-                        <input className="border p-2" placeholder="Award Name" value={awardForm.awardName} onChange={(e) => setAwardForm({ ...awardForm, awardName: e.target.value })} />
-                        <input className="border p-2" placeholder="Issuing Organisation" value={awardForm.issueingOrg} onChange={(e) => setAwardForm({ ...awardForm, issueingOrg: e.target.value })} />
-                        {/* <input className="border p-2" placeholder="Issuing Date" value={awardForm.issueingDate} onChange={(e) => setAwardForm({ ...awardForm, issueingDate: e.target.value })} />
-                        <input className="border p-2" placeholder="Expiration Date" value={awardForm.expirationDate} onChange={(e) => setAwardForm({ ...awardForm, expirationDate: e.target.value })} /> */}
-                        <DatePicker
-                            selected={awardForm.issueingDate}
-                            onChange={(date) => {
-                                const formatted = formatMonthYear(date);
-                                setAwardForm({
-                                    ...awardForm,
-                                    issueingDate: formatted,
-                                });
-                            }}
-                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
-                            showMonthYearPicker          // 👈 only month + year
-                            className="border p-2 rounded-md"
-                            placeholderText="Issued Date"
-                        />
-                        <DatePicker
-                            selected={awardForm.expirationDate}
-                            onChange={(date) => {
-                                const formatted = formatMonthYear(date);
-                                setAwardForm({
-                                    ...awardForm,
-                                    expirationDate: formatted,
-                                });
-                            }}
-                            dateFormat="MMM yyyy"        // 👈 Jan 2026 format
-                            showMonthYearPicker          // 👈 only month + year
-                            className="border p-2 rounded-md"
-                            placeholderText="Expiration Date"
-                        />
-                        <button className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addAwardsHandler}>Add one more award</button>
-                    </div>
-                    <div className="justify-between">
-                        <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
-                        <button className="border px-4 py-2" onClick={() => {
-                            if (awardForm.awardName.trim()) {
-                                dispatch(addAwards(awardForm));
+                                )
+                                )
                             }
+                        </div>
 
-                            createCv();
-                        }}>
-                            Save CV
-                        </button>
-
-                    </div>
-
+                    </div>}
                 </div>}
 
+
+
+                
             </div>
             <div className="w-1/2">
                 <TemplateOne />
