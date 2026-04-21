@@ -23,28 +23,7 @@ body {
     @apply w-[60px] h-[60px]
           
   }
-  @media print {
-  @page {
-    size: A4;
-    margin: 20mm;
-  }
-
-  .resume-container {
-    width: 210mm;
-  }
-
-  .section {
-    break-inside: avoid;
-  }
-
-  .description {
-    break-inside: auto;
-  }
-
-  .page-break {
-    break-before: page;
-  }
-}
+  
   
   
 }

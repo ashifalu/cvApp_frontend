@@ -1,25 +1,29 @@
-import { useState } from "react"
+import React, { useState, useMemo, useEffect } from "react"
 import UserAuth from "../components/UserAuth"
 import { useDispatch, useSelector } from "react-redux"
 import { addToList, addPersonalInfo, addProfessionalSummary, updateList, removeFromList } from "../../state/cvSlice"
 import TemplateOne from "../../templates/Template1"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import CvPreview from "../../templates/CvPreview"
+import debounce from "lodash.debounce";
+import SecondTemplate from "../../templates/SecondTemplate"
+import ThirdTemplate from "../../templates/ThirdTemplate"
 
 
 const CreateCv = () => {
+    const experience = useSelector((state) => state.cv.cvData.experience);
+    const education = useSelector((state) => state.cv.cvData.education);
+    const skills = useSelector((state) => state.cv.cvData.skills);
+    const languages = useSelector((state) => state.cv.cvData.languages);
+    const projects = useSelector((state) => state.cv.cvData.projects);
+    const awards = useSelector((state) => state.cv.cvData.awards);
 
-    const experience = useSelector((state) => state.cv.cvData.experience)
-    const education = useSelector((state) => state.cv.cvData.education)
-    const skills = useSelector((state) => state.cv.cvData.skills)
-    const languages = useSelector((state) => state.cv.cvData.languages)
-    const projects = useSelector((state) => state.cv.cvData.projects)
-    const awards = useSelector((state) => state.cv.cvData.awards)
-
-    const steps = ["personalInfo", "professionalSummary","education","experience", "projects","awards", "skills", "languages"];
+    const steps = ["personalInfo", "professionalSummary", "education", "experience", "projects", "awards", "skills", "languages"];
     const levels = ["Beginner", "Basic", "Skillful", "Advanced", "Expert"];
 
     const dispatch = useDispatch()
+    const [currentStep, setCurrentStep] = useState("personalInfo")
     const [editingIndex, setEditingIndex] = useState(null)
     const [responsibility, setResponsibility] = useState('')
     const [keyFeature, setKeyFeature] = useState('')
@@ -78,8 +82,6 @@ const CreateCv = () => {
     })
     const [photoPreview, setPhotoPreview] = useState("")
 
-    const [currentStep, setCurrentStep] = useState("personalInfo")
-
 
 
     const handlePhotoUpload = (e) => {
@@ -89,6 +91,17 @@ const CreateCv = () => {
 
         setPhotoPreview(url)
     }
+
+    const previewData = useMemo(() => ({
+        personalInfo,
+        professionalSummary,
+        experience,
+        education,
+        skills,
+        languages,
+        projects,
+        awards
+    }), [personalInfo, professionalSummary, experience, education, skills, languages, projects, awards]);
 
     const stepConfig = {
         experience: {
@@ -385,6 +398,12 @@ const CreateCv = () => {
         setEditingIndex(null)
     }
 
+    const Preview = React.memo(({ previewData }) => (
+        //   <TemplateOne {...previewData} />
+        <SecondTemplate {...previewData}/>
+        // <ThirdTemplate {...previewData} />
+    ));
+
     const handleBack = () => {
         const currentIndex = steps.indexOf(currentStep);
         if (currentIndex > 0) {
@@ -392,10 +411,14 @@ const CreateCv = () => {
         }
     }
 
-    return (
-        <div className="grid grid-cols-2">
+    const A4_W = 794;
+    const A4_H = 1123;
 
-            <div className="max-w-3xl mx-auto p-4 space-y-6">
+
+    return (
+        <div className="flex min-h-screen">
+
+            <div className="w-1/2 overflow-y-auto p-4 space-y-6">
 
                 {/* <div className='my-10 flex justify-center items-center'>
                     <label htmlFor="photo">
@@ -411,15 +434,15 @@ const CreateCv = () => {
                 {currentStep == "personalInfo" && <div>
                     <h2 className="font-semibold">Basic Information</h2>
                     <div className="grid grid-cols-2 gap-2">
-                        <input className="border p-2" placeholder="First Name" required onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })} />
-                        <input className="border p-2" placeholder="Last Name" onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })} />
-                        <input className="border p-2" placeholder="Role" onChange={(e) => setPersonalInfo({ ...personalInfo, role: e.target.value })} />
-                        <input className="border p-2" placeholder="LinkedIn Url" onChange={(e) => setPersonalInfo({ ...personalInfo, linkedInUrl: e.target.value })} />
-                        <input className="border p-2" placeholder="Email" onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })} />
-                        <input className="border p-2" placeholder="Phone" onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })} />
-                        <input className="border p-2" placeholder="Country" onChange={(e) => setPersonalInfo({ ...personalInfo, country: e.target.value })} />
-                        <input className="border p-2" placeholder="City" onChange={(e) => setPersonalInfo({ ...personalInfo, city: e.target.value })} />
-                        <input className="border p-2" placeholder="Nationality" onChange={(e) => setPersonalInfo({ ...personalInfo, nationality: e.target.value })} />
+                        <input className="border p-2" placeholder="First Name" required value={personalInfo.firstName} onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })} />
+                        <input className="border p-2" placeholder="Last Name" value={personalInfo.lastName} onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })} />
+                        <input className="border p-2" placeholder="Role" value={personalInfo.role} onChange={(e) => setPersonalInfo({ ...personalInfo, role: e.target.value })} />
+                        <input className="border p-2" placeholder="LinkedIn Url" value={personalInfo.linkedInUrl} onChange={(e) => setPersonalInfo({ ...personalInfo, linkedInUrl: e.target.value })} />
+                        <input className="border p-2" placeholder="Email" value={personalInfo.email} onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })} />
+                        <input className="border p-2" placeholder="Phone" value={personalInfo.phone} onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })} />
+                        <input className="border p-2" placeholder="Country" value={personalInfo.country} onChange={(e) => setPersonalInfo({ ...personalInfo, country: e.target.value })} />
+                        <input className="border p-2" placeholder="City" value={personalInfo.city} onChange={(e) => setPersonalInfo({ ...personalInfo, city: e.target.value })} />
+                        <input className="border p-2" placeholder="Nationality" value={personalInfo.nationality} onChange={(e) => setPersonalInfo({ ...personalInfo, nationality: e.target.value })} />
                         <div className="flex justify-end">
                             <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => {
                                 dispatch(addPersonalInfo(personalInfo)); setCurrentStep("professionalSummary")
@@ -431,7 +454,7 @@ const CreateCv = () => {
                 {currentStep == "professionalSummary" && <div>
                     {/* Professional Summary */}
                     <h2 className="font-semibold">Professional Summary</h2>
-                    <textarea className="border p-2 w-full" rows="3" placeholder="Professional Summary" onChange={(e) => setProfessionalSummary(e.target.value)} />
+                    <textarea className="border p-2 w-full" rows="3" maxLength={1000} value={professionalSummary} placeholder="Professional Summary" onChange={(e) => setProfessionalSummary(e.target.value)} />
                     <div className="flex justify-between">
                         <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
                         <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => {
@@ -439,7 +462,18 @@ const CreateCv = () => {
                             setCurrentStep("education")
                         }}>Next</button>
                     </div>
-
+                    {/* {professionalSummary &&
+                    <div className="bg-blue-100 rounded p-5 mb-2">
+                        {professionalSummary}
+                        <div className="flex justify-end gap-2">
+                                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={() => handleEdit(index)}>Edit</button>
+                                            <button className="px-3 py-1 text-white bg-red-500 rounded" onClick={() => dispatch(removeFromList({
+                                                index,
+                                                step: currentStep
+                                            }))}>Delete</button>
+                                        </div>
+                    </div>
+                     } */}
                 </div>
                 }
 
@@ -448,8 +482,88 @@ const CreateCv = () => {
                     <h2 className="font-semibold">Education</h2>
                     <div className="grid grid-cols-2 gap-2">
                         <input className="border p-2" placeholder="School" value={educationForm.school} onChange={(e) => setEducationForm({ ...educationForm, school: e.target.value })} />
-                        <input className="border p-2" placeholder="Degree" value={educationForm.degree} onChange={(e) => setEducationForm({ ...educationForm, degree: e.target.value })} />
-                        <input className="border p-2" placeholder="Field of Study" value={educationForm.fieldOfStudy} onChange={(e) => setEducationForm({ ...educationForm, fieldOfStudy: e.target.value })} />
+                        <select
+                            value={educationForm.degree} placeholder="Degree"
+                            onChange={(e) => setEducationForm({ ...educationForm, degree: e.target.value })} className="w-full border border-gray-300 text-gray-400 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        >
+                            <option value="">Select Degree</option>
+                            <option value="High School Diploma">High School Diploma</option>
+                            <option value="Associate's">Associate's</option>
+                            <option value="Bachelor's">Bachelor's</option>
+                            <option value="Master's">Master's</option>
+                            <option value="MBA">MBA</option>
+                            <option value="PhD">PhD / Doctorate</option>
+                            <option value="MD">MD (Medicine)</option>
+                            <option value="JD">JD (Law)</option>
+                            <option value="Certificate">Certificate</option>
+                            <option value="Diploma">Diploma</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <select
+                            value={educationForm.fieldOfStudy} onChange={(e) => setEducationForm({ ...educationForm, fieldOfStudy: e.target.value })}
+                            className="w-full border border-gray-300 rounded px-3 py-2 text- text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        >
+                            <option value="">Select Field of Study</option>
+                            <optgroup label="Science & Technology">
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Software Engineering">Software Engineering</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Data Science">Data Science</option>
+                                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                                <option value="Cybersecurity">Cybersecurity</option>
+                                <option value="Biology">Biology</option>
+                                <option value="Chemistry">Chemistry</option>
+                                <option value="Physics">Physics</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Statistics">Statistics</option>
+                                <option value="Environmental Science">Environmental Science</option>
+                            </optgroup>
+                            <optgroup label="Engineering">
+                                <option value="Electrical Engineering">Electrical Engineering</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                <option value="Civil Engineering">Civil Engineering</option>
+                                <option value="Chemical Engineering">Chemical Engineering</option>
+                                <option value="Biomedical Engineering">Biomedical Engineering</option>
+                            </optgroup>
+                            <optgroup label="Business & Finance">
+                                <option value="Business Administration">Business Administration</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Accounting">Accounting</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Economics">Economics</option>
+                                <option value="Management">Management</option>
+                                <option value="Human Resources">Human Resources</option>
+                            </optgroup>
+                            <optgroup label="Arts & Humanities">
+                                <option value="English Literature">English Literature</option>
+                                <option value="History">History</option>
+                                <option value="Philosophy">Philosophy</option>
+                                <option value="Fine Arts">Fine Arts</option>
+                                <option value="Graphic Design">Graphic Design</option>
+                                <option value="Architecture">Architecture</option>
+                                <option value="Film & Media Studies">Film & Media Studies</option>
+                            </optgroup>
+                            <optgroup label="Social Sciences">
+                                <option value="Psychology">Psychology</option>
+                                <option value="Sociology">Sociology</option>
+                                <option value="Political Science">Political Science</option>
+                                <option value="International Relations">International Relations</option>
+                                <option value="Communications">Communications</option>
+                            </optgroup>
+                            <optgroup label="Health & Medicine">
+                                <option value="Medicine">Medicine</option>
+                                <option value="Nursing">Nursing</option>
+                                <option value="Pharmacy">Pharmacy</option>
+                                <option value="Public Health">Public Health</option>
+                                <option value="Dentistry">Dentistry</option>
+                            </optgroup>
+                            <optgroup label="Law & Education">
+                                <option value="Law">Law</option>
+                                <option value="Education">Education</option>
+                                <option value="Early Childhood Education">Early Childhood Education</option>
+                            </optgroup>
+                            <option value="Other">Other</option>
+                        </select>
                         <input className="border p-2" placeholder="Grade" value={educationForm.grade} onChange={(e) => setEducationForm({ ...educationForm, grade: e.target.value })} />
                         <DatePicker
                             selected={educationForm.startDate}
@@ -583,15 +697,15 @@ const CreateCv = () => {
                                             responsibilities: updatedResponsibilities
                                         });
                                     }} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500 " onClick={() => {
-          const updatedResponsibilities = experienceForm.responsibilities.filter(
-            (_, i) => i !== index
-          );
+                                        const updatedResponsibilities = experienceForm.responsibilities.filter(
+                                            (_, i) => i !== index
+                                        );
 
-          setExperienceForm({
-            ...experienceForm,
-            responsibilities: updatedResponsibilities
-          });
-        }}>-</button>
+                                        setExperienceForm({
+                                            ...experienceForm,
+                                            responsibilities: updatedResponsibilities
+                                        });
+                                    }}>-</button>
                                 </div>
                             ))}
                             <div className="flex gap-2 items-start">
@@ -658,17 +772,17 @@ const CreateCv = () => {
                     <h2 className="font-semibold">Projects</h2>
                     <div className="space-y-2">
                         <input className="border p-2 w-full" placeholder="Project Title" value={projectForm.projectTitle} onChange={(e) => setProjectForm({ ...projectForm, projectTitle: e.target.value })} />
-                        {projectForm.keyFeatures[0] && projectForm.keyFeatures.map((kf,index) => (
+                        {projectForm.keyFeatures[0] && projectForm.keyFeatures.map((kf, index) => (
                             <div key={index} className="flex gap-2 items-start">
-                                <textarea className="border p-2 w-full" rows="1"  value={kf} onChange={(e) => {
+                                <textarea className="border p-2 w-full" rows="1" value={kf} onChange={(e) => {
                                     const updatedKeyFeatures = [...projectForm.keyFeatures]
                                     updatedKeyFeatures[index] = e.target.value;
-                                    setProjectForm({...projectForm,keyFeatures:updatedKeyFeatures})
+                                    setProjectForm({ ...projectForm, keyFeatures: updatedKeyFeatures })
                                 }} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500" onClick={() => {
-                                    const updatedKeyFeatures = projectForm.keyFeatures.filter((_,i)=> i!=index)
-                                    setProjectForm({...projectForm,keyFeatures:updatedKeyFeatures})
+                                    const updatedKeyFeatures = projectForm.keyFeatures.filter((_, i) => i != index)
+                                    setProjectForm({ ...projectForm, keyFeatures: updatedKeyFeatures })
                                 }
-                                    
+
                                 }>-</button>
                             </div>
                         ))}
@@ -775,7 +889,7 @@ const CreateCv = () => {
                     <div className="justify-between">
                         <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
                         {editingIndex === null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={handleNext}>Next</button> :
-                                <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>}
+                            <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>}
                         {/* {editingIndex !== null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>
                             :
                             <button className="border px-4 py-2" onClick={() => {
@@ -953,22 +1067,22 @@ const CreateCv = () => {
                         <div className="flex justify-between">
                             <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
                             {editingIndex !== null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>
-                            :
-                            <button className="border px-4 py-2" onClick={() => {
-                                console.log(form);
-                                
-                                if (form.requiredKey) {
-                                    dispatch(addToList({
-                                        form,
-                                        step: currentStep
-                                    }));
-                                }
+                                :
+                                <button className="border px-4 py-2" onClick={() => {
+                                    console.log(form);
 
-                                createCv();
-                            }}>
-                                Save CV
-                            </button>
-                        }
+                                    if (form.requiredKey) {
+                                        dispatch(addToList({
+                                            form,
+                                            step: currentStep
+                                        }));
+                                    }
+
+                                    createCv();
+                                }}>
+                                    Save CV
+                                </button>
+                            }
                         </div>
                     </div>
                     {languages[0] && <div>
@@ -1007,10 +1121,29 @@ const CreateCv = () => {
 
 
 
-                
+
             </div>
-            <div className="w-1/2">
-                <TemplateOne />
+            
+            <div className="w-1/2 bg-gray-100 flex items start justify-center pt-16 sticky top-0 h-screen overflow-y-auto">
+                {previewData && (
+                    <div style={{
+                        width: `${A4_W*0.72}px`,   // ~437px - scaled visual width
+                        // height: `${A4_H *0.74}px`, // ~617px - scaled visual height
+                        // overflow: 'hidden',
+                        // position: 'relative',
+                      }}>
+                        <div style={{
+                          width: A4_W,
+                        //   height: A4_H,
+                          transform: 'scale(0.72)',
+                          transformOrigin: 'top left',
+                          marginBottom: - (A4_H * (1- 0.72)),
+                          marginRight: - (A4_W * (1- 0.72)),
+                        }}>
+                          <Preview previewData={previewData} />
+                        </div>
+                      </div>
+                )}
             </div>
             <UserAuth
                 isOpen={open}

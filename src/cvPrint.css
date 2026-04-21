@@ -1,0 +1,40 @@
+@page {
+  size: A4;
+  margin: 20mm;
+}
+
+.cv-preview {
+  width: 210mm;
+  margin: auto;
+}
+
+.cv-section {
+  break-inside: auto;
+}
+
+.section-header {
+  position: running(sectionHeader);
+}
+
+@page {
+  @top-center {
+    content: element(sectionHeader);
+  }
+}
+
+/* .section-content::before {
+  content: attr(data-title);
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+} */
+.pagedjs_page {
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+
+
+.description {
+  break-inside: auto;
+}
