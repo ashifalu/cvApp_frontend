@@ -3,7 +3,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 transition-opacity duration-300"
+      className="fixed inset-0 bg-gray-600/80 flex items-center justify-center z-50 transition-opacity duration-300"
       onClick={onClose}   // 👈 CLOSE when clicking outside
     >
       <div

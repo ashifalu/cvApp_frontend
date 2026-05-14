@@ -2,16 +2,18 @@ import React, { useLayoutEffect, useMemo, useRef } from 'react'
 import { useState } from 'react';
 import { createPortal } from 'react-dom'
 
-const ThirdTemplate = ({
-personalInfo,
-professionalSummary,
-experience,
-education,
-skills,
-languages,
-projects,
-awards
-}) => {
+
+const ThirdTemplate = (
+    {
+        personalInfo,
+        professionalSummary,
+        experience,
+        education,
+        skills,
+        languages,
+        projects,
+        awards
+        }, ref) => {
 
 
 const blocks = useMemo(() => {
@@ -49,7 +51,6 @@ const blocks = useMemo(() => {
     projects, awards, skills, languages]);
 
 const measureRef = useRef();
-const pageRefs = useRef([]);
 const [measureKey, setMeasureKey] = useState(0);
 const [pages, setPages] = useState([]);
 
@@ -149,16 +150,16 @@ const Header = ({ data }) => {
                 <p className="text-sm font-medium text-black mt-1">{data.role}</p>
             )}
             <div className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1">
-                {data.phone && <ContactItem icon="/images/phone3.png" text={data.phone} />}
-                {data.email && <ContactItem icon="/images/email3.png" text={data.email} />}
+                {data.phone && <ContactItem icon="http://localhost:5173/images/phone3.png" text={data.phone} />}
+                {data.email && <ContactItem icon="http://localhost:5173/images/email3.png" text={data.email} />}
                 {(data.city || data.country) && (
-                    <ContactItem icon="/images/location3.png" text={[data.city, data.country].filter(Boolean).join(", ")} />
+                    <ContactItem icon="http://localhost:5173/images/location3.png" text={[data.city, data.country].filter(Boolean).join(", ")} />
                 )}
-                {data.birthdate && <ContactItem icon="/images/birth3.png" text={data.birthdate} />}
+                {data.birthdate && <ContactItem icon="http://localhost:5173/images/birth3.png" text={data.birthdate} />}
                 {(data.nationality || data.gender || data.maritalStatus) && (
-                    <ContactItem icon="/images/nation3.png" text={[data.nationality, data.gender, data.maritalStatus].filter(Boolean).join(", ")} />
+                    <ContactItem icon="http://localhost:5173/images/nation3.png" text={[data.nationality, data.gender, data.maritalStatus].filter(Boolean).join(", ")} />
                 )}
-                {data.linkedInUrl && <ContactItem icon="/images/linkedin copy.png" text={data.linkedInUrl} />}
+                {data.linkedInUrl && <ContactItem icon="http://localhost:5173/images/linkedin copy.png" text={data.linkedInUrl} />}
             </div>
         </div>
     );
@@ -292,6 +293,7 @@ const AwardItem = ({ data, index }) => {
                     {data.description && <p className="text-xs text-[#666666] mt-0.5">{data.description}</p>}
                 </div>
             </div>
+            {!isLast && <div className='bg-gray-200 w-full my-1 h-[1px]'/>}
         </div>
     );
 };
@@ -357,6 +359,7 @@ const renderBlock = (block, index) => {
     }
 };
 
+
 // ─── Render ────────────────────────────────────────────────────────────────
 
 return (
@@ -364,13 +367,10 @@ return (
         {pages.map((page, pageIndex) => (
             <div
                 key={pageIndex}
-                ref={el =>pageRefs.current[pageIndex]= el}
-                className="bg-white border border-gray-300 overflow-hidden mb-5"
+                className="bg-white border border-gray-300 print-page overflow-hidden mb-5"
                 style={{
                     boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
                     marginTop:20,
-                    marginLeft:15,
-                    marginRight:15,
                     paddingTop: pageIndex !== 0 ? 15 : 0,
                     paddingBottom: 15,
                     width: 794,
@@ -384,6 +384,7 @@ return (
         {/* Hidden measurement container */}
         {createPortal(<div
             ref={measureRef}
+            id="measure-container"
             className="absolute invisible top-0 left-0 pointer-events-none box-border"
             style={{ paddingBottom: 15, width: 794 }}
         >

@@ -1,17 +1,24 @@
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect, useRef } from "react"
 import UserAuth from "../components/UserAuth"
 import { useDispatch, useSelector } from "react-redux"
 import { addToList, addPersonalInfo, addProfessionalSummary, updateList, removeFromList } from "../../state/cvSlice"
-import TemplateOne from "../../templates/Template1"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import CvPreview from "../../templates/CvPreview"
+import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 import SecondTemplate from "../../templates/SecondTemplate"
 import ThirdTemplate from "../../templates/ThirdTemplate"
+import { generatePdfApi, storeDataApi } from "../../services/allApi"
+
+
+const Preview = ({ previewData }) => (
+    <SecondTemplate {...previewData} />
+    // <ThirdTemplate {...previewData} />
+);
 
 
 const CreateCv = () => {
+    // const personalInfo = useSelector((state) => state.cv.cvData.personalInfo);
     const experience = useSelector((state) => state.cv.cvData.experience);
     const education = useSelector((state) => state.cv.cvData.education);
     const skills = useSelector((state) => state.cv.cvData.skills);
@@ -22,7 +29,14 @@ const CreateCv = () => {
     const steps = ["personalInfo", "professionalSummary", "education", "experience", "projects", "awards", "skills", "languages"];
     const levels = ["Beginner", "Basic", "Skillful", "Advanced", "Expert"];
 
+    const templateRef = useRef();
+    const navigate = useNavigate()
+
+
     const dispatch = useDispatch()
+
+    const [token, setToken] = useState("")
+    const [existingUser, setExistingUser] = useState({})
     const [currentStep, setCurrentStep] = useState("personalInfo")
     const [editingIndex, setEditingIndex] = useState(null)
     const [responsibility, setResponsibility] = useState('')
@@ -71,7 +85,8 @@ const CreateCv = () => {
     const [projectForm, setProjectForm] = useState({
         projectTitle: "",
         keyFeatures: [],
-        projectUrl: ""
+        projectUrl: "",
+        gitHubUrl: ""
     })
     const [awardForm, setAwardForm] = useState({
         awardName: "",
@@ -81,6 +96,59 @@ const CreateCv = () => {
         expirationDate: "",
     })
     const [photoPreview, setPhotoPreview] = useState("")
+
+    useEffect(() => {
+        if (sessionStorage.getItem('token')) {
+            setToken(sessionStorage.getItem('token'))
+            setExistingUser(JSON.parse(sessionStorage.getItem("existingUser")))
+            console.log(token);
+            console.log('nkjnjkn');
+        }
+        console.log(token);
+        console.log(existingUser._id);
+
+    }, [])
+
+    const handleSaveAndNavigate = async () => {
+        const printArea = document.getElementById('pdf-print-area');
+        if (!printArea) return;
+    
+        const html = printArea.innerHTML; // ← only send html
+    
+        try {
+            const pdfResponse = await generatePdfApi({ html }); 
+           
+            console.log('pdfResponse:', pdfResponse);
+            const pdfUrl = pdfResponse.data.pdfUrl;
+            console.log('PDF URL:', pdfUrl);
+    
+            const reqHeader = { "authorization": `Bearer ${token}` };
+            const reqBody = {
+                personalInfo,
+                professionalSummary,
+                experience,
+                education,
+                projects,
+                awards,
+                skills,
+                languages,
+                resumeUrl: pdfUrl
+            };
+    
+            const storeResult = await storeDataApi(reqBody, reqHeader);
+            console.log('Stored:', storeResult);
+    
+            if (token) {
+                navigate(`/user-profile/${existingUser._id}`);
+            } else {
+                setOpen(true);
+            }
+    
+        } catch (error) {
+            console.error('Error:', error.message);
+            alert('Something went wrong. Please try again.');
+        }
+    };
 
 
 
@@ -147,7 +215,8 @@ const CreateCv = () => {
             emptyForm: {
                 projectTitle: "",
                 keyFeatures: [],
-                projectUrl: ""
+                projectUrl: "",
+                gitHubUrl:""
             },
             requiredKey: "projectTitle"
         },
@@ -318,7 +387,6 @@ const CreateCv = () => {
 
 
 
-        setOpen(true)
 
     }
 
@@ -398,11 +466,7 @@ const CreateCv = () => {
         setEditingIndex(null)
     }
 
-    const Preview = React.memo(({ previewData }) => (
-        //   <TemplateOne {...previewData} />
-        <SecondTemplate {...previewData}/>
-        // <ThirdTemplate {...previewData} />
-    ));
+
 
     const handleBack = () => {
         const currentIndex = steps.indexOf(currentStep);
@@ -434,8 +498,8 @@ const CreateCv = () => {
                 {currentStep == "personalInfo" && <div>
                     <h2 className="font-semibold">Basic Information</h2>
                     <div className="grid grid-cols-2 gap-2">
-                        <input className="border p-2" placeholder="First Name" required value={personalInfo.firstName} onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })} />
-                        <input className="border p-2" placeholder="Last Name" value={personalInfo.lastName} onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })} />
+                        <input className="border p-2" placeholder="First Name" maxLength={30} required value={personalInfo.firstName} onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })} />
+                        <input className="border p-2" placeholder="Last Name" maxLength={30} value={personalInfo.lastName} onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })} />
                         <input className="border p-2" placeholder="Role" value={personalInfo.role} onChange={(e) => setPersonalInfo({ ...personalInfo, role: e.target.value })} />
                         <input className="border p-2" placeholder="LinkedIn Url" value={personalInfo.linkedInUrl} onChange={(e) => setPersonalInfo({ ...personalInfo, linkedInUrl: e.target.value })} />
                         <input className="border p-2" placeholder="Email" value={personalInfo.email} onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })} />
@@ -488,6 +552,7 @@ const CreateCv = () => {
                         >
                             <option value="">Select Degree</option>
                             <option value="High School Diploma">High School Diploma</option>
+                            <option value="Internship Course"> Internship Course</option>
                             <option value="Associate's">Associate's</option>
                             <option value="Bachelor's">Bachelor's</option>
                             <option value="Master's">Master's</option>
@@ -506,6 +571,7 @@ const CreateCv = () => {
                             <option value="">Select Field of Study</option>
                             <optgroup label="Science & Technology">
                                 <option value="Computer Science">Computer Science</option>
+                                <option value="MERN Stack Development ">MERN Stack Development </option>
                                 <option value="Software Engineering">Software Engineering</option>
                                 <option value="Information Technology">Information Technology</option>
                                 <option value="Data Science">Data Science</option>
@@ -790,6 +856,7 @@ const CreateCv = () => {
                             <textarea className="border p-2 w-full" rows="1" placeholder="Key Features" value={keyFeature} onChange={(e) => setKeyFeature(e.target.value)} /><button type="button" className="px-3 py-1 hover:bg-gray-100 rounded text-lg bg-gray-100 text-blue-500" onClick={addKeyFeatures}>+</button>
                         </div>
                         <input className="border p-2 w-full" placeholder="Project URL" value={projectForm.projectUrl} onChange={(e) => setProjectForm({ ...projectForm, projectUrl: e.target.value })} />
+                        <input className="border p-2 w-full" placeholder="gitHub URL" value={projectForm.gitHubUrl} onChange={(e) => setProjectForm({ ...projectForm, gitHubUrl: e.target.value })} />
                         <button type="button" className="px-5 py-1 hover:bg-gray-100 rounded text-sm text-blue-500" onClick={addMoreHandler}>Add one more project</button>
                         <div className="flex justify-between">
                             <button type="button" className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
@@ -1068,7 +1135,7 @@ const CreateCv = () => {
                             <button className="px-3 py-1 text-black border border-gray-200 rounded hover:border hover:border-blue-500 hover:text-blue-500" onClick={handleBack}>Back</button>
                             {editingIndex !== null ? <button className="px-3 py-1 text-white bg-blue-500 rounded" onClick={updateData}>Update</button>
                                 :
-                                <button className="border px-4 py-2" onClick={() => {
+                                <button className="mb-4 px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded shadow" onClick={() => {
                                     console.log(form);
 
                                     if (form.requiredKey) {
@@ -1078,10 +1145,11 @@ const CreateCv = () => {
                                         }));
                                     }
 
-                                    createCv();
+                                    handleSaveAndNavigate()
                                 }}>
                                     Save CV
                                 </button>
+
                             }
                         </div>
                     </div>
@@ -1123,27 +1191,32 @@ const CreateCv = () => {
 
 
             </div>
-            
-            <div className="w-1/2 bg-gray-100 flex items start justify-center pt-16 sticky top-0 h-screen overflow-y-auto">
+
+            <div className="w-1/2 bg-gray-100 flex items start justify-center pt-16 sticky top-0  overflow-y-auto  flex-col items-center">
+
+                {/* Hidden full template for printing */}
+                <div id="hidden-template" style={{ display: 'none' }}>
+                    <ThirdTemplate {...previewData} />
+                </div>
+
+                {/* Change button */}
+
+
                 {previewData && (
-                    <div style={{
-                        width: `${A4_W*0.72}px`,   // ~437px - scaled visual width
-                        // height: `${A4_H *0.74}px`, // ~617px - scaled visual height
-                        // overflow: 'hidden',
-                        // position: 'relative',
-                      }}>
-                        <div style={{
-                          width: A4_W,
-                        //   height: A4_H,
-                          transform: 'scale(0.72)',
-                          transformOrigin: 'top left',
-                          marginBottom: - (A4_H * (1- 0.72)),
-                          marginRight: - (A4_W * (1- 0.72)),
+                    <div id="pdf-print-area" style={{ width: A4_W * 0.72, overflow: 'visible' }}>
+                        <div id="pdf-scale-wrapper" style={{
+                            width: A4_W,
+                            transform: 'scale(0.72)',
+                            transformOrigin: 'top left',
+                            marginBottom: -(A4_H * 0.28),
+                            marginRight: -(A4_W * 0.28),
                         }}>
-                          <Preview previewData={previewData} />
+                            <Preview previewData={previewData} />
                         </div>
-                      </div>
+                    </div>
                 )}
+
+
             </div>
             <UserAuth
                 isOpen={open}

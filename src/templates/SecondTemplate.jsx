@@ -197,27 +197,28 @@ const SecondTemplate = ({
         return (
             <>
                 {data?.firstName &&
-                    <div className="bg-[#000042] text-white p-6 flex justify-between cv-section mb-2">
-                        <div>
+                    <div className="bg-[#000042] text-white p-6 px-4 flex justify-between cv-section mb-2">
+                        <div className='w-1/3'>
                             <h1 className="text-2xl font-bold">
                                 {data.firstName} {data.lastName}
                             </h1>
                             <p className="text-sm">{data.role}</p>
                         </div>
-                        <div className="grid grid-cols-2 gap-5">
+                        <div className="grid grid-cols-2 gap-2 ">
                             <div className="text-xs text-right text-gray-300">
-                                {data.phone && <div className="flex gap-2 w-50 text-center">
-                                    <img className="w-4 h-4" src="/images/phone.png" alt="phone" /><p>{data.phone}</p>
+                                {data.phone && <div className="flex gap-2 w-50 mb-1 text-center">
+                                    <img className="w-4 h-4" src="http://localhost:5173/images/phone.png" alt="phone" /><p>{data.phone}</p>
                                 </div>}
-                                {data.country && <div className="flex gap-2 w-50 text-center"> <img className="w-4 h-4" src="/images/location.png" alt="location" /><p>{data.city}, {data.country}</p>
+                                {data.email && <div className="flex gap-2  text-center mb-1"> <img className="w-4 h-4" src="http://localhost:5173/images/email.png" alt="email" /><p>{data.email}</p>
                                 </div>}
-                                {data.email && <div className="flex gap-2 w-50 text-center"> <img className="w-4 h-4" src="/images/email.png" alt="email" /><p>{data.email}</p>
+                                {data.nationality && <div className="flex gap-2 w-50 text-center"> <img className="w-4 h-4" src="http://localhost:5173/images/nation.png" alt="nationality" /><p>{data.nationality}</p>
                                 </div>}
                             </div>
                             <div className="text-xs text-gray-300">
-                                {data.linkedInUrl && <div className="flex gap-2 w-50 text-center"> <img className="w-4 h-4" src="/images/linkedin.png" alt="linkedin" /><p className="text-sm">{data.linkedInUrl}</p>
+                            {data.country && <div className="flex gap-2 w-50 mb-1 text-center"> <img className="w-4 h-4" src="http://localhost:5173/images/location.png" alt="location" /><p>{data.city}, {data.country}</p>
                                 </div>}
-                                {data.nationality && <div className="flex gap-2 w-50 text-center"> <img className="w-4 h-4" src="/images/nation.png" alt="nationality" /><p>{data.nationality}</p>
+                                
+                                {data.linkedInUrl && <div className="flex gap-2  text-center"> <img className="w-4 h-4" src="http://localhost:5173/images/linkedin.png" alt="linkedin" /><a className="text-sm"><a href={data.linkedInUrl}>{data.linkedInUrl}</a></a>
                                 </div>}
                             </div>
                         </div>
@@ -342,7 +343,8 @@ const SecondTemplate = ({
                             <li key={i}>{k}</li>
                         ))}
                     </ul>
-                    <p className="text-xs my-1">Live Demo : <span className="hover:text-blue-500">{data.projectUrl}</span></p>
+                    {data.projectUrl&&<p className="text-xs my-1">Live Demo : <span className="hover:text-blue-500"><a href={data.projectUrl}>{data.projectUrl}</a></span></p>}
+                    {data.gitHubUrl&&<p className="text-xs my-1"> gitHub Url : <span className="hover:text-blue-500"><a href={data.gitHubUrl}>{data.gitHubUrl}</a></span></p>}
                 </div>
 
                 {projects.indexOf(data) < projects.length - 1 ?
@@ -444,15 +446,11 @@ const SecondTemplate = ({
                 <div
                     key={pageIndex}
                     style={{
-                        paddingTop: `${pageIndex > 0 ? "15px" : "0px"}`,
-                        paddingBottom: "15px",
-                        width: "794px",
-                        height: `${PAGE_HEIGHT}px`,
-                        border: "1px solid #ccc",
-                        marginBottom: "20px",
-                        overflow: "hidden",
                         boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
-                        backgroundColor: "white",
+                        paddingTop: pageIndex !== 0 ? 15 : 0,
+                        paddingBottom: 15,
+                        width: 794,
+                        height: PAGE_HEIGHT,
                     }}
                 >
                     {page.map((block, index) => renderBlock(block, index))}
