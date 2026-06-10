@@ -12,7 +12,7 @@ export default {
                 "primary-container": "#5b21b6",
                 "on-tertiary-fixed-variant": "#4a4456",
                 "inverse-on-surface": "#f0f1f2",
-                "surface-container-low": "#f3f4f5",
+                "surface-container-low": "#f2f3ff",
                 "on-primary-fixed-variant": "#581db3",
                 "on-error": "#ffffff",
                 "surface-container-lowest": "#ffffff",
@@ -44,7 +44,7 @@ export default {
                 "primary": "#420093",
                 "tertiary-fixed-dim": "#cdc2d9",
                 "primary-fixed": "#ebddff",
-                "background": "#f8f9fa",
+                "background": "#faf8ff",
                 "on-secondary-fixed-variant": "#8c0053",
                 "on-tertiary-fixed": "#1e1929",
                 "surface-tint": "#713dcc",
@@ -80,7 +80,10 @@ export default {
                 "headline-lg": ["Sora"],
                 "headline-md": ["Sora"],
                 "label-md": ["Sora"],
-                "label-caps": ["Sora"]
+                "label-caps": ["Sora"],
+                poppins: ['Poppins', 'sans-serif'],
+                Quicksand: ["Quicksand", 'sans-serif'],
+               
         },
         "fontSize": {
                 "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],

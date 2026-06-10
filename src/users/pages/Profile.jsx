@@ -1,9 +1,12 @@
 import React, { useLayoutEffect } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import Navbar from "../../components/Navbar";
 import Modal from "../../Modal";
 import { getAllResumesApi, storeDataApi } from "../../services/allApi";
 import { addEducation } from "../../state/cvSlice";
+
 
 const SectionModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -245,6 +248,7 @@ const Profile = () => {
 
   const uid = () => `_${Math.random().toString(36).slice(2, 9)}`;
   const withUid = (arr) => (arr || []).map((item) => item._uid ? item : { ...item, _uid: uid() });
+  const navigate = useNavigate()
 
 
 
@@ -255,7 +259,7 @@ const Profile = () => {
     setResumes(result.data.resumes);
     const info = result.data.info[0];
     setPersonalInfo(info.personalInfo);
-    setProfessionalSummary(info.personalInfo)
+    setProfessionalSummary(info.professionalSummary)
     setEducation(withUid(info.education));
     setExperience(withUid(info.experience));
     setProjects(withUid(info.projects));
@@ -373,11 +377,12 @@ const addLang = () => setLanguages((prev) => [...prev, { _uid: uid(), language: 
 
 
 
+ const handleLogout = () => {
+  sessionStorage.removeItem('existingUser')
+  sessionStorage.removeItem('token')
+  navigate('/')
+ }
  
- 
-console.log(resumes);
-    console.log();
-
 
   useLayoutEffect(() => {
     console.log("useEffect");
@@ -387,24 +392,18 @@ console.log(resumes);
       getResumes(tok)
     }
   },[])
-  console.log(`info ${resumes}`);
-  // console.log(.personalInfo.firstName);
+  
     return (
     <div className="bg-[#fcf8ff] min-h-screen font-sans ">
 
       {/* NAVBAR */}
-      <header className="fixed top-0 w-full flex justify-between items-center px-8 h-16 bg-white/70 backdrop-blur border-b z-50">
-        <h1 className="font-bold text-xl">ResuMorph</h1>
+      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl rounded-full border border-black/5 bg-white/70 backdrop-blur-[24px] shadow-lg flex justify-between items-center px-8 py-4 z-50">
+        <div class="font-display-lg text-primary tracking-tighter text-2xl">ResumeAI</div>
 
-        <div className="flex gap-4 items-center">
-          <button>🔔</button>
-          <button>⏳</button>
-          <img
-            src="https://i.pravatar.cc/40"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </header>
+<div className="flex gap-4 items-center">
+<button className="gradient-button text-on-primary font-bold px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300"onClick={handleLogout} >Sign Out</button>
+</div>
+</nav>
 
       <div className="flex pt-16 max-w-[1440px] mx-auto px-6 gap-6">
 
@@ -457,7 +456,7 @@ console.log(resumes);
               Hello, I'm <span className="text-indigo-600">{`${personalInfo.firstName} ${personalInfo.lastName}`}</span>
             </h1>
             <p className="text-gray-600 mt-2 max-w-xl">
-            {professionalSummary}
+            {professionalSummary&& professionalSummary}
             </p>
 
             {/* STATS */}
@@ -564,6 +563,12 @@ console.log(resumes);
                       className="bg-indigo-600 text-white px-3 rounded"
                       >
                         ↓
+                      </button>
+                      <button
+                      onClick={() => handleDownload(res.pdfUrl, res.title)}
+                      className="bg-red-600 text-xs text-white px-3 rounded"
+                      >
+                        delete
                       </button>
                     </div>
                   </div>

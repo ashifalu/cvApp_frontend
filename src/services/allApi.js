@@ -13,8 +13,20 @@ export const verifyEmailApi = async (reqBody) => {
 export const loginApi = async (reqBody) => {
     return await commonApi('POST',`${serverurl}/login`,reqBody)
 }
+export const googleloginApi = async (reqBody) => {
+    return await commonApi('POST',`${serverurl}/google-login`,reqBody)
+}
+
+export const resumeParseApi = async(reqBody) => {
+    return await axios.post(`${serverurl}/resume-parse`, reqBody, {
+        headers: {
+            "Content-Type": "multipart/form-data",  // ← required for multer to read the file
+        },
+    });
+};
+
 //   ----------------users----------------------
- 
+
 export const storeDataApi = async(reqBody,reqHeader) => {
     return await commonApi("POST",`${serverurl}/store-data`,reqBody,reqHeader)
 }

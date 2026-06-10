@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
+import {Link} from "react-router-dom";
 
 const ChooseMethode = () => {
     return (
@@ -18,25 +19,28 @@ const ChooseMethode = () => {
                     </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
-                    <button className="group relative flex flex-col items-center text-center p-12 bg-surface-container-lowest rounded-[32px] border border-outline-variant/30 shadow-[0px_20px_40px_rgba(107,56,212,0.06)] hover:shadow-[0px_30px_60px_rgba(107,56,212,0.12)] hover:-translate-y-2 transition-all duration-500 overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="mb-8 p-6 rounded-3xl bg-primary/10 group-hover:bg-primary/20 transition-colors duration-500 relative">
-                            <span className="material-symbols-outlined text-[64px] text-primary" >cloud_upload</span>
-                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-md">
-                                <span className="material-symbols-outlined text-primary text-[18px]" >colors_spark</span>
+                    <Link to={'/upload-resume'}>
+                        <button className="group relative flex flex-col items-center text-center p-12 bg-surface-container-lowest rounded-[32px] border border-outline-variant/30 shadow-[0px_20px_40px_rgba(107,56,212,0.06)] hover:shadow-[0px_30px_60px_rgba(107,56,212,0.12)] hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="mb-8 p-6 rounded-3xl bg-primary/10 group-hover:bg-primary/20 transition-colors duration-500 relative">
+                                <span className="material-symbols-outlined text-[64px] text-primary" >cloud_upload</span>
+                                <div className="absolute -top-2 -right-2 w-8 h-8 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-md">
+                                    <span className="material-symbols-outlined text-primary text-[18px]" >colors_spark</span>
+                                </div>
                             </div>
-                        </div>
-                        <h3 className="font-headline-lg text-[24px] text-on-background mb-3 group-hover:text-primary transition-colors">
-                            I already have a resume
-                        </h3>
-                        <p className="text-on-surface-variant text-body-md px-4">
-                            Upload your existing resume to make quick edits, optimize for ATS, and refresh your design instantly.
-                        </p>
-                        <div className="mt-8 flex items-center gap-2 text-primary font-button">
-                            <span>Get Started</span>
-                            <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                        </div>
-                    </button>
+                            <h3 className="font-headline-lg text-[24px] text-on-background mb-3 group-hover:text-primary transition-colors">
+                                I already have a resume
+                            </h3>
+                            <p className="text-on-surface-variant text-body-md px-4">
+                                Upload your existing resume to make quick edits, optimize for ATS, and refresh your design instantly.
+                            </p>
+                            <div className="mt-8 flex items-center gap-2 text-primary font-button">
+                                <span>Get Started</span>
+                                <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </div>
+                        </button>
+
+                    </Link>
                     <a href="/select-template">
                     <button className="group relative flex flex-col items-center text-center p-12 bg-surface-container-lowest rounded-[32px] border border-outline-variant/30 shadow-[0px_20px_40px_rgba(180,19,109,0.06)] hover:shadow-[0px_30px_60px_rgba(180,19,109,0.12)] hover:-translate-y-2 transition-all duration-500 overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

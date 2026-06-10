@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import {  useRef } from "react";
 import { gsap } from "gsap";
@@ -187,7 +187,7 @@ const Home = () => {
 </div>
 <div className="flex flex-col gap-2 ml-11">
 <button className="w-full text-left bg-primary/5 hover:bg-primary/10 border border-primary/10 p-3 rounded-xl text-xs text-primary transition-all">
-                                    "Managed budget of $50k" → "Optimized $50k budget, saving 15% annually"
+    "Managed budget of $50k" → "Optimized $50k budget, saving 15% annually"
                                 </button>
 <button className="w-full text-left bg-black/5 hover:bg-black/10 border border-black/5 p-3 rounded-xl text-xs text-on-surface-variant transition-all">
                                     Show more suggestions...

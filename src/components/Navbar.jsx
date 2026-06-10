@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 const Navbar = () => {
     const [open, setOpen] = useState(false)
-    const [authMode, setAuthMode] = useState('register')
+    const [authMode, setAuthMode] = useState('login')
     const [token, setToken] = useState('')
     const [existingUser, setExistingUser] = useState({})
     useEffect(() => {
@@ -19,7 +19,7 @@ const Navbar = () => {
     return (
         <>
         <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl rounded-full border border-black/5 bg-white/70 backdrop-blur-[24px] shadow-lg flex justify-between items-center px-8 py-4 z-50">
-        <div class="font-display-lg text-primary tracking-tighter text-2xl">ResumeAI</div>
+        <div className="font-display-lg text-primary tracking-tighter text-2xl">ResumeAI</div>
 <div className="hidden md:flex gap-8 items-center">
 <a className="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Features</a>
 <a className="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Templates</a>

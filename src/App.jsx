@@ -6,6 +6,7 @@ import CreateCv from './users/pages/CreateCv';
 import Profile from './users/pages/Profile';
 import TemplateList from './pages/TemplateList';
 import ChooseMethode from './pages/ChooseMethode';
+import UploadResume from "./pages/UploadResume.jsx";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -17,6 +18,7 @@ const App = () => {
             <Route path='/create-cv/:temp' element={<CreateCv/>}/>
             <Route path='/select-template' element={<TemplateList/>}/>
             <Route path='/choose-methode' element={<ChooseMethode/>}/>
+            <Route path='/upload-resume' element={<UploadResume/>}/>
             <Route path='/user-profile/:id' element={<Profile/>}/>
         </Routes>
 
