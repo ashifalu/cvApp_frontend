@@ -18,7 +18,11 @@ export const googleloginApi = async (reqBody) => {
 }
 
 export const resumeParseApi = async(reqBody) => {
-    return await axios.post(`${serverurl}/resume-parse`, reqBody, {
+    return await axios({
+        method: "POST",
+        url:`${serverurl}/resume-parse`,
+        data: reqBody,
+        responseType: "json",
         headers: {
             "Content-Type": "multipart/form-data",  // ← required for multer to read the file
         },

@@ -31,18 +31,13 @@ axiosInstance.interceptors.response.use(
     }
 );
 
-// ─── Your existing commonApi — no changes to the signature ───────────────────
 export const commonApi = async (httpRequest, url, reqBody, reqHeader) => {
     const reqConfig = {
         method: httpRequest,
         url,
         data: reqBody,
-        headers: reqHeader
+        // ✅ Only add headers if they exist
+        headers: reqHeader || { 'Content-Type': 'application/json' }
     }
-
-    return await axiosInstance(reqConfig).then((res) => {
-        return res
-    }).catch((err) => {
-        return err
-    })
+    return await axiosInstance(reqConfig).then((res) => res).catch((err) => err)
 }

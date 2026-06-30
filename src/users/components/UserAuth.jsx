@@ -1,12 +1,12 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Modal from "../../Modal";
 import { useNavigate } from "react-router-dom";
-import {googleloginApi, loginApi, registerApi, verifyEmailApi} from "../../services/allApi";
+import {googleloginApi, loginApi, registerApi, storeDataApi, verifyEmailApi} from "../../services/allApi";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 
 
-const UserAuth = ({ isOpen, onClose, mode }) => {
+const UserAuth = ({ isOpen, onClose, mode,storeData }) => {
 
   const [sentOtp, setSentOtp] = useState(false);
   const [checkMode, setCheckmode] = useState(mode);
@@ -16,6 +16,8 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
     password: ""
   })
   const navigate = useNavigate()
+
+
 
   const isValidEmail = (value) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
@@ -64,6 +66,7 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
     if (result.status == 200) {
       alert(result.data.message);
       setSentOtp(true);
+      console.log("otp sent")
     }
     else if (result.status == 400) {
       alert(result.response.data.message);
@@ -78,7 +81,7 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
 
 
   const registration = async () => {
-    vaidate();
+    console.log(storeData);
     if (!userOtp.trim()) {
       alert("OTP is required");
       return;
@@ -91,10 +94,20 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
     });
 
     if (result.status == 200) {
-      sessionStorage.setItem("existingUser", JSON.stringify(result.data.user))
-      sessionStorage.setItem("token", result.data.token)
-      alert(result.data.message);
-      setSentOtp(true);
+          sessionStorage.setItem("existingUser", JSON.stringify(result.data.user))
+          sessionStorage.setItem("token", result.data.token)
+          const token = result.data.token
+          const reqHeader = {authorization: `Bearer ${token}`};
+
+          if (Object.keys(storeData).length!==0){
+                const storeDataResult= await storeDataApi(storeData, reqHeader);
+                if(storeDataResult.status == 200){
+                  console.log("data stored")
+            }
+          }
+      navigate(`/user-profile/${result.data.user._id}`)
+      onClose()
+      setSentOtp(false);
     }
     else if (result.status == 400) {
       alert(result.response.data.message);
@@ -105,7 +118,6 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
     onClose();
     console.log(result);
 
-    navigate(`/user-profile/${result.data.user._id}`)
 
   };
 
@@ -114,6 +126,30 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
     console.log(details)
     const result = await googleloginApi({email:details.email,firstName:details.given_name,lastName:details.family_name,photo:details.picture})
     console.log(result)
+    if (result.status == 200) {
+      sessionStorage.setItem("existingUser", JSON.stringify(result.data.user))
+      sessionStorage.setItem("token", result.data.token)
+      const token = result.data.token
+      const reqHeader = {authorization: `Bearer ${token}`};
+
+      if (Object.keys(storeData).length!==0){
+        const storeDataResult= await storeDataApi(storeData, reqHeader);
+        if(storeDataResult.status == 200){
+          console.log("data stored")
+        }
+
+      }
+
+
+      navigate(`/user-profile/${result.data.user._id}`)
+    }
+    else if (result.status == 400 || result.status == 401) {
+      alert(result.response.data.message);
+    }
+    else {
+      alert("somethimg went wrong")
+    }
+    onClose();
   }
 
   const login = async () => {
@@ -127,6 +163,15 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
       if (result.status == 200) {
         sessionStorage.setItem("existingUser", JSON.stringify(result.data.user))
         sessionStorage.setItem("token", result.data.token)
+        const token = result.data.token
+        const reqHeader = {authorization: `Bearer ${token}`};
+
+        if (Object.keys(storeData).length!==0){
+         const storeDataResult= await storeDataApi(storeData, reqHeader);
+          if(storeDataResult.status == 200){
+            console.log("data stored")
+          }
+        }
         alert(result.data.message);
         navigate(`/user-profile/${result.data.user._id}`)
       }
@@ -146,85 +191,10 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
        <Modal isOpen={isOpen} onClose={onClose}>
 
         <div className="p-8 md:p-12">
-         { !sentOtp ?  <div>
-          <div className="text-center mb-10">
-            {checkMode === "login" ?<h2 className="font-headline-lg text-[32px] text-on-surface mb-2">Sign In</h2>
-            :
-            <h2 className="font-headline-lg text-[32px] text-on-surface mb-2">Sign Up</h2>
-            }
-            <p className="font-body-md text-on-surface-variant">Welcome back! Please enter your details.</p>
-          </div>
-          <form action="#" className="space-y-5">
-            <div className="space-y-2">
-              <label className="font-label-bold text-on-surface-variant block" for="email">Email Address</label>
-              <div className="relative group">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">mail</span>
-                <input className="w-full pl-12 pr-4 py-4 bg-surface-container-low border-transparent rounded-xl focus:bg-white focus:border-primary focus:ring-0 transition-all font-body-md text-on-surface placeholder:text-outline/60" onChange={(e) => setUserDetails({ ...userDetails, email: e.target.value })} id="email" placeholder="name@company.com" type="email" />
-                {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email}</p>
-              )}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                {checkMode === "login" ?<label className="font-label-bold text-on-surface-variant block" htmlFor="password">Password</label>
-                    :
-                  <label className="font-label-bold text-on-surface-variant block" htmlFor="password">Set a Password</label>}
-                <a className="text-[13px] font-bold text-primary hover:text-secondary transition-colors" href="#">Forgot
-                  Password?</a>
-              </div>
-              <div className="relative group">
-                <span
-                    className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">lock</span>
-                <input className="w-full pl-12 pr-12 py-4 bg-surface-container-low border-transparent rounded-xl focus:bg-white focus:border-primary focus:ring-0 transition-all font-body-md text-on-surface placeholder:text-outline/60" onChange={(e) => setUserDetails({ ...userDetails, password: e.target.value })}  id="password" placeholder="••••••••" type="password" />
-                <button className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline hover:text-on-surface-variant" type="button">visibility</button>
-                {errors.password && (
-                <p className="text-red-500 text-sm">{errors.password}</p>
-              )}
-              </div>
-            </div>
-            {checkMode === "login" ?<button onClick={login} className="w-full bg-gradient-to-r from-primary to-secondary text-white py-4 rounded-xl font-button text-button shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4"  >
-              Sign In
-            </button>
-            :
-            <button className="w-full bg-gradient-to-r from-primary to-secondary text-white py-4 rounded-xl font-button text-button shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4" type="submit" onClick={handleSendOtp}>
-              Send Otp
-            </button>
-          }
-          </form>
-          <div className="relative my-10">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-outline-variant/30"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-surface-container-lowest px-4 text-outline text-sm font-medium">or continue with</span>
-            </div>
-          </div>
-          <div className="w-full">
-            <GoogleLogin width={382}
-                onSuccess={credentialResponse => {
-                  handleGoogleLogin(credentialResponse)
-                }}
-                onError={() => {
-                  console.log('Login Failed');
-                }}
-            />;
-
-          </div>
-         { checkMode==='login'? <p className="mt-10 text-center text-on-surface-variant text-sm">
-            Don't have an account?
-            <a className="font-bold text-primary hover:underline underline-offset-4" onClick={()=> setCheckmode('register')} >Sign up for free</a>
-          </p>
-          :
-           <p className="mt-10 text-center text-on-surface-variant text-sm">
-            Already have an account?
-            <a className="font-bold text-primary hover:underline underline-offset-4" onClick={()=> setCheckmode('login')} >Sign up for free</a>
-          </p>}
-          </div>
-          :
+         { sentOtp ?
              <div className="flex  flex-col justify-center items-center">
                <div className="text-center mb-10">
-                     <h2 className="font-headline-lg text-[32px] text-on-surface mb-2">Verify Your Email</h2>
+                 <h2 className="font-headline-lg text-[32px] text-on-surface mb-2">Verify Your Email</h2>
                  <p className="font-body-md text-on-surface-variant">Please Enter The Verification Code We Sent.</p>
                </div>
                <div className="space-y-2 w-full">
@@ -242,6 +212,101 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
                  Done
                </button>
 
+             </div>
+          :
+             <div>
+               <div className="text-center mb-10">
+                 {checkMode === "login" ? <h2 className="font-headline-lg text-[32px] text-on-surface mb-2">Sign In</h2>
+                     :
+                     <h2 className="font-headline-lg text-[32px] text-on-surface mb-2">Sign Up</h2>
+                 }
+                 <p className="font-body-md text-on-surface-variant">Welcome back! Please enter your details.</p>
+               </div>
+               <form  className="space-y-5">
+                 <div className="space-y-2">
+                   <label className="font-label-bold text-on-surface-variant block" htmlFor="email">Email
+                     Address</label>
+                   <div className="relative group">
+                     <span
+                         className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">mail</span>
+                     <input
+                         className="w-full pl-12 pr-4 py-4 bg-surface-container-low border-transparent rounded-xl focus:bg-white focus:border-primary focus:ring-0 transition-all font-body-md text-on-surface placeholder:text-outline/60"
+                         onChange={(e) => setUserDetails({...userDetails, email: e.target.value})} id="email"
+                         placeholder="name@company.com" type="email"/>
+                     {errors.email && (
+                         <p className="text-red-500 text-sm">{errors.email}</p>
+                     )}
+                   </div>
+                 </div>
+                 <div className="space-y-2">
+                   <div className="flex justify-between items-center">
+                     {checkMode === "login" ? <label className="font-label-bold text-on-surface-variant block"
+                                                     htmlFor="password">Password</label>
+                         :
+                         <label className="font-label-bold text-on-surface-variant block" htmlFor="password">Set a
+                           Password</label>}
+                     <a className="text-[13px] font-bold text-primary hover:text-secondary transition-colors" href="#">Forgot
+                       Password?</a>
+                   </div>
+                   <div className="relative group">
+                              <span
+                                  className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">lock</span>
+                     <input
+                         className="w-full pl-12 pr-12 py-4 bg-surface-container-low border-transparent rounded-xl focus:bg-white focus:border-primary focus:ring-0 transition-all font-body-md text-on-surface placeholder:text-outline/60"
+                         onChange={(e) => setUserDetails({...userDetails, password: e.target.value})} id="password"
+                         placeholder="••••••••" type="password"/>
+                     <button
+                         className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline hover:text-on-surface-variant"
+                         type="button">visibility
+                     </button>
+                     {errors.password && (
+                         <p className="text-red-500 text-sm">{errors.password}</p>
+                     )}
+                   </div>
+                 </div>
+                 {checkMode === "login" ? <button onClick={login} type="button"
+                   className="w-full bg-gradient-to-r from-primary to-secondary text-white py-4 rounded-xl font-button text-button shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4">
+                       Sign In
+                     </button>
+                     :
+                     <button
+                         className="w-full bg-gradient-to-r from-primary to-secondary text-white py-4 rounded-xl font-button text-button shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4"
+                         type="button" onClick={handleSendOtp}>
+                       Send Otp
+                     </button>
+                 }
+               </form>
+               <div className="relative my-10">
+                 <div className="absolute inset-0 flex items-center">
+                   <div className="w-full border-t border-outline-variant/30"></div>
+                 </div>
+                 <div className="relative flex justify-center">
+                   <span
+                       className="bg-surface-container-lowest px-4 text-outline text-sm font-medium">or continue with</span>
+                 </div>
+               </div>
+               <div className="w-full">
+                 <GoogleLogin width={382}
+                              onSuccess={credentialResponse => {
+                                handleGoogleLogin(credentialResponse)
+                              }}
+                              onError={() => {
+                                console.log('Login Failed');
+                              }}
+                 />;
+
+               </div>
+               {checkMode === 'login' ? <p className="mt-10 text-center text-on-surface-variant text-sm">
+                     Don't have an account?
+                     <a className="font-bold text-primary hover:underline underline-offset-4"
+                        onClick={() => setCheckmode('register')}>Sign up for free</a>
+                   </p>
+                   :
+                   <p className="mt-10 text-center text-on-surface-variant text-sm">
+                     Already have an account?
+                     <a className="font-bold text-primary hover:underline underline-offset-4"
+                        onClick={() => setCheckmode('login')}>Sign up for free</a>
+                   </p>}
              </div>
          }
         </div>
@@ -291,7 +356,6 @@ const UserAuth = ({ isOpen, onClose, mode }) => {
       {/*  }*/}
       {/*  </div>*/}
       {/*</Modal>*/}
-      
 
 
     </>

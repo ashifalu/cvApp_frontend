@@ -1,12 +1,68 @@
 import {resumeParseApi} from "../services/allApi.js";
+import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {
+    setEducation,
+    addPersonalInfo,
+    setProjects,
+    setSkills,
+    setExperience,
+    setLanguages,
+    setAwards, addProfessionalSummary
+} from "../state/cvSlice.js";
 
 const UploadResume = () => {
 
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
     const handleResume = async(e) => {
         const resume_file = e.target.files[0];
+        console.log(resume_file)
         const formData = new FormData();
         formData.append('resume', resume_file);
         const result = await resumeParseApi(formData)
+        if (result.status === 200) {
+            const data = result.data.data
+
+            const personalInfo = {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                role: data.role,
+                photo: "",
+                linkedInUrl:data.linkedin,
+                email: data.email,
+                phoneCountryCode: "+1",
+                phone: data.phone,
+                country: data.country,
+                city: data.city,
+                nationality: data.nationality,
+                portfolioUrl:data.portfolioUrl
+                }
+            dispatch(addPersonalInfo(personalInfo))
+            if(data.professionalSummary){
+                dispatch(addProfessionalSummary(data.professionalSummary))
+            }
+            if(data.education.length !== 0){
+                dispatch(setEducation(data.education));
+            }
+            if(data.projects.length !== 0){
+                dispatch(setProjects(data.projects));
+            }
+            if(data.skills.length !== 0){
+                dispatch(setSkills(data.skills));
+            }
+            if(data.experience.length !== 0){
+                dispatch(setExperience(data.experience));
+            }
+            if(data.languages.length !== 0){
+                dispatch(setLanguages(data.languages));
+            }
+            if(data.awards.length !== 0){
+                dispatch(setAwards(data.awards));
+            }
+            navigate("/create-cv/2")
+        }
         console.log(result)
     }
 

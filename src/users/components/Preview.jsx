@@ -1,6 +1,6 @@
 import React from 'react'
-import SecondTemplate from '../../templates/SecondTemplate';
-import ThirdTemplate from '../../templates/ThirdTemplate';
+import SecondTemplate from '../../pages/createCV/templates/SecondTemplate.jsx';
+import ThirdTemplate from '../../pages/createCV/templates/ThirdTemplate.jsx';
 
 const Preview = ({ previewData, temp, theme }) => {
   

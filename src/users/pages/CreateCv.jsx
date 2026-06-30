@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { addToList, addPersonalInfo, addProfessionalSummary, updateList, removeFromList } from "../../state/cvSlice"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import debounce from "lodash.debounce";
-import SecondTemplate from "../../templates/SecondTemplate"
-import ThirdTemplate from "../../templates/ThirdTemplate"
+import SecondTemplate from "../../pages/createCV/templates/SecondTemplate.jsx"
+import ThirdTemplate from "../../pages/createCV/templates/ThirdTemplate.jsx"
 import Preview from "../components/Preview";
 import { generatePdfApi, storeDataApi } from "../../services/allApi"
 import Navbar from "../../components/Navbar";
-import { templateThemes } from "../../../constants/tempThemes";
+import { templateThemes } from "../../constants/tempThemes";
 
 
 // ─── Country codes data ───────────────────────────────────────────────────────
@@ -145,6 +145,10 @@ const FieldError = ({ message }) =>
 
 
 const CreateCv = () => {
+
+
+
+
     const temp_id = useParams().temp;
     const experience = useSelector((state) => state.cv.cvData.experience);
     const education  = useSelector((state) => state.cv.cvData.education);
@@ -167,7 +171,7 @@ const CreateCv = () => {
     const [responsibility, setResponsibility] = useState('')
     const [keyFeature, setKeyFeature]         = useState('')
     const [open, setOpen]                     = useState(false)
-    const [selectedTheme, setSelectedTheme] = useState({})  
+    const [selectedTheme, setSelectedTheme] = useState({})
     const [showForm, setShowForm]             = useState(false)
 
     const [errors, setErrors] = useState({})
@@ -194,13 +198,14 @@ const CreateCv = () => {
     const [awardForm,    setAwardForm]    = useState({ awardName: "", issueingOrg: "", description: "", issueingDate: "", expirationDate: "" })
     const [photoPreview, setPhotoPreview] = useState("")
 
+
+
     useEffect(() => {
         if (sessionStorage.getItem('token')) {
             setToken(sessionStorage.getItem('token'))
             setExistingUser(JSON.parse(sessionStorage.getItem("existingUser")))
         }
     }, [])
-
     const validateStep = (step) => {
         const newErrors = {};
         if (step === "personalInfo") {
@@ -1326,7 +1331,7 @@ const CreateCv = () => {
 
                     {/* ── Preview Panel ── */}
                     {/* ── Preview Panel ── */}
-{/* 
+{/*
   HOW CENTERING WORKS:
   - A4 is 794px wide. We scale it to 0.6 → rendered width = 794 * 0.6 = 476px
   - The outer container is exactly 476px wide
@@ -1377,7 +1382,7 @@ const CreateCv = () => {
                     <Preview previewData={previewData} temp={temp_id} theme={selectedTheme} />
                 </div>
 
-                {/* 
+                {/*
                     Outer box = exact scaled A4 width/height → no side gaps
                     overflow:hidden clips anything that bleeds out during scale
                 */}

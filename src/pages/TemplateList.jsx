@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { templateThemes } from '../../constants/tempThemes'
+import { templateThemes } from '../constants/tempThemes'
 import Preview from '../users/components/Preview'
 
 const TemplateList = () => {

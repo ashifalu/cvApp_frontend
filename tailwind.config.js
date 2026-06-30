@@ -7,12 +7,13 @@ export default {
     theme: {
       extend: {
         "colors": {
+                "surface-container-low": "#f3f4f5",
+                "background": "#f8f9fa",
                 "primary-fixed-dim": "#d3bbff",
                 "error-container": "#ffdad6",
                 "primary-container": "#5b21b6",
                 "on-tertiary-fixed-variant": "#4a4456",
                 "inverse-on-surface": "#f0f1f2",
-                "surface-container-low": "#f2f3ff",
                 "on-primary-fixed-variant": "#581db3",
                 "on-error": "#ffffff",
                 "surface-container-lowest": "#ffffff",
@@ -41,10 +42,9 @@ export default {
                 "on-surface": "#191c1d",
                 "tertiary-container": "#4d4658",
                 "secondary-fixed": "#ffd9e4",
-                "primary": "#420093",
+                "primary": "#5b21b6",
                 "tertiary-fixed-dim": "#cdc2d9",
                 "primary-fixed": "#ebddff",
-                "background": "#faf8ff",
                 "on-secondary-fixed-variant": "#8c0053",
                 "on-tertiary-fixed": "#1e1929",
                 "surface-tint": "#713dcc",

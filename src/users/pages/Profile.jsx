@@ -414,7 +414,7 @@ const addLang = () => setLanguages((prev) => [...prev, { _uid: uid(), language: 
           <div className="bg-white p-4 rounded-xl shadow text-center">
             <div className="w-48 h-48 rounded-full mx-auto">
             <img
-              src="/images/profileicon.png"
+                src = {`${personalInfo.photo ? personalInfo.photo :`/images/profileicon.png`}`}
               className=""
             />
             </div>

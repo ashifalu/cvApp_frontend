@@ -39,24 +39,30 @@ const cvSlice = createSlice({
             const { step } = action.payload;
             state.cvData[step].splice(action.payload, 1);
         },
+        setEducation: (state, action) => {
+            state.cvData.education = action.payload;
+        },
+        setProjects: (state, action) => {
+            state.cvData.projects = action.payload;
+        },
+        setExperience: (state, action) => {
+            state.cvData.experience = action.payload;
+        },
+        setAwards: (state, action) => {
+            state.cvData.awards = action.payload;
+        },
+        setSkills: (state, action) => {
+            state.cvData.skills = action.payload;
+        },
+        setLanguages: (state, action) => {
+            state.cvData.languages = action.payload;
+        },
+
         // addToList: (state, action) => {
         //     state.cvData.experience.push(action.payload)
         // },
-        removeEducation: (state, action) => {
-            state.cvData.education.splice(action.payload, 1);
-        },
-        addSkills: (state, action) => {
-            state.cvData.skills.push(action.payload)
-        },
-        addLanguages: (state, action) => {
-            state.cvData.languages.push(action.payload)
-        },
-        addProjects: (state, action) => {
-            state.cvData.projects.push(action.payload)
-        },
-        addAwards: (state, action) => {
-            state.cvData.awards.push(action.payload)
-        },
+
+
         resetCv: () => initialState
     }
 })
@@ -68,11 +74,12 @@ export const {
     updateList,
     removeFromList,
     addEducation,
-    removeEducation,
-    addSkills,
-    addLanguages,
-    addProjects,
-    addAwards,
+    setEducation,
+    setProjects,
+    setExperience,
+    setAwards,
+    setSkills,
+    setLanguages,
     resetCv
 } = cvSlice.actions;
 

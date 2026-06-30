@@ -13,7 +13,8 @@ const SecondTemplate = ({
     languages,
     projects,
     awards,
-    theme
+    theme,
+    onPageCount
 }) => {
 
     let selectedTheme ={}
@@ -21,7 +22,7 @@ const SecondTemplate = ({
 
     {theme && Object.keys(theme).length > 0 ?
         selectedTheme = theme        
-         : 
+         :
           selectedTheme = {
             primary : "#000042",
             secondary : '#5F53F5'
@@ -43,6 +44,7 @@ const SecondTemplate = ({
         if (professionalSummary) {
             result.push({ type: "summary", data: professionalSummary });
         }
+
 
         return [
             ...result,
@@ -79,6 +81,10 @@ const SecondTemplate = ({
     const PAGE_HEIGHT = 1123;
     const PAGE_1_HIGHT = 1035;
     const PAGE_N_HEIGHT = 1000;
+
+    useEffect(() => {
+        onPageCount?.(pages.length);
+    }, [pages.length]);
 
     // Step 1: trigger remeasure when blocks change
     useLayoutEffect(() => {
@@ -229,13 +235,6 @@ const SecondTemplate = ({
                                     </svg>
                                     <p className={``}>{data.phone}</p>
                                 </div>}
-                                {data.email && <div className="flex gap-2  text-center mb-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-mail">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10" />
-                                        <path d="M3 7l9 6l9 -6" />
-                                    </svg><p>{data.email}</p>
-                                </div>}
                                 {data.nationality && <div className="flex gap-2 w-50 text-center mb-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-exclamation">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -246,8 +245,25 @@ const SecondTemplate = ({
                                     </svg>
                                     <p>{data.nationality}</p>
                                 </div>}
+                                {data.portfolioUrl && <div className="flex gap-2  text-center mb-1" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-brand-dribbble">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                        <path d="M9 3.6c5 6 7 10.5 7.5 16.2" />
+                                        <path d="M6.4 19c3.5 -3.5 6 -6.5 14.5 -6.4" />
+                                        <path d="M3.1 10.75c5 0 9.814 -.38 15.314 -5" />
+                                    </svg><a href={data.portfolioUrl}>{data.portfolioUrl}</a>
+                                </div>}
+
                             </div>
                             <div className={`text-xs  text-white mb-1`}>
+                                {data.email && <div className="flex gap-2  text-center mb-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-mail">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10" />
+                                        <path d="M3 7l9 6l9 -6" />
+                                    </svg><p>{data.email}</p>
+                                </div>}
                                 {data.country && <div className="flex gap-2 w-50 mb-1 text-center mb-1"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-map-pin">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -255,7 +271,6 @@ const SecondTemplate = ({
                                         <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0" />
                                     </svg><p>{data.city}, {data.country}</p>
                                 </div>}
-
                                 {data.linkedInUrl && <div className="flex gap-2  text-center mb-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -265,15 +280,6 @@ const SecondTemplate = ({
                                         <path d="M16 16v-3a2 2 0 1 0 -4 0" />
                                         <path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4l0 -10" />
                                     </svg><a href={data.linkedInUrl}>{data.linkedInUrl}</a>
-                                </div>}
-                                {data.portfolioUrl && <div className="flex gap-2  text-center mb-1" >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-brand-dribbble">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                        <path d="M9 3.6c5 6 7 10.5 7.5 16.2" />
-                                        <path d="M6.4 19c3.5 -3.5 6 -6.5 14.5 -6.4" />
-                                        <path d="M3.1 10.75c5 0 9.814 -.38 15.314 -5" />
-                                    </svg><a href={data.portfolioUrl}>{data.portfolioUrl}</a>
                                 </div>}
                             </div>
                         </div>
@@ -383,7 +389,7 @@ const SecondTemplate = ({
     const EducationItem = ({ data, index }) => {
         return (
             <> 
-                {( !data.fieldOfStudy.trim() && !data.degree.trim())?
+                {( data.fieldOfStudy ==="" && data.degree === "")?
              <div className="item px-6 secondTempFont opacity-30">
              <h2 style={{color: selectedTheme ? selectedTheme.secondary : '#5F53F5'}} className={`text-sm font-bold  mb-1 `}>
                  Education
