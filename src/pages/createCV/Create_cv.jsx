@@ -14,6 +14,7 @@ import LanguagesStep from "./steps/Languagesstep.jsx";
 const Create_cv = () => {
     const [currentStep, setCurrentStep] = useState("personalInfo");
     const [selectedTheme, setSelectedTheme] = useState({});
+    const [switchTab, setSwitchTab] = useState("edit")
     const temp_id = useParams().temp;
 
     const steps = ["personalInfo", "professionalSummary", "education",
@@ -28,6 +29,7 @@ const Create_cv = () => {
         if (i > 0) setCurrentStep(steps[i - 1]);
     };
 
+
     const stepComponents = {
         personalInfo:        <PersonalInfoStep onNext={goNext} />,
         professionalSummary: <SummaryStep onNext={goNext} onBack={goBack} />,
@@ -40,7 +42,7 @@ const Create_cv = () => {
     };
 
     return (
-        <div className="bg-surface text-on-surface font-body-md min-h-screen ">
+        <div className="creteCv_body bg-surface text-on-surface">
             <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
                 <div className="flex items-center gap-6">
                     <div className="font-headline-md text-headline-md font-bold text-primary">ResumeElite</div>
@@ -69,7 +71,7 @@ const Create_cv = () => {
                         Draft
                     </button>
                     <button
-                        className="font-label-md text-label-md px-4 py-2 bg-primary text-on-primary rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2">
+                        className="font-label-md text-label-md px-4 py-2 bg-gradient-to-r from-primary to-secondary text-on-primary rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2">
                         <span className="material-symbols-outlined text-[20px]">download</span>
                         Download PDF
                     </button>
@@ -77,19 +79,22 @@ const Create_cv = () => {
             </header>
             {/*mobile header*/}
             <div className="fixed top-16 left-0 w-full z-40 flex bg-surface border-b border-outline-variant/30 xl:hidden">
-                <button className="flex-1 py-4 text-center font-label-md text-label-md tab-active" id="edit-tab" onClick={()=>switchTab('edit')}>
+                <button className={`${switchTab== `edit`?`flex-1 py-4 text-center font-label-md text-label-md tab-active`:`flex-1 py-4 text-center font-label-md text-label-md` }`}  onClick={()=>setSwitchTab('edit')}>
                     Edit Content
                 </button>
-                <button className="flex-1 py-4 text-center font-label-md text-label-md text-on-surface-variant" id="preview-tab" onClick={()=>switchTab('preview')}>
+                <button className={`${switchTab== `preview`?`flex-1 py-4 text-center font-label-md text-label-md tab-active`:`flex-1 py-4 text-center font-label-md text-label-md` }`}  onClick={()=>setSwitchTab('preview')}>
                     Preview Resume
                 </button>
             </div>
-            <div className="md:mx-20 py-10 px-margin-desktop">
-                <main className="mt-[120px] bg-surface-container-lowest xl:mt-16 min-h-[calc(100vh-120px)] xl:min-h-[calc(100vh-64px)] grid grid-cols-1 xl:grid-cols-2">
+            <main className="mt-[120px] bg-surface-container-lowest xl:mt-16 min-h-[calc(100vh-64px)] hidden xl:grid grid-cols-2">
                     <div className="bg-surface-container-lowest">{stepComponents[currentStep]}</div>
                     <PreviewPanel temp_id={temp_id} selectedTheme={selectedTheme} setSelectedTheme={setSelectedTheme}/>
                 </main>
-            </div>
+            <main className="mt-[120px] bg-surface-container-lowest xl:mt-16 min-h-[calc(100vh-120px)] xl:min-h-[calc(100vh-64px)]  xl:hidden">
+                {switchTab == "edit" &&<div className="bg-surface-container-lowest">{stepComponents[currentStep]}</div>}
+                { switchTab == "preview"&& <PreviewPanel temp_id={temp_id} selectedTheme={selectedTheme}
+                                                         setSelectedTheme={setSelectedTheme}/>}
+            </main>
         </div>
     );
 };

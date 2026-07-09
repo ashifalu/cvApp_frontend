@@ -182,66 +182,71 @@ const LanguagesStep = ({ onBack, }) => {
 
     return (
         <div>
-            <div className="mb-5">
-                <h1 className="font-headline-lg text-headline-lg text-on-surface">Languages</h1>
-                <p className="text-on-surface-variant font-body-md">Showcase languages you are fluent in to stand out to recruiters.</p>
-            </div>
+            <section className="h-full bg-surface-container-lowest px-6 md:px-10 py-12 block" id="edit-panel">
+                <div className="max-w-2xl mx-auto">
+                    <header className="mb-10">
+                        <div
+                            className="flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
+                            <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden">
+                                <div className="w-[403.4px] h-full bg-primary"></div>
+                            </div>
+                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 7 of 8: Skills</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-headline-md text-headline-md flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">Language</span>
+                                Languages
+                            </h3>
+                            <button onClick={handleAddMore}
+                                    className="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                                <span className="material-symbols-outlined text-sm">add</span> Add Role
+                            </button>
+                        </div>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
+                    </header>
+                    <div className="space-y-12">
+                        {/* Existing items */}
+                        {languages.map((l, index) => (
+                            <ItemWrapper key={index} index={index}
+                                         isEditing={editingIndex === index}
+                                         onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
+                                         onDelete={() => dispatch(removeFromList({ index, step: "languages" }))}
+                                         editForm={
+                                             <LanguageFormFields
+                                                 form={form} setForm={setForm}
+                                                 errors={errors} clearError={clearError}
+                                             />
+                                         }
+                            >
+                                <p className="text-sm font-medium">{l.language}</p>
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                    Level — <span className="text-secondary font-medium">{LEVELS[l.level]}</span>
+                                </p>
+                            </ItemWrapper>
+                        ))}
 
-            <div className="bg-surface-container-lowest p-8 rounded-xl shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
-
-                {/* Existing items */}
-                {languages.map((l, index) => (
-                    <ItemWrapper key={index} index={index}
-                                 isEditing={editingIndex === index}
-                                 onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
-                                 onDelete={() => dispatch(removeFromList({ index, step: "languages" }))}
-                                 editForm={
-                                     <LanguageFormFields
-                                         form={form} setForm={setForm}
-                                         errors={errors} clearError={clearError}
-                                     />
-                                 }
-                    >
-                        <p className="text-sm font-medium">{l.language}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                            Level — <span className="text-secondary font-medium">{LEVELS[l.level]}</span>
-                        </p>
-                    </ItemWrapper>
-                ))}
-
-                {/* Initial form (when list is empty) or Add More form */}
-                {(showForm || !languages.length) && (
-                    <LanguageFormFields
-                        form={form} setForm={setForm}
-                        errors={errors} clearError={clearError}
-                    />
-                )}
-
-                {editingIndex === null && (
-                    <div className="pt-2 flex items-center text-primary font-button group cursor-pointer">
-                        <button className="flex items-center gap-3" onClick={handleAddMore}>
-                            <span className="material-symbols-outlined group-hover:rotate-90 transition-transform">add_circle</span>
-                            <span className="hover:underline underline-offset-4">Add another language</span>
-                        </button>
+                        {/* Initial form (when list is empty) or Add More form */}
+                        {(showForm || !languages.length) && (
+                            <LanguageFormFields
+                                form={form} setForm={setForm}
+                                errors={errors} clearError={clearError}
+                            />
+                        )}
+                        <div
+                            className="pt-8 flex justify-between items-center border-t border-outline-variant/30 pb-12">
+                            <button onClick={onBack}
+                                    className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors">
+                                <span className="material-symbols-outlined">arrow_back</span> Back
+                            </button>
+                            <button onClick={handleSave} disabled={saving}
+                                    className="bg-gradient-to-r from-primary to-secondary text-on-primary px-8 py-3 rounded-lg font-label-md text-label-md shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed">
+                                {saving ? "Saving..." : "Save CV"}
+                            </button>
+                        </div>
                     </div>
-                )}
-
-                <div className="flex justify-between items-center pt-8 border-t border-outline-variant/30">
-                    <button
-                        onClick={onBack}
-                        className="px-8 py-3 rounded-xl border-2 border-outline-variant font-button text-button text-on-surface-variant hover:bg-surface-container transition-colors active:scale-95"
-                    >
-                        Back
-                    </button>
-                    <button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="px-10 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-on-primary font-button text-button hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                        {saving ? "Saving..." : "Save CV"}
-                    </button>
                 </div>
-            </div>
+            </section>
+
             <UserAuth isOpen={open} storeData={storeDataRef.current} onClose={() => setOpen(false)} />
 
         </div>

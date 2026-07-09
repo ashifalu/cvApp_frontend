@@ -11,8 +11,8 @@ const EMPTY_FORM = { skill: "", level: 2 };
 const LevelSlider = ({ level, onChange }) => (
     <div className="space-y-4">
         <div className="flex justify-between items-center">
-            <label className="font-label-bold text-label-bold text-outline uppercase tracking-wider">Expertise Level</label>
-            <span className="text-secondary font-bold text-body-lg">{LEVELS[level]}</span>
+            <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Expertise Level</label>
+            <span className="text-secondary font-label-md text-label-md">{LEVELS[level]}</span>
         </div>
         <div className="h-12">
             <div className="relative flex bg-surface-container-high rounded-xl h-4">
@@ -39,14 +39,14 @@ const LevelSlider = ({ level, onChange }) => (
 const SkillFormFields = ({ form, setForm, errors, clearError }) => (
     <div className="space-y-6">
         <div className="space-y-2">
-            <label className="font-label-bold text-label-bold text-outline uppercase tracking-wider">
+            <label className="block font-label-md text-label-md text-on-surface-variant mb-2">
                 Skill Name <span className="text-red-500">*</span>
             </label>
             <input
                 className={`w-full rounded-lg px-4 py-3 transition-all outline-none font-body-md text-body-md border ${
                     errors.skill
                         ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-400"
-                        : "bg-surface-container-low border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent"
+                        : "border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                 }`}
                 placeholder="e.g. JavaScript, React, Node.js"
                 value={form.skill}
@@ -120,55 +120,70 @@ const SkillsStep = ({ onNext, onBack }) => {
 
     return (
         <div>
-            <div className="mb-5">
-                <h1 className="font-headline-lg text-headline-lg text-on-surface">Skills</h1>
-                <p className="text-on-surface-variant font-body-md">Showcase your expertise. Add your top technical and soft skills to stand out to recruiters.</p>
-            </div>
+            <section className="h-full bg-surface-container-lowest px-6 md:px-10 py-12 block" id="edit-panel">
+                <div className="max-w-2xl mx-auto">
+                    <header className="mb-10">
+                        <div
+                            className="flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
+                            <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden">
+                                <div className="w-[403.4px] h-full bg-primary"></div>
+                            </div>
+                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 7 of 8: Skills</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-headline-md text-headline-md flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">psychology</span>
+                                Skills
+                            </h3>
+                            <button onClick={handleAddMore}
+                                    className="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                                <span className="material-symbols-outlined text-sm">add</span> Add Role
+                            </button>
+                        </div>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
+                    </header>
+                    <div className="space-y-12">
+                        {/* Existing items */}
+                        {skills.map((s, index) => (
+                            <ItemWrapper key={index} index={index}
+                                         isEditing={editingIndex === index}
+                                         onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
+                                         onDelete={() => dispatch(removeFromList({ index, step: "skills" }))}
+                                         editForm={
+                                             <SkillFormFields
+                                                 form={form} setForm={setForm}
+                                                 errors={errors} clearError={clearError}
+                                             />
+                                         }
+                            >
+                                <p className="text-sm font-medium">{s.skill}</p>
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                    Level — <span className="text-secondary font-medium">{LEVELS[s.level]}</span>
+                                </p>
+                            </ItemWrapper>
+                        ))}
 
-            <div className="bg-surface-container-lowest p-8 rounded-xl shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
-
-                {/* Existing items */}
-                {skills.map((s, index) => (
-                    <ItemWrapper key={index} index={index}
-                                 isEditing={editingIndex === index}
-                                 onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
-                                 onDelete={() => dispatch(removeFromList({ index, step: "skills" }))}
-                                 editForm={
-                                     <SkillFormFields
-                                         form={form} setForm={setForm}
-                                         errors={errors} clearError={clearError}
-                                     />
-                                 }
-                    >
-                        <p className="text-sm font-medium">{s.skill}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                            Level — <span className="text-secondary font-medium">{LEVELS[s.level]}</span>
-                        </p>
-                    </ItemWrapper>
-                ))}
-
-                {/* Initial form (when list is empty) or Add More form */}
-                {(showForm || !skills.length) && (
-                    <SkillFormFields
-                        form={form} setForm={setForm}
-                        errors={errors} clearError={clearError}
-                    />
-                )}
-
-                {editingIndex === null && (
-                    <div className="pt-2 flex items-center text-primary font-button group cursor-pointer">
-                        <button className="flex items-center gap-3" onClick={handleAddMore}>
-                            <span className="material-symbols-outlined group-hover:rotate-90 transition-transform">add_circle</span>
-                            <span className="hover:underline underline-offset-4">Add another skill</span>
-                        </button>
+                        {/* Initial form (when list is empty) or Add More form */}
+                        {(showForm || !skills.length) && (
+                            <SkillFormFields
+                                form={form} setForm={setForm}
+                                errors={errors} clearError={clearError}
+                            />
+                        )}
+                        <div
+                            className="pt-8 flex justify-between items-center border-t border-outline-variant/30 pb-12">
+                            <button onClick={onBack}
+                                    className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors">
+                                <span className="material-symbols-outlined">arrow_back</span> Back
+                            </button>
+                            <button onClick={handleNext}
+                                    className="bg-gradient-to-r from-primary to-secondary text-on-primary px-8 py-3 rounded-lg font-label-md text-label-md shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                Next: Language
+                            </button>
+                        </div>
                     </div>
-                )}
-
-                <div className="flex justify-between items-center pt-8 border-t border-outline-variant/30">
-                    <button onClick={onBack} className="px-8 py-3 border border-outline rounded-xl font-button text-button text-on-surface hover:bg-surface-container transition-colors">Back</button>
-                    <button onClick={handleNext} className="bg-gradient-to-r from-primary to-secondary px-12 py-3 rounded-xl font-button text-button text-white shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">Next: Language</button>
                 </div>
-            </div>
+            </section>
         </div>
     );
 };

@@ -20,6 +20,13 @@ body {
 } 
 
 @layer utilities {
+    .createCv_body {
+        width: 100%;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        font-family: 'Sora', sans-serif;
+        background-color: #f8f9fa;
+    }
     .custom-scrollbar::-webkit-scrollbar {
         width: 6px;
     }

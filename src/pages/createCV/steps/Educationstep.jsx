@@ -35,12 +35,12 @@ const EducationFormFields = ({ form, setForm, errors, clearError }) => {
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">School</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">School</label>
                     <input className={fc("school")} placeholder="e.g. Harvard University"
                            value={form.school} onChange={e => setForm({ ...form, school: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Degree <span className="text-red-500">*</span></label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Degree <span className="text-red-500">*</span></label>
                     <select value={form.degree} className={fc("degree")}
                             onChange={e => { setForm({ ...form, degree: e.target.value }); clearError("degree"); }}>
                         <option value="">Select Degree</option>
@@ -52,7 +52,7 @@ const EducationFormFields = ({ form, setForm, errors, clearError }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Field Of Study <span className="text-red-500">*</span></label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Field Of Study <span className="text-red-500">*</span></label>
                     <select value={form.fieldOfStudy} className={fc("fieldOfStudy")}
                             onChange={e => { setForm({ ...form, fieldOfStudy: e.target.value }); clearError("fieldOfStudy"); }}>
                         <option value="">Select Field of Study</option>
@@ -66,7 +66,7 @@ const EducationFormFields = ({ form, setForm, errors, clearError }) => {
                     <FieldError message={errors.fieldOfStudy} />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">GPA</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">GPA</label>
                     <input className={fc("grade")} placeholder="e.g. 3.8"
                            value={form.grade} onChange={e => setForm({ ...form, grade: e.target.value })} />
                 </div>
@@ -74,29 +74,29 @@ const EducationFormFields = ({ form, setForm, errors, clearError }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Start Date</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Start Date</label>
                     <DatePicker selected={form.startDate} dateFormat="MMM yyyy" showMonthYearPicker
                                 placeholderText="Select month & year"
                                 onChange={date => setForm({ ...form, startDate: formatMonthYear(date) })}
-                                className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                                className="w-full px-6 pe-24 py-3 rounded-lg border border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none" />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">End Date</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">End Date</label>
                     <DatePicker selected={form.endDate} dateFormat="MMM yyyy" showMonthYearPicker
                                 placeholderText="Select month & year"
                                 onChange={date => setForm({ ...form, endDate: formatMonthYear(date) })}
-                                className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                                className="w-full px-6 pe-24 py-3 rounded-lg border border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none" />
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Country</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Country</label>
                     <input className={fc("edu_country")} placeholder="e.g. United States"
                            value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">City</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">City</label>
                     <input className={fc("edu_city")} placeholder="e.g. Boston"
                            value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
                 </div>
@@ -166,57 +166,72 @@ const EducationStep = ({ onNext, onBack }) => {
 
     return (
         <div>
-            <div className="mb-4">
-                <h1 className="font-headline-lg text-headline-lg text-on-surface">Education</h1>
-                <p className="text-on-surface-variant font-body-md">Add your academic qualifications, starting with the most recent.</p>
-            </div>
+            <section className="h-full bg-surface-container-lowest px-6 md:px-10 py-12 block" id="edit-panel">
+                <div className="max-w-2xl mx-auto">
+                    <header className="mb-10">
+                        <div
+                            className="flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
+                            <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden">
+                                <div className="w-[172.9px] h-full bg-primary"></div>
+                            </div>
+                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 3 of 6: Education</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-headline-md text-headline-md flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">school</span>
+                                Education
+                            </h3>
+                            <button onClick={handleAddMore}
+                                    className="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                                <span className="material-symbols-outlined text-sm">add</span> Add Role
+                            </button>
+                        </div>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant">Detail your career milestones.
+                            Focus on measurable achievements and key responsibilities.</p>
+                    </header>
+                    <div className="space-y-12">
+                        {education.map((e, index) => (
+                            <ItemWrapper key={index} index={index}
+                                         isEditing={editingIndex === index}
+                                         onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
+                                         onDelete={() => dispatch(removeFromList({ index, step: "education" }))}
+                                         editForm={
+                                             <EducationFormFields
+                                                 form={form} setForm={setForm}
+                                                 errors={errors} clearError={clearError}
+                                             />
+                                         }
+                            >
+                                <p className="text-sm font-medium">{e.degree} in {e.fieldOfStudy}</p>
+                                <p className="text-xs text-gray-600">{[e.school, e.city, e.country].filter(Boolean).join(", ")}</p>
+                                {e.startDate && <p className="text-xs text-gray-500 mt-1">{e.startDate} – {e.endDate || "Present"}</p>}
+                            </ItemWrapper>
+                        ))}
 
-            <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
-
-                {/* Existing items */}
-                {education.map((e, index) => (
-                    <ItemWrapper key={index} index={index}
-                                 isEditing={editingIndex === index}
-                                 onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
-                                 onDelete={() => dispatch(removeFromList({ index, step: "education" }))}
-                                 editForm={
-                                     <EducationFormFields
-                                         form={form} setForm={setForm}
-                                         errors={errors} clearError={clearError}
-                                     />
-                                 }
-                    >
-                        <p className="text-sm font-medium">{e.degree} in {e.fieldOfStudy}</p>
-                        <p className="text-xs text-gray-600">{[e.school, e.city, e.country].filter(Boolean).join(", ")}</p>
-                        {e.startDate && <p className="text-xs text-gray-500 mt-1">{e.startDate} – {e.endDate || "Present"}</p>}
-                    </ItemWrapper>
-                ))}
-
-                {/* New entry form */}
-                {showForm && (
-                    <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
-                        <EducationFormFields
-                            form={form} setForm={setForm}
-                            errors={errors} clearError={clearError}
-                        />
+                        {/* New entry form */}
+                        {showForm && (
+                            <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
+                                <EducationFormFields
+                                    form={form} setForm={setForm}
+                                    errors={errors} clearError={clearError}
+                                />
+                            </div>
+                        )}
+                        <div
+                            className="pt-8 flex justify-between items-center border-t border-outline-variant/30 pb-12">
+                            <button onClick={onBack}
+                                    className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors">
+                                <span className="material-symbols-outlined">arrow_back</span> Back
+                            </button>
+                            <button onClick={handleNext}
+                                    className="bg-gradient-to-r from-primary to-secondary text-on-primary px-8 py-3 rounded-lg font-label-md text-label-md shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                Next: Experiance
+                            </button>
+                        </div>
                     </div>
-                )}
-
-                {/* Add more */}
-                {editingIndex === null && (
-                    <div className="pt-2 flex items-center text-primary font-button group cursor-pointer">
-                        <button className="flex items-center gap-3" onClick={handleAddMore}>
-                            <span className="material-symbols-outlined group-hover:rotate-90 transition-transform">add_circle</span>
-                            <span className="hover:underline underline-offset-4">Add another education</span>
-                        </button>
-                    </div>
-                )}
-
-                <div className="flex justify-between items-center pt-8 border-t border-outline-variant/30">
-                    <button onClick={onBack} className="px-8 py-3 rounded-xl border-2 border-outline-variant font-button text-button text-on-surface-variant hover:bg-surface-container transition-colors active:scale-95">Back</button>
-                    <button onClick={handleNext} className="px-10 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-on-primary font-button text-button hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95">Next: Experience</button>
                 </div>
-            </div>
+            </section>
+
         </div>
     );
 };

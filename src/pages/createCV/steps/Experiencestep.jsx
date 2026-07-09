@@ -29,13 +29,13 @@ const ExperienceFormFields = ({ form, setForm, errors, clearError, responsibilit
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Job Title <span className="text-red-500">*</span></label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Job Title <span className="text-red-500">*</span></label>
                     <input className={fc("jobTitle")} placeholder="e.g. Senior Product Designer"
                            value={form.jobTitle} onChange={e => { setForm({ ...form, jobTitle: e.target.value }); clearError("jobTitle"); }} />
                     <FieldError message={errors.jobTitle} />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Employer <span className="text-red-500">*</span></label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Employer <span className="text-red-500">*</span></label>
                     <input className={fc("employer")} placeholder="e.g. Google"
                            value={form.employer} onChange={e => { setForm({ ...form, employer: e.target.value }); clearError("employer"); }} />
                     <FieldError message={errors.employer} />
@@ -44,29 +44,29 @@ const ExperienceFormFields = ({ form, setForm, errors, clearError, responsibilit
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Start Date</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Start Date</label>
                     <DatePicker selected={form.startDate} dateFormat="MMM yyyy" showMonthYearPicker
                                 placeholderText="Select month & year"
                                 onChange={date => setForm({ ...form, startDate: formatMonthYear(date) })}
-                                className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                                className="w-full px-6 pe-24 py-3 rounded-lg border border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none" />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">End Date</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">End Date</label>
                     <DatePicker selected={form.endDate} dateFormat="MMM yyyy" showMonthYearPicker
                                 placeholderText="Select month & year"
                                 onChange={date => setForm({ ...form, endDate: formatMonthYear(date) })}
-                                className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                                className="w-full px-6 pe-24 py-3 rounded-lg border border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none" />
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Country</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Country</label>
                     <input className={fc("exp_country")} placeholder="e.g. United States"
                            value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">City</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">City</label>
                     <input className={fc("exp_city")} placeholder="e.g. San Francisco"
                            value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
                 </div>
@@ -75,7 +75,7 @@ const ExperienceFormFields = ({ form, setForm, errors, clearError, responsibilit
             {/* Responsibilities */}
             <div className="space-y-2">
                 <div className="flex justify-between items-center mb-1">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Responsibilities</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Responsibilities</label>
                     <button
                         type="button"
                         className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary-container text-on-primary-container hover:scale-110 transition-transform active:scale-95 shadow-md"
@@ -85,7 +85,7 @@ const ExperienceFormFields = ({ form, setForm, errors, clearError, responsibilit
                     </button>
                 </div>
                 <textarea
-                    className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none resize-none"
+                    className="w-full px-4 py-3 rounded-lg border border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none  resize-none"
                     placeholder="Describe a responsibility and click +"
                     rows="3"
                     value={responsibility}
@@ -188,93 +188,76 @@ const ExperienceStep = ({ onNext, onBack }) => {
                         <div
                             className="flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
                             <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden">
-                                <div className="w-1/2 h-full bg-primary"></div>
+                                <div className="w-[230.5px] h-full bg-primary"></div>
                             </div>
-                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 2 of 4: Experience</span>
+                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 4 of 6: Experience</span>
                         </div>
-                        <p className="font-body-md text-body-md text-on-surface-variant">Detail your career milestones.
-                            Focus on measurable achievements and key responsibilities.</p>
-                    </header>
-                    <div className="space-y-12">
-                        <div className="flex justify-between items-center mb-6">
+                        <div className="flex justify-between items-center mb-4">
                             <h3 className="font-headline-md text-headline-md flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">work</span>
                                 Experience
                             </h3>
-                            <button
-                                className="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                            <button onClick={handleAddMore}
+                                    className="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
                                 <span className="material-symbols-outlined text-sm">add</span> Add Role
+                            </button>
+                        </div>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant">Detail your career milestones.
+                            Focus on measurable achievements and key responsibilities.</p>
+                    </header>
+                    <div className="space-y-12">
+                        {/* Existing items */}
+                        {experience.map((exp, index) => (
+                            <ItemWrapper key={index} index={index}
+                                         isEditing={editingIndex === index}
+                                         onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
+                                         onDelete={() => dispatch(removeFromList({index, step: "experience"}))}
+                                         editForm={
+                                             <ExperienceFormFields
+                                                 form={form} setForm={setForm}
+                                                 errors={errors} clearError={clearError}
+                                                 responsibility={responsibility}
+                                                 setResponsibility={setResponsibility}
+                                             />
+                                         }
+                            >
+                                <p className="text-sm font-medium">{exp.jobTitle} at {exp.employer}</p>
+                                <p className="text-xs text-gray-600">{[exp.city, exp.country].filter(Boolean).join(", ")}</p>
+                                {exp.startDate &&
+                                    <p className="text-xs text-gray-500 mt-1">{exp.startDate} – {exp.endDate || "Present"}</p>}
+                                {exp.responsibilities?.length > 0 && (
+                                    <ul className="mt-2 space-y-1 text-xs text-gray-600 list-disc list-inside marker:text-[#5F53F5]">
+                                        {exp.responsibilities.map((r, i) => <li key={i}>{r}</li>)}
+                                    </ul>
+                                )}
+                            </ItemWrapper>
+                        ))}
+
+                        {showForm && (
+                            <div
+                                className="bg-surface rounded-xl border border-outline-variant/50 p-6 relative group">
+                                <ExperienceFormFields
+                                    form={form} setForm={setForm}
+                                    errors={errors} clearError={clearError}
+                                    responsibility={responsibility} setResponsibility={setResponsibility}
+                                />
+                            </div>
+                        )}
+                        <div
+                            className="pt-8 flex justify-between items-center border-t border-outline-variant/30 pb-12">
+                            <button onClick={onBack}
+                                className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors">
+                                <span className="material-symbols-outlined">arrow_back</span> Back
+                            </button>
+                            <button onClick={handleNext}
+                                className="bg-gradient-to-r from-primary to-secondary text-on-primary px-6 py-3 rounded-lg font-label-md text-label-md shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                Next: Projects
                             </button>
                         </div>
                     </div>
                 </div>
             </section>
+        </div>
+    )};
 
-            <div
-                className="bg-surface-container-lowest rounded-2xl p-8 shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
-
-                {/* Existing items */}
-                {experience.map((exp, index) => (
-                    <ItemWrapper key={index} index={index}
-                                 isEditing={editingIndex === index}
-                                             onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
-                                             onDelete={() => dispatch(removeFromList({index, step: "experience"}))}
-                                             editForm={
-                                                 <ExperienceFormFields
-                                                     form={form} setForm={setForm}
-                                                     errors={errors} clearError={clearError}
-                                                     responsibility={responsibility}
-                                                     setResponsibility={setResponsibility}
-                                                 />
-                                             }
-                                >
-                                    <p className="text-sm font-medium">{exp.jobTitle} at {exp.employer}</p>
-                                    <p className="text-xs text-gray-600">{[exp.city, exp.country].filter(Boolean).join(", ")}</p>
-                                    {exp.startDate &&
-                                        <p className="text-xs text-gray-500 mt-1">{exp.startDate} – {exp.endDate || "Present"}</p>}
-                                    {exp.responsibilities?.length > 0 && (
-                                        <ul className="mt-2 space-y-1 text-xs text-gray-600 list-disc list-inside marker:text-[#5F53F5]">
-                                            {exp.responsibilities.map((r, i) => <li key={i}>{r}</li>)}
-                                        </ul>
-                                    )}
-                                </ItemWrapper>
-                            ))}
-
-                            {/* New entry form */}
-                            {showForm && (
-                                <div
-                                    className="bg-surface-container-lowest rounded-2xl p-8 shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
-                                    <ExperienceFormFields
-                                        form={form} setForm={setForm}
-                                        errors={errors} clearError={clearError}
-                                        responsibility={responsibility} setResponsibility={setResponsibility}
-                                    />
-                                </div>
-                            )}
-
-                            {editingIndex === null && (
-                                <div className="pt-2 flex items-center text-primary font-button group cursor-pointer">
-                                    <button className="flex items-center gap-3" onClick={handleAddMore}>
-                                        <span
-                                            className="material-symbols-outlined group-hover:rotate-90 transition-transform">add_circle</span>
-                                        <span
-                                            className="hover:underline underline-offset-4">Add another experience</span>
-                                    </button>
-                                </div>
-                            )}
-
-                            <div className="flex justify-between items-center pt-8 border-t border-outline-variant/30">
-                                <button onClick={onBack}
-                                        className="px-8 py-3 rounded-xl border-2 border-outline-variant font-button text-button text-on-surface-variant hover:bg-surface-container transition-colors active:scale-95">Back
-                                </button>
-                                <button onClick={handleNext}
-                                        className="px-10 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-on-primary font-button text-button hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95">Next:
-                                    Projects
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    );
-                    };
-
-                    export default ExperienceStep;
+export default ExperienceStep;

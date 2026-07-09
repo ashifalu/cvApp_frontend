@@ -18,21 +18,21 @@ const AwardFormFields = ({ form, setForm, errors }) => {
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Award Name</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Award Name</label>
                     <input className={fc("awardName")} placeholder="e.g. Best Developer Award"
                            value={form.awardName} onChange={e => setForm({ ...form, awardName: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Issuing Organisation</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Issuing Organisation</label>
                     <input className={fc("issueingOrg")} placeholder="e.g. Google"
                            value={form.issueingOrg} onChange={e => setForm({ ...form, issueingOrg: e.target.value })} />
                 </div>
             </div>
 
             <div>
-                <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1 mb-2">Description</label>
+                <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Description</label>
                 <textarea
-                    className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none resize-none"
+                    className="w-full px-4 py-3 rounded-lg border border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                     placeholder="Describe the award..."
                     rows="3"
                     value={form.description}
@@ -42,18 +42,18 @@ const AwardFormFields = ({ form, setForm, errors }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Date Issued</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Date Issued</label>
                     <DatePicker selected={form.issueingDate} dateFormat="MMM yyyy" showMonthYearPicker
                                 placeholderText="Issued Date"
                                 onChange={date => setForm({ ...form, issueingDate: formatMonthYear(date) })}
-                                className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                                className="w-full px-6 pe-24 py-3 rounded-lg border border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none" />
                 </div>
                 <div className="space-y-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant block ml-1">Expiration Date</label>
+                    <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Expiration Date</label>
                     <DatePicker selected={form.expirationDate} dateFormat="MMM yyyy" showMonthYearPicker
                                 placeholderText="Expiration Date"
                                 onChange={date => setForm({ ...form, expirationDate: formatMonthYear(date) })}
-                                className="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                                className="w-full px-6 pe-24 py-3 rounded-lg border border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none" />
                 </div>
             </div>
         </div>
@@ -107,48 +107,62 @@ const AwardsStep = ({ onNext, onBack }) => {
 
     return (
         <div>
-            <div className="mb-5">
-                <h1 className="font-headline-lg text-headline-lg text-on-surface">Awards</h1>
-                <p className="text-on-surface-variant font-body-md">Add certifications, awards, or recognitions you've earned.</p>
-            </div>
+            <section className="h-full bg-surface-container-lowest px-6 md:px-10 py-12 block" id="edit-panel">
+                <div className="max-w-2xl mx-auto">
+                    <header className="mb-10">
+                        <div
+                            className="flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
+                            <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden">
+                                <div className="w-[345.8px] h-full bg-primary"></div>
+                            </div>
+                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 6 of 8: Awards</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-headline-md text-headline-md flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">emoji_events</span>
+                                Awards
+                            </h3>
+                            <button onClick={handleAddMore}
+                                    className="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                                <span className="material-symbols-outlined text-sm">add</span> Add Role
+                            </button>
+                        </div>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
+                    </header>
+                    <div className="space-y-12">
+                        {awards.map((a, index) => (
+                            <ItemWrapper key={index} index={index}
+                                         isEditing={editingIndex === index}
+                                         onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
+                                         onDelete={() => dispatch(removeFromList({ index, step: "awards" }))}
+                                         editForm={<AwardFormFields form={form} setForm={setForm} errors={errors} />}
+                            >
+                                <p className="text-sm font-medium">{a.awardName}</p>
+                                <p className="text-xs text-gray-600">{a.issueingOrg}</p>
+                                {a.issueingDate && <p className="text-xs text-gray-500 mt-1">{a.issueingDate} – {a.expirationDate || "No Expiry"}</p>}
+                            </ItemWrapper>
+                        ))}
 
-            <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
-
-                {/* Existing items */}
-                {awards.map((a, index) => (
-                    <ItemWrapper key={index} index={index}
-                                 isEditing={editingIndex === index}
-                                 onEdit={editingIndex === index ? handleUpdate : () => handleEdit(index)}
-                                 onDelete={() => dispatch(removeFromList({ index, step: "awards" }))}
-                                 editForm={<AwardFormFields form={form} setForm={setForm} errors={errors} />}
-                    >
-                        <p className="text-sm font-medium">{a.awardName}</p>
-                        <p className="text-xs text-gray-600">{a.issueingOrg}</p>
-                        {a.issueingDate && <p className="text-xs text-gray-500 mt-1">{a.issueingDate} – {a.expirationDate || "No Expiry"}</p>}
-                    </ItemWrapper>
-                ))}
-
-                {/* New entry form */}
-                {showForm && (
-                    <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-2xl shadow-primary/5 border border-outline-variant/30 space-y-6">
-                        <AwardFormFields form={form} setForm={setForm} errors={errors} />
+                        {/* New entry form */}
+                        {showForm && (
+                            <div className="bg-surface rounded-xl border border-outline-variant/50 p-6 relative group">
+                                <AwardFormFields form={form} setForm={setForm} errors={errors} />
+                            </div>
+                        )}
+                        <div
+                            className="pt-8 flex justify-between items-center border-t border-outline-variant/30 pb-12">
+                            <button onClick={onBack}
+                                    className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors">
+                                <span className="material-symbols-outlined">arrow_back</span> Back
+                            </button>
+                            <button onClick={handleNext}
+                                    className="bg-gradient-to-r from-primary to-secondary text-on-primary px-8 py-3 rounded-lg font-label-md text-label-md shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                Next: Skills
+                            </button>
+                        </div>
                     </div>
-                )}
-
-                {editingIndex === null && (
-                    <div className="pt-2 flex items-center text-primary font-button group cursor-pointer">
-                        <button className="flex items-center gap-3" onClick={handleAddMore}>
-                            <span className="material-symbols-outlined group-hover:rotate-90 transition-transform">add_circle</span>
-                            <span className="hover:underline underline-offset-4">Add another award</span>
-                        </button>
-                    </div>
-                )}
-
-                <div className="flex justify-between items-center pt-8 border-t border-outline-variant/30">
-                    <button onClick={onBack} className="px-8 py-3 rounded-xl border-2 border-outline-variant font-button text-button text-on-surface-variant hover:bg-surface-container transition-colors active:scale-95">Back</button>
-                    <button onClick={handleNext} className="px-10 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-on-primary font-button text-button hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95">Next: Skills</button>
                 </div>
-            </div>
+            </section>
         </div>
     );
 };
