@@ -76,7 +76,7 @@ const PhoneInput = ({ phoneNumber, onPhoneChange, countryCode, onCountryCodeChan
 
     const baseInputClass = hasError
         ? "border-red-400 bg-red-50 focus-within:ring-2 focus-within:ring-red-400"
-        : "border-outline-variant bg-surface-container-low focus-within:ring-2 focus-within:ring-primary focus-within:border-primary";
+        : " bg-white focus-within:ring-2 focus-within:ring-primary focus-within:border-primary";
 
     return (
         <div className="relative" ref={dropdownRef}>

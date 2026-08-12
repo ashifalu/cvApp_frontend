@@ -26,7 +26,7 @@ export const TrashSvg = () => (
 //   editForm    – JSX rendered inside the expanded edit area
 //   children    – summary view (always visible)
 const ItemWrapper = ({ index, onEdit, onDelete, children, isEditing, editForm }) => (
-    <div className="bg-surface rounded-lg border border-outline-variant/50 p-6 relative group">
+    <div className="bg-surface rounded-lg border border-outline-variant/50 p-4 relative group">
         <div className="flex justify-between items-start">
             <div className="flex-1 min-w-0">{children}</div>
             <div className="flex  items-center gap-2 ml-4 shrink-0">
@@ -56,7 +56,7 @@ const ItemWrapper = ({ index, onEdit, onDelete, children, isEditing, editForm })
             </div>
 
             {isEditing && (
-                <div className="space-y-6 pt-6 mt-4 border-t border-outline-variant/30">
+                <div className="space-y-6 pt-6 mt-2 border-t border-outline-variant/30">
                 {editForm}
             </div>
         )}

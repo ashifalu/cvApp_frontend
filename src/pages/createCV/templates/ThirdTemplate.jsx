@@ -13,8 +13,20 @@ const ThirdTemplate = (
         languages,
         projects,
         awards,
-        theme
+        theme,
+        onPageCount,
+        currentPage
     }, ref) => {
+
+    let selectedTheme ={}
+
+    {theme && Object.keys(theme).length > 0 ?
+        selectedTheme = theme
+        :
+        selectedTheme = {
+            primary : "#810B38",
+        }
+    }
 
 
     const blocks = useMemo(() => {
@@ -154,9 +166,9 @@ const ThirdTemplate = (
                     {data.phone && <ContactItem icon="icon-tabler-mail"
                     path = {<path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />}
                      text={data.phone} />}
-                    {data.email && <ContactItem icon="http://localhost:5173/images/email3.png" 
-                    path={<path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10 M3 7l9 6l9 -6" />}
-                    text={data.email} />}
+                    {/*{data.email && <ContactItem icon="http://localhost:5173/images/email3.png" */}
+                    {/*path={<path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10 M3 7l9 6l9 -6" />}*/}
+                    {/*text={data.email} />}*/}
                    {(data.city || data.country) && (
                         <ContactItem icon="http://localhost:5173/images/location3.png"
                         path={<path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0"/>} text={[data.city, data.country].filter(Boolean).join(", ")}  />
@@ -177,7 +189,7 @@ const ThirdTemplate = (
 
     const ContactItem = ({ icon, text , path }) => (
         <div className="flex items-center gap-1 secondTempFont">
-            <div className={`rounded-full bg-[${theme?theme:'#810B38'}] w-8 h-8 flex justify-center items-center`}>
+            <div style={{ backgroundColor: selectedTheme ? selectedTheme.primary : '#5F53F5' }} className={`rounded-full  w-8 h-8 flex justify-center items-center`}>
             <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={`icon icon-tabler icons-tabler-outline icon-tabler-${icon}`}>
 	                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     {path}
@@ -190,10 +202,10 @@ const ThirdTemplate = (
 
     const SectionHeader = ({ title }) => (
         <div className="flex items-center mt-2 mb-2 secondTempFont">
-            <div className={`bg-[${theme?theme:'#810B38'}] text-[#fff] text-[14px] font-bold px-3 py-1 rounded-r-full w-[238px] `}>
+            <div style={{ backgroundColor: selectedTheme ? selectedTheme.primary : '#5F53F5' }} className={`text-[#fff] text-[14px] font-bold px-3 py-1 rounded-r-full w-[238px] `}>
                 {title}
             </div>
-            <div className={`h-[2px] w-full bg-[${theme?theme:'#810B38'}] `} />
+            <div style={{ backgroundColor: selectedTheme ? selectedTheme.primary : '#5F53F5' }} className={`h-[2px] w-full `} />
         </div>
     );
 
@@ -318,8 +330,14 @@ const ThirdTemplate = (
         <div className="flex gap-1 my-1">
             {[0, 1, 2, 3, 4].map(j => (
                 <div
-                    key={j}
-                    className={`w-[34px] h-2 rounded-full border border-[${theme?theme:'#810B38'}] ${j <= level ? `bg-[${theme?theme:'#810B38'}]` : "bg-transparent"}`}
+                    className="w-[34px] h-2 rounded-full border"
+                    style={{
+                        borderColor: selectedTheme?.primary || "#810B38",
+                        backgroundColor:
+                            j <= level
+                                ? selectedTheme?.primary || "#810B38"
+                                : "transparent",
+                    }}
                 />
             ))}
         </div>
@@ -397,19 +415,56 @@ const ThirdTemplate = (
                 </div>
             ))}
 
-            {/* Hidden measurement container */}
-            {createPortal(<div
-                ref={measureRef}
-                id="measure-container"
-                className="absolute invisible top-0 left-0 pointer-events-none box-border"
-                style={{ paddingBottom: 15, width: 794 }}
-            >
-                {blocks.map((block, i) => (
-                    <div key={`${measureKey}-${i}`}>
-                        {renderBlock(block, i)}
+            {createPortal(
+                // ── Zero-size, strictly-contained wrapper ──────────────────
+                // This is the fix. The measurement clone below MUST stay in the
+                // DOM (it's how pagination heights get measured), but portaling
+                // it straight to document.body as a bare `position: absolute;
+                // width: 794px` element means it sits directly on <body>,
+                // outside of ANY ancestor's overflow/contain rules — including
+                // ResumeCard's overflow:hidden and contain:layout, and even a
+                // page-level `overflow-x: hidden` on <body> isn't reliably
+                // enough on every browser once `position: fixed` interacts with
+                // transformed ancestors elsewhere on the page. Wrapping it in a
+                // `position: fixed; width: 0; height: 0; overflow: hidden;
+                // contain: strict` box pins it off in its own layout/paint
+                // universe: the outer box has zero size, `contain: strict`
+                // (layout + paint + size) guarantees nothing inside it can ever
+                // influence the size or scroll area of anything outside it, and
+                // `position: fixed` takes it out of normal document flow
+                // entirely. This is what was making every rendered resume card
+                // contribute an invisible 794px-wide box to the page, which is
+                // why the fixed nav icon appeared to vanish on mobile.
+                <div
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: 0,
+                        height: 0,
+                        overflow: "hidden",
+                        contain: "strict",
+                    }}
+                >
+                    <div
+                        ref={measureRef}
+                        style={{
+                            position: "absolute",
+                            visibility: "hidden",
+                            paddingTop: 0,
+                            paddingBottom: 15,
+                            width: "794px",
+                            top: 0,
+                            left: 0,
+                            pointerEvents: "none",
+                            boxSizing: "border-box"
+                        }}
+                    >
+                        {blocks.map((block, i) => (
+                            <div key={`${measureKey}-${i}`}>{renderBlock(block, i)}</div>
+                        ))}
                     </div>
-                ))}
-            </div>,
+                </div>,
                 document.body
             )}
         </>

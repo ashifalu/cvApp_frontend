@@ -10,7 +10,9 @@ const initialState = {
         skills: [],
         languages: [],
         projects: [],
-        awards: []
+        awards: [],
+        certifications: []
+
     }
 }
 
@@ -24,6 +26,9 @@ const cvSlice = createSlice({
         addPersonalInfo: (state, action) => {
             state.cvData.personalInfo = action.payload;
         },
+        setPhoto: (state, action) => {                          // ← add this
+            state.cvData.personalInfo.photo = action.payload;    // ← add this
+        },
         addProfessionalSummary: (state, action) => {
             state.cvData.professionalSummary = action.payload;
         },
@@ -36,8 +41,8 @@ const cvSlice = createSlice({
             state.cvData[step][index] = data;
         },
         removeFromList: (state,action) => {
-            const { step } = action.payload;
-            state.cvData[step].splice(action.payload, 1);
+            const { step,index } = action.payload;
+            state.cvData[step].splice(index, 1);
         },
         setEducation: (state, action) => {
             state.cvData.education = action.payload;
@@ -50,6 +55,9 @@ const cvSlice = createSlice({
         },
         setAwards: (state, action) => {
             state.cvData.awards = action.payload;
+        },
+        setCertifications: (state, action) => {           // ← add this
+            state.cvData.certifications = action.payload;   // ← add this
         },
         setSkills: (state, action) => {
             state.cvData.skills = action.payload;
@@ -73,7 +81,8 @@ export const {
     addToList,
     updateList,
     removeFromList,
-    addEducation,
+    setPhoto,
+    setCertifications,
     setEducation,
     setProjects,
     setExperience,

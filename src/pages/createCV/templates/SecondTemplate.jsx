@@ -14,7 +14,8 @@ const SecondTemplate = ({
     projects,
     awards,
     theme,
-    onPageCount
+    onPageCount,
+     currentPage
 }) => {
 
     let selectedTheme ={}
@@ -28,6 +29,43 @@ const SecondTemplate = ({
             secondary : '#5F53F5'
         }
       }
+
+    // const blocks = useMemo(() => {
+    //     const result = [
+    //         { type: "header", data: personalInfo },
+    //     ];
+    //
+    //     const chunkArray = (arr, size) =>
+    //         Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+    //             arr.slice(i * size, i * size + size)
+    //         );
+    //
+    //     // ✅ only add summary if it has content
+    //     if (professionalSummary) {
+    //         result.push({ type: "summary", data: professionalSummary });
+    //     }
+    //
+    //     return [
+    //         ...result,
+    //         { type: "skills-group", data: skills },
+    //         ...chunkArray(skills, 5).map((chunk, i) => ({
+    //             type: "skills-row",
+    //             data: chunk,
+    //             isFirst: i === 0
+    //         })),
+    //         ...projects.map(p => ({ type: "project", data: p })),
+    //         ...experience.map(e => ({ type: "experience", data: e })),
+    //         ...awards.map(a => ({ type: "award", data: a })),
+    //         ...education.map(e => ({ type: "education", data: e })),
+    //         { type: "language-group", data: languages },
+    //         ...chunkArray(languages, 5).map((chunk, i) => ({
+    //             type: "languages-row",
+    //             data: chunk,
+    //             isFirst: i === 0
+    //         })),
+    //     ];
+    // }, [personalInfo, professionalSummary, education, experience,
+    //     projects, awards, skills, languages]);
 
 
     const blocks = useMemo(() => {
@@ -228,6 +266,13 @@ const SecondTemplate = ({
                         </div>
                         <div className="grid grid-cols-2 gap-2 flex items-center ">
                             <div className={`text-xs  text-white`}>
+                                {data.email && <div className="flex gap-2  text-center mb-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-mail">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10" />
+                                        <path d="M3 7l9 6l9 -6" />
+                                    </svg><p>{data.email}</p>
+                                </div>}
                                 {data.phone && <div className="flex gap-2 w-50 mb-1 text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-phone">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -245,25 +290,9 @@ const SecondTemplate = ({
                                     </svg>
                                     <p>{data.nationality}</p>
                                 </div>}
-                                {data.portfolioUrl && <div className="flex gap-2  text-center mb-1" >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-brand-dribbble">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                        <path d="M9 3.6c5 6 7 10.5 7.5 16.2" />
-                                        <path d="M6.4 19c3.5 -3.5 6 -6.5 14.5 -6.4" />
-                                        <path d="M3.1 10.75c5 0 9.814 -.38 15.314 -5" />
-                                    </svg><a href={data.portfolioUrl}>{data.portfolioUrl}</a>
-                                </div>}
 
                             </div>
                             <div className={`text-xs  text-white mb-1`}>
-                                {data.email && <div className="flex gap-2  text-center mb-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-mail">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10" />
-                                        <path d="M3 7l9 6l9 -6" />
-                                    </svg><p>{data.email}</p>
-                                </div>}
                                 {data.country && <div className="flex gap-2 w-50 mb-1 text-center mb-1"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-map-pin">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -281,10 +310,19 @@ const SecondTemplate = ({
                                         <path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4l0 -10" />
                                     </svg><a href={data.linkedInUrl}>{data.linkedInUrl}</a>
                                 </div>}
+                                {data.portfolioUrl && <div className="flex gap-2  text-center mb-1" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-brand-dribbble">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                        <path d="M9 3.6c5 6 7 10.5 7.5 16.2" />
+                                        <path d="M6.4 19c3.5 -3.5 6 -6.5 14.5 -6.4" />
+                                        <path d="M3.1 10.75c5 0 9.814 -.38 15.314 -5" />
+                                    </svg><a href={data.portfolioUrl}>{data.portfolioUrl}</a>
+                                </div>}
                             </div>
                         </div>
                     </div> :
-                    <div className={`bg-[${selectedTheme? selectedTheme.secondary : '#5F53F5'}] opacity-30 text-white secondTempFont p-6 px-4 flex justify-between cv-section mb-2`}>
+                    <div  style={{ backgroundColor: selectedTheme ? selectedTheme.primary : '#5F53F5' }}  className={`bg-[${selectedTheme? selectedTheme.secondary : `#5F53F5`}] opacity-30 text-white secondTempFont p-6 px-4 flex justify-between cv-section mb-2`}>
                     <div className='w-1/3 secondTempFont'>
                         <h1 className="text-2xl font-Quicksand font-bold">
                             Your Name 
@@ -294,7 +332,7 @@ const SecondTemplate = ({
                     <div className="grid grid-cols-2 gap-2 flex items-center ">
                         <div className={`text-xs  text-white`}>
                              <div className="flex gap-2 w-50 mb-1 text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={`${selectedTheme? selectedTheme.secondary : '#5F53F5'}`} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-phone">
+                                <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke='#F7F4EA' strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-phone">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                     <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
                                 </svg>
@@ -355,32 +393,33 @@ const SecondTemplate = ({
         )
     };
     const Summary = ({ data }) => {
+        console.log(data.length)
         return(
             <>
-                 {professionalSummary === ""  ? <div className="item px-6 opacity-30 secondTempFont">
-                <div className="my-1">
-                    <h2 className={`text-sm font-bold text-[${selectedTheme? selectedTheme.secondary : '#5F53F5'}] mb-1`}>
-                        Professional Summary
-                    </h2>
-                </div>
-                <div className="section-body">
-                    <p className={`text-xs text-[#666666]`}>r4t5y6u7ji8kujy67t5r4e3w2qw3e4r5t6i8u7y654212ju7i.</p>
-                </div>        
-                <div  style={{ backgroundColor: selectedTheme ? selectedTheme.secondary : '#5F53F5' }}  className={`my-2 h-[2px] w-full  `} />
-            </div>        
-        :
-        <div className="item px-6  secondTempFont">
-                <div className="my-1">
-                    <h2 style={{color: selectedTheme ? selectedTheme.secondary : '#5F53F5'}} className={`text-sm font-bold text-[${selectedTheme? selectedTheme.secondary : '#5F53F5'}] mb-1`}>
-                        Professional Summary
-                    </h2>
-                </div>
-                <div className="section-body">
-                    <p className={`text-xs text-[#666666]`}>{data}</p>
-                </div>
-                <div style={{ backgroundColor: selectedTheme ? selectedTheme.secondary : '#5F53F5' }}  className={`my-2 h-[2px] w-full bg-[${selectedTheme? selectedTheme.secondary : '#5F53F5'}] `} />
-            </div> 
-        
+                 {data ?         <div className="item px-6  secondTempFont">
+                         <div className="my-1">
+                             <h2 style={{color: selectedTheme ? selectedTheme.secondary : '#5F53F5'}} className={`text-sm font-bold text-[${selectedTheme? selectedTheme.secondary : '#5F53F5'}] mb-1`}>
+                                 Professional Summary
+                             </h2>
+                         </div>
+                         <div className="section-body">
+                             <p className={`text-xs text-[#666666]`}>{data}</p>
+                         </div>
+                         <div style={{ backgroundColor: selectedTheme ? selectedTheme.secondary : '#5F53F5' }}  className={`my-2 h-[2px] w-full bg-[${selectedTheme? selectedTheme.secondary : '#5F53F5'}] `} />
+                     </div>
+
+                     :
+                     <div className="item px-6 opacity-30 secondTempFont">
+                     <div className="my-1">
+                     <h2 className={`text-sm font-bold text-[${selectedTheme? selectedTheme.secondary : '#5F53F5'}] mb-1`}>
+            Professional Summary
+            </h2>
+    </div>
+        <div className="section-body">
+            <p className={`text-xs text-[#666666]`}>r4t5y6u7ji8kujy67t5r4e3w2qw3e4r5t6i8u7y654212ju7i.</p>
+        </div>
+        <div  style={{ backgroundColor: selectedTheme ? selectedTheme.secondary : '#5F53F5' }}  className={`my-2 h-[2px] w-full  `} />
+    </div>
     }
             </>
         )
@@ -432,13 +471,13 @@ const SecondTemplate = ({
                     <p className="text-xs font-semibold">{data.fieldOfStudy}</p>
                     <p className="text-xs">{data.degree}</p>
                     <p className="text-xs">{data.school},{data.city},{data.country}</p>
-                    <p className="text-xs">GPA : {data.grade}</p>
+                    {data.grade&&<p className="text-xs">GPA : {data.grade}</p>}
                 </div>
-                <div>
-                    <p className={`text-xs text-black] font-semibold`}>
-                        {data.startDate} - {data.endDate || "Present"}
-                    </p>
-                </div>
+                {data.startDate!==null&&<div className="">
+                <p className="text-xs font-bold">
+                    {data.startDate} - {data.endDate || "Present"}
+                </p>
+            </div>}
             </div>
 
 
@@ -475,11 +514,11 @@ const SecondTemplate = ({
                                 .join(", ")}
                         </p>
                     </div>
-                    <div className="">
+                    {data.startDate!==null&&<div className="">
                         <p className="text-xs font-bold">
                             {data.startDate} - {data.endDate || "Present"}
                         </p>
-                    </div>
+                    </div>}
                 </div>
 
                 <ul className="text-xs list-disc ml-4">
@@ -623,48 +662,83 @@ const SecondTemplate = ({
     return (
         <>
             {/* ---- Paginated output ---- */}
-            {pages.map((page, pageIndex) => (
-                <div 
-                    key={pageIndex}
-                    style={{
-                        
-                        backgroundColor: "#ffff",
-                        boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
-                        paddingTop: pageIndex !== 0 ? 15 : 0,
-                        paddingBottom: 15,
-                        width: 794,
-                        height: PAGE_HEIGHT,
-                    }}
-                >
-                    {page.map((block, index) => renderBlock(block, index))}
-                </div>
-            ))}
+            {(currentPage === undefined || currentPage === null
+                    ? pages                                        // no currentPage prop -> render ALL pages (used for PDF export)
+                    : pages.length
+                        ? [pages[Math.min(currentPage, pages.length - 1)]]   // only the selected page (used for on-screen preview)
+                        : []
+            ).map((page, idx) => {
+                const pageIndex = (currentPage === undefined || currentPage === null) ? idx : currentPage;
+                return (
+                    <div
+                        key={pageIndex}
+                        style={{
+                            backgroundColor: "#ffff",
+                            boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+                            paddingTop: pageIndex !== 0 ? 15 : 0,
+                            paddingBottom: 15,
+                            width: 794,
+                            height: PAGE_HEIGHT,
+                        }}
+                    >
+                        {page.map((block, index) => renderBlock(block, index))}
+                    </div>
+                );
+            })}
 
             {/* ---- Hidden measurement container ---- */}
             {/* visibility:hidden = invisible BUT still has real layout and real heights */}
 
-            {createPortal(<div 
-                ref={measureRef}
-                style={{
-                    position: "absolute",
-                    visibility: "hidden",
-                    paddingTop: "0px",
-                    paddingBottom: "15px",
-                    width: "794px",
-                    top: 0,
-                    left: 0,
-                    pointerEvents: "none",
-                    boxSizing: "border-box"
-                }}
-            >
-                {blocks.map((block, i) => (   // ✅ use blocks directly, not measurepage
-                    <div  key={`${measureKey}-${i}`}>
-                        {renderBlock(block, i)}
-
+            {createPortal(
+                // ── Zero-size, strictly-contained wrapper ──────────────────
+                // This is the fix. The measurement clone below MUST stay in the
+                // DOM (it's how pagination heights get measured), but portaling
+                // it straight to document.body as a bare `position: absolute;
+                // width: 794px` element means it sits directly on <body>,
+                // outside of ANY ancestor's overflow/contain rules — including
+                // ResumeCard's overflow:hidden and contain:layout, and even a
+                // page-level `overflow-x: hidden` on <body> isn't reliably
+                // enough on every browser once `position: fixed` interacts with
+                // transformed ancestors elsewhere on the page. Wrapping it in a
+                // `position: fixed; width: 0; height: 0; overflow: hidden;
+                // contain: strict` box pins it off in its own layout/paint
+                // universe: the outer box has zero size, `contain: strict`
+                // (layout + paint + size) guarantees nothing inside it can ever
+                // influence the size or scroll area of anything outside it, and
+                // `position: fixed` takes it out of normal document flow
+                // entirely. This is what was making every rendered resume card
+                // contribute an invisible 794px-wide box to the page, which is
+                // why the fixed nav icon appeared to vanish on mobile.
+                <div
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: 0,
+                        height: 0,
+                        overflow: "hidden",
+                        contain: "strict",
+                    }}
+                >
+                    <div
+                        ref={measureRef}
+                        style={{
+                            position: "absolute",
+                            visibility: "hidden",
+                            paddingTop: 0,
+                            paddingBottom: 15,
+                            width: "794px",
+                            top: 0,
+                            left: 0,
+                            pointerEvents: "none",
+                            boxSizing: "border-box"
+                        }}
+                    >
+                        {blocks.map((block, i) => (
+                            <div key={`${measureKey}-${i}`}>{renderBlock(block, i)}</div>
+                        ))}
                     </div>
-                ))
-                }
-            </div>,
+                </div>,
                 document.body
             )}
         </>

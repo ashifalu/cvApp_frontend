@@ -11,7 +11,7 @@ import UserAuth from "../../../users/components/UserAuth.jsx"; // adjust path
 const EMPTY_FORM = { language: "", level: 2 };
 
 // ─── Level Slider (same as SkillsStep — reusable) ─────────────────────────────
-const LevelSlider = ({ level, onChange }) => (
+const LevelSlider = ({ level, onChange,}) => (
     <div className="space-y-4">
         <div className="flex justify-between items-center">
             <label className="font-label-bold text-label-bold text-outline uppercase tracking-wider">Proficiency Level</label>
@@ -63,7 +63,7 @@ const LanguageFormFields = ({ form, setForm, errors, clearError }) => (
 
 // ─── LanguagesStep ────────────────────────────────────────────────────────────
 // This is the LAST step — it also handles Save CV (PDF generation + store data)
-const LanguagesStep = ({ onBack, }) => {
+const LanguagesStep = ({ onBack,selectedTheme,temp_id }) => {
     const dispatch   = useDispatch();
     const navigate   = useNavigate();
     const languages  = useSelector(s => s.cv.cvData.languages);
@@ -161,6 +161,8 @@ const LanguagesStep = ({ onBack, }) => {
                 skills,
                 languages,
                 resumeUrl: pdfUrl,
+                template: temp_id,
+                theme: selectedTheme
             };
             const reqHeader = { authorization: `Bearer ${token}` };
 
@@ -182,13 +184,12 @@ const LanguagesStep = ({ onBack, }) => {
 
     return (
         <div>
-            <section className="h-full bg-surface-container-lowest px-6 md:px-10 py-12 block" id="edit-panel">
-                <div className="max-w-2xl mx-auto">
+            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-8 sm:py-12 pb-28 block" id="edit-panel">                <div className="max-w-2xl mx-auto">
                     <header className="mb-10">
                         <div
                             className="flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
                             <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden">
-                                <div className="w-[403.4px] h-full bg-primary"></div>
+                                <div className="w-full h-full bg-primary"></div>
                             </div>
                             <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 7 of 8: Skills</span>
                         </div>
@@ -205,6 +206,17 @@ const LanguagesStep = ({ onBack, }) => {
                         <p className="font-body-sm text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
                     </header>
                     <div className="space-y-12">
+
+                        {/* Initial form (when list is empty) or Add More form */}
+                        {(showForm || !languages.length) && (
+                            <div className="bg-surface rounded-xl border border-outline-variant/50 p-6 relative group">
+                                <LanguageFormFields
+                                    form={form} setForm={setForm}
+                                    errors={errors} clearError={clearError}
+                                />
+                            </div>
+                        )}
+
                         {/* Existing items */}
                         {languages.map((l, index) => (
                             <ItemWrapper key={index} index={index}
@@ -225,23 +237,17 @@ const LanguagesStep = ({ onBack, }) => {
                             </ItemWrapper>
                         ))}
 
-                        {/* Initial form (when list is empty) or Add More form */}
-                        {(showForm || !languages.length) && (
-                            <LanguageFormFields
-                                form={form} setForm={setForm}
-                                errors={errors} clearError={clearError}
-                            />
-                        )}
-                        <div
-                            className="pt-8 flex justify-between items-center border-t border-outline-variant/30 pb-12">
-                            <button onClick={onBack}
-                                    className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors">
-                                <span className="material-symbols-outlined">arrow_back</span> Back
-                            </button>
-                            <button onClick={handleSave} disabled={saving}
-                                    className="bg-gradient-to-r from-primary to-secondary text-on-primary px-8 py-3 rounded-lg font-label-md text-label-md shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed">
-                                {saving ? "Saving..." : "Save CV"}
-                            </button>
+                        <div className="fixed bottom-0 left-0 w-full xl:w-1/2 bg-white border-t border-outline-variant/30 px-4 sm:px-6 md:px-10 py-3 sm:py-4 z-40">
+                            <div className="max-w-2xl mx-auto flex justify-between items-center gap-2">
+                                <button onClick={onBack}
+                                        className="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors">
+                                    <span className="material-symbols-outlined">arrow_back</span> Back
+                                </button>
+                                <button onClick={handleSave} disabled={saving}
+                                        className="bg-gradient-to-r from-primary to-secondary text-on-primary px-8 py-3 rounded-lg font-label-md text-label-md shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed">
+                                    {saving ? "Saving..." : "Save CV"}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

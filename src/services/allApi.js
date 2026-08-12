@@ -47,3 +47,7 @@ export const generatePdfApi = async(reqBody) => {
 export const getAllResumesApi = async(reqHeader) => {
     return await commonApi("GET",`${serverurl}/get-resumes`,"",reqHeader)
 }
+
+export const deleteResumeApi = async(id) => {
+    return await commonApi("DELETE",`${serverurl}/delete-resume/${id}`,)
+}
