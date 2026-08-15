@@ -13,21 +13,21 @@ const ThirdTemplate = (
         languages,
         projects,
         awards,
+        certifications,
         theme,
         onPageCount,
         currentPage
     }, ref) => {
 
-    let selectedTheme ={}
+    let selectedTheme = {}
 
-    {theme && Object.keys(theme).length > 0 ?
+    { theme && Object.keys(theme).length > 0 ?
         selectedTheme = theme
         :
         selectedTheme = {
-            primary : "#810B38",
+            primary: "#810B38",
         }
     }
-
 
     const blocks = useMemo(() => {
         const result = [
@@ -48,6 +48,7 @@ const ThirdTemplate = (
             ...education.map(e => ({ type: "education", data: e })),
             ...experience.map(e => ({ type: "experience", data: e })),
             ...projects.map(p => ({ type: "project", data: p })),
+            ...(certifications || []).map(c => ({ type: "certification", data: c })),
             ...awards.map(a => ({ type: "award", data: a })),
             ...chunkArray(skills, 5).map((chunk, i) => ({
                 type: "skills-row",
@@ -61,7 +62,7 @@ const ThirdTemplate = (
             })),
         ];
     }, [personalInfo, professionalSummary, education, experience,
-        projects, awards, skills, languages]);
+        projects, certifications, awards, skills, languages]);
 
     const measureRef = useRef();
     const [measureKey, setMeasureKey] = useState(0);
@@ -150,8 +151,6 @@ const ThirdTemplate = (
 
     }, [measureKey, blocks]);
 
-    // ─── Sub-components (Tailwind only) ───────────────────────────────────────
-
     const Header = ({ data }) => {
         if (!data?.firstName) return null;
         return (
@@ -164,24 +163,21 @@ const ThirdTemplate = (
                 )}
                 <div className="mt-3 flex flex-wrap justify-center items-center minWidth-100 gap-4">
                     {data.phone && <ContactItem icon="icon-tabler-mail"
-                    path = {<path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />}
-                     text={data.phone} />}
-                    {/*{data.email && <ContactItem icon="http://localhost:5173/images/email3.png" */}
-                    {/*path={<path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10 M3 7l9 6l9 -6" />}*/}
-                    {/*text={data.email} />}*/}
-                   {(data.city || data.country) && (
+                                                path = {<path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />}
+                                                text={data.phone} />}
+                    {(data.city || data.country) && (
                         <ContactItem icon="http://localhost:5173/images/location3.png"
-                        path={<path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0"/>} text={[data.city, data.country].filter(Boolean).join(", ")}  />
+                                     path={<path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0 M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0"/>} text={[data.city, data.country].filter(Boolean).join(", ")}  />
                     )}
                     {(data.nationality || data.gender || data.maritalStatus) && (
                         <ContactItem icon="http://localhost:5173/images/nation3.png"
-                        path={<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0 M6 21v-2a4 4 0 0 1 4 -4h4c.348 0 .686 .045 1.008 .128 M19 16v3 M19 22v.01" />} text={[data.nationality, data.gender, data.maritalStatus].filter(Boolean).join(", ")} />
+                                     path={<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0 M6 21v-2a4 4 0 0 1 4 -4h4c.348 0 .686 .045 1.008 .128 M19 16v3 M19 22v.01" />} text={[data.nationality, data.gender, data.maritalStatus].filter(Boolean).join(", ")} />
                     )}
 
                     {data.linkedInUrl && <ContactItem icon="http://localhost:5173/images/linkedincopy.png"
-                    path={<path d="M8 11v5 M8 8v.01 M12 16v-5 M16 16v-3a2 2 0 1 0 -4 0 M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4l0 -10" />} text={data.linkedInUrl} />}
+                                                      path={<path d="M8 11v5 M8 8v.01 M12 16v-5 M16 16v-3a2 2 0 1 0 -4 0 M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4l0 -10" />} text={data.linkedInUrl} />}
                     {data.portfolioUrl && <ContactItem icon="http://localhost:5173/images/linkedincopy.png"
-                    path={<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0 M9 3.6c5 6 7 10.5 7.5 16.2 M6.4 19c3.5 -3.5 6 -6.5 14.5 -6.4 M3.1 10.75c5 0 9.814 -.38 15.314 -5" />} text={data.portfolioUrl} />}
+                                                       path={<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0 M9 3.6c5 6 7 10.5 7.5 16.2 M6.4 19c3.5 -3.5 6 -6.5 14.5 -6.4 M3.1 10.75c5 0 9.814 -.38 15.314 -5" />} text={data.portfolioUrl} />}
                 </div>
             </div>
         );
@@ -190,8 +186,8 @@ const ThirdTemplate = (
     const ContactItem = ({ icon, text , path }) => (
         <div className="flex items-center gap-1 secondTempFont">
             <div style={{ backgroundColor: selectedTheme ? selectedTheme.primary : '#5F53F5' }} className={`rounded-full  w-8 h-8 flex justify-center items-center`}>
-            <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={`icon icon-tabler icons-tabler-outline icon-tabler-${icon}`}>
-	                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={`icon icon-tabler icons-tabler-outline icon-tabler-${icon}`}>
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     {path}
                 </svg>
             </div>
@@ -209,14 +205,12 @@ const ThirdTemplate = (
         </div>
     );
 
-
     const Summary = ({ data }) => {
         if (!data) return null;
         return (
             <div className="item px-6 secondTempFont">
                 <SectionHeader title="Professional Summary" />
                 <p className="text-xs text-[#666666] leading-relaxed mb-1">{data}</p>
-
             </div>
         );
     };
@@ -303,6 +297,28 @@ const ThirdTemplate = (
         );
     };
 
+    const CertificationItem = ({ data, index }) => {
+        const isFirst = certifications.indexOf(data) === 0 || index === 0;
+        const isLast = certifications.indexOf(data) === certifications.length - 1;
+        return (
+            <div className="item px-6 secondTempFont">
+                {isFirst && <SectionHeader title="Certifications" />}
+                <div className="grid grid-cols-[180px_1fr] gap-2">
+                    <div>
+                        <p className="text-xs text-gray-500">{data.issuingOrg}</p>
+                        <p className="text-xs font-semibold text-[#000000] mt-0.5">
+                            {data.issueingDate}{data.expirationDate ? ` – ${data.expirationDate}` : ""}
+                        </p>
+                    </div>
+                    <div>
+                        <p className={`text-xs font-bold text-[${theme?theme:'#810B38'}]`}>{data.certificationName}</p>
+                    </div>
+                </div>
+                {!isLast && <div className='bg-gray-200 w-full my-1 h-[1px]' />}
+            </div>
+        );
+    };
+
     const AwardItem = ({ data, index }) => {
         const isFirst = awards.indexOf(data) === 0 || index === 0;
         const isLast = awards.indexOf(data) === awards.length - 1;
@@ -344,7 +360,6 @@ const ThirdTemplate = (
     );
 
     const SkillsRow = ({ data, isFirst }) => {
-        const isLast = skills.indexOf(data[data.length - 1]) === skills.length - 1;
         return (
             <div className="item px-6 secondTempFont ">
                 {isFirst && <SectionHeader title="Skills" />}
@@ -361,7 +376,6 @@ const ThirdTemplate = (
     };
 
     const LanguageRow = ({ data, isFirst }) => {
-        const isLast = languages.indexOf(data[data.length - 1]) === languages.length - 1;
         return (
             <div className="item px-6 secondTempFont">
                 {isFirst && <SectionHeader title="Languages" />}
@@ -377,8 +391,6 @@ const ThirdTemplate = (
         );
     };
 
-    // ─── Block renderer ────────────────────────────────────────────────────────
-
     const renderBlock = (block, index) => {
         switch (block.type) {
             case "header": return <Header data={block.data} />;
@@ -386,15 +398,13 @@ const ThirdTemplate = (
             case "education": return <EducationItem data={block.data} index={index} />;
             case "experience": return <ExperienceItem data={block.data} index={index} />;
             case "project": return <ProjectItem data={block.data} index={index} />;
+            case "certification": return <CertificationItem data={block.data} index={index} />;
             case "award": return <AwardItem data={block.data} index={index} />;
             case "skills-row": return <SkillsRow data={block.data} isFirst={block.isFirst} />;
             case "languages-row": return <LanguageRow data={block.data} isFirst={block.isFirst} />;
             default: return null;
         }
     };
-
-
-    // ─── Render ────────────────────────────────────────────────────────────────
 
     return (
         <>
@@ -416,25 +426,6 @@ const ThirdTemplate = (
             ))}
 
             {createPortal(
-                // ── Zero-size, strictly-contained wrapper ──────────────────
-                // This is the fix. The measurement clone below MUST stay in the
-                // DOM (it's how pagination heights get measured), but portaling
-                // it straight to document.body as a bare `position: absolute;
-                // width: 794px` element means it sits directly on <body>,
-                // outside of ANY ancestor's overflow/contain rules — including
-                // ResumeCard's overflow:hidden and contain:layout, and even a
-                // page-level `overflow-x: hidden` on <body> isn't reliably
-                // enough on every browser once `position: fixed` interacts with
-                // transformed ancestors elsewhere on the page. Wrapping it in a
-                // `position: fixed; width: 0; height: 0; overflow: hidden;
-                // contain: strict` box pins it off in its own layout/paint
-                // universe: the outer box has zero size, `contain: strict`
-                // (layout + paint + size) guarantees nothing inside it can ever
-                // influence the size or scroll area of anything outside it, and
-                // `position: fixed` takes it out of normal document flow
-                // entirely. This is what was making every rendered resume card
-                // contribute an invisible 794px-wide box to the page, which is
-                // why the fixed nav icon appeared to vanish on mobile.
                 <div
                     style={{
                         position: "fixed",
@@ -469,8 +460,6 @@ const ThirdTemplate = (
             )}
         </>
     );
-
-
 };
 
 export default ThirdTemplate;

@@ -7,6 +7,8 @@ import TemplateList from './pages/TemplateList';
 import ChooseMethode from './pages/ChooseMethode';
 import UploadResume from "./pages/UploadResume.jsx";
 import Create_cv from "./pages/createCV/Create_cv.jsx";
+import { ToastContainer } from "react-toastify";
+
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -15,7 +17,9 @@ const App = () => {
     <>
         <Routes>
             <Route path='/' element={<Home/>}/>
+
             <Route path='/create-cv/:temp' element={<Create_cv/>}/>
+            <Route path='/create-cv/:temp/:resume_id' element={<Create_cv/>}/>
             <Route path='/create-cv/:temp/:previewData' element={<Create_cv/>}/>
             <Route path='/select-template' element={<TemplateList/>}/>
             <Route path='/select-template/:temp_id' element={<TemplateList/>}/>
@@ -25,6 +29,11 @@ const App = () => {
             <Route path='/user-profile/:id' element={<Profile/>}/>
         </Routes>
 
+        <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            theme="light"
+        />
     </>
     
   )

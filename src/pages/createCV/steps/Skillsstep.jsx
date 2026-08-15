@@ -10,9 +10,9 @@ const EMPTY_FORM = { skill: "", level: 2 };
 // ─── Level Slider ──────────────────────────────────────────────────────────────
 const LevelSlider = ({ level, onChange }) => (
     <div className="space-y-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between my-2 items-center">
             <label className="block font-label-md text-label-md text-on-surface-variant mb-2">Expertise Level</label>
-            <span className="text-secondary font-label-md text-label-md">{LEVELS[level]}</span>
+            <span className="text-secondary font-semi-bold text-[14px]">{LEVELS[level]}</span>
         </div>
         <div className="h-12">
             <div className="relative flex bg-surface-container-high rounded-xl h-4">
@@ -36,7 +36,7 @@ const LevelSlider = ({ level, onChange }) => (
 );
 
 // ─── Shared skill form fields ──────────────────────────────────────────────────
-const SkillFormFields = ({ form, setForm, errors, clearError,setShowForm }) => (
+const SkillFormFields = ({ form, setForm, errors, clearError,setShowForm,showForm }) => (
     <div className="relative">
         {setShowForm&&<button
             className="absolute right-0 top-0 rounded-xl transition-colors"
@@ -46,12 +46,12 @@ const SkillFormFields = ({ form, setForm, errors, clearError,setShowForm }) => (
 
         </button>}
         <div className="space-y-2">
-            <label className="block font-label-md text-label-md text-on-surface-variant mb-2">
+            <label className="block font-label-md text-label-md text-on-surface-variant ">
                 Skill Name <span className="text-red-500">*</span>
             </label>
             <input
                 className={`w-full rounded-lg px-4 py-3 transition-all outline-none font-body-md text-body-md border ${
-                    errors.skill
+                    (errors.skill&& showForm === true)
                         ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-400"
                         : "border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                 }`}
@@ -59,7 +59,7 @@ const SkillFormFields = ({ form, setForm, errors, clearError,setShowForm }) => (
                 value={form.skill}
                 onChange={e => { setForm({ ...form, skill: e.target.value }); clearError("skill"); }}
             />
-            <FieldError message={errors.skill} />
+            {showForm&&<FieldError message={errors.skill}/>}
         </div>
         <LevelSlider level={form.level} onChange={level => setForm({ ...form, level })} />
     </div>
@@ -100,7 +100,7 @@ const SkillsStep = ({ onNext, onBack }) => {
     };
 
     const handleNext = () => {
-        if (showForm || !skills.length) {
+        if (showForm && !skills.length) {
             if (!validate()) return;
             if (form.skill.trim()) addEntry();
         }
@@ -127,22 +127,22 @@ const SkillsStep = ({ onNext, onBack }) => {
 
     return (
         <div>
-            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-4 md:py-8 sm:py-12 pb-28 block" id="edit-panel">
+            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-4 md:py-8 sm:py-12 pb-28 block mb-20" id="edit-panel">
                 <div className="max-w-2xl mx-auto">
                     <header className="mb-4">
                         <div
                             className="opacity-100 md:hidden items-center text-center md:gap-4 mb-6 bg-surface-container-low px-3 pt-1 pb-3 rounded-xl border border-outline-variant/20">
-                            <span className="font-label-md text-[10px] text-primary  font-bold uppercase tracking-wider">Step 8 of 9: Certifications</span>
+                            <span className="font-label-md text-[10px] text-primary  font-bold uppercase tracking-wider">Step 8 of 9: Skills</span>
                             <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden mb-0.5">
-                                <div className="w-[258.22px] h-full bg-primary"></div>
+                                <div className="w-[295.2px] h-full bg-primary"></div>
                             </div>
                         </div>
                         <div
-                            className="hidden md:flex items-center gap-4 mb-6  bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
-                            <div className="flex-1 h-2 bg-primary/10 rounded-full ">
-                                <div className="w-[335.82px] h-full bg-primary"></div>
+                            className="hidden md:flex items-center gap-4 mb-6 w-[672px]  bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
+                            <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden ">
+                                <div className="w-[385.82px] h-full bg-primary"></div>
                             </div>
-                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 8 of 9: Skills</span>
+                            <span className="font-label-md text-[12px] mx-7 text-primary font-bold uppercase tracking-wider">Step 8 of 9: Skills</span>
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-headline-md text-[20px] font-semibold md:text-headline-md flex items-center gap-2">
@@ -153,7 +153,7 @@ const SkillsStep = ({ onNext, onBack }) => {
                         </div>
                         {(skills.length === 0 && !showForm)&&<div
                             className="border border-outline-variant/30 bg-surface-container-low rounded-lg p-6 flex flex-col justify-center gap-4 items-center">
-                            <p className="font-body-sm text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
+                            <p className="font-body-sm text-center text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
                             <button onClick={handleAddMore}
                                     className="text-primary border border-primary rounded-lg  px-8 py-2 font-label-md text-label-md flex items-center gap-1 hover:bg-primary hover:text-white">
                                 Add Skill
@@ -192,6 +192,7 @@ const SkillsStep = ({ onNext, onBack }) => {
                             <div>
                                 <div className="bg-surface rounded-xl border border-outline-variant/50 p-6 relative group">
                                     <SkillFormFields
+                                        showForm={showForm}
                                         setShowForm={setShowForm}
                                         form={form} setForm={setForm}
                                         errors={errors} clearError={clearError}

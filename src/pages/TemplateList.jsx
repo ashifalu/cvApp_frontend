@@ -1,13 +1,13 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import {Link, useNavigate, useParams} from 'react-router-dom'
 import { templates } from '../constants/templates.js'
 import Preview from './createCV/components/Preview.jsx'
 import UserAuth from "../users/components/UserAuth.jsx";
 
 const TemplateList = () => {
     const temp_id = useParams().temp_id
-    const [selectedTemp, setSelectedTemp] = useState(temp_id ? temp_id : "2")
+    const [selectedTemp, setSelectedTemp] = useState(temp_id ? temp_id : "1")
     const [selectedTheme, setSelectedTheme] = useState({})
     const [token, setToken] = useState('')
     const [existingUser, setExistingUser] = useState({})
@@ -82,22 +82,26 @@ const TemplateList = () => {
             {personalInfo.firstName ?
                 <div className="min-h-screen bg-background flex flex-col">
                     {/* ── Header ──────────────────────────────────────────────────── */}
-                    <header
-                        className="h-14 border-b border-outline-variant/30 bg-white flex items-center justify-between px-3 sm:px-6 shrink-0">
-                        <div className="flex items-center gap-4">
-                            <button
-                                className="flex items-center gap-1 sm:gap-2 text-outline hover:text-primary transition-colors text-sm">
-                                <span className="material-symbols-outlined text-lg">chevron_left</span>
-                                <span className="hidden xs:inline sm:inline">Back to editor</span>
-                            </button>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-green-600 font-medium">
-                            <span className="material-symbols-outlined text-lg">check_circle</span>
-                            <span className="hidden sm:inline">Saved</span>
-                        </div>
-                    </header>
+                    <nav className="fixed z-10 top-0 left-1/2 -translate-x-1/2 w-full   border border-black/5 bg-white/70 backdrop-blur-[24px] shadow-lg flex justify-between items-center px-4 sm:px-8 pt-[0.6rem] pb-[0.6rem]">
+                        <Link to={"/"}><div className="font-display-lg text-black tracking-tighter text-2xl flex item-center"><span className="material-symbols-outlined">arrow_back</span></div></Link>
+                        <div className="flex gap-4 items-center">
+                            {!token? <button className=" text-black font-bold px-3 sm:px-6 border border-black/5 hover:bg-surface transition-all shadow-sm py-2 rounded-lg duration-300"
+                                             onClick={() => {
+                                                 setOpen(true);
+                                                 setAuthMode('login')
+                                             }}>Sign In</button>
+                                :
+                                <button className=" text-black border border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                                        onClick={() => { navigate(`/user-profile/${existingUser._id}`);}}>
+                                    <span className="material-symbols-outlined  ">person</span> My account
 
-                    <div className="flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
+                                </button>
+                            }
+                            {/*<button onClick={()=>navigate("/select-template")} className="bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300" >Create Resume</button>*/}
+                        </div>
+                    </nav>
+
+                    <div className="flex flex-col lg:flex-row flex-1 min-h-0  overflow-hidden">
 
                         {/* ── Template grid ────────────────────────────────────────── */}
                         <div
@@ -218,46 +222,33 @@ const TemplateList = () => {
                 :
 
                 <div className="bg-surface text-on-surface min-h-screen">
-                    <nav
-                        className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 sm:px-margin-desktop h-16 bg-surface/70 backdrop-blur-xl dark:bg-on-surface/70 border-b border-outline-variant/30 shadow-sm">
-                        <div onClick={()=>navigate('/')}
-                            className="font-headline-md text-lg sm:text-headline-md font-bold text-primary dark:text-primary-fixed-dim">
-                            ResumeElite AI
-                        </div>
-
-
-
-                        <div className="flex items-center gap-2">
-                            {token ?
-                                <button
-                                    className="text-black font-bold px-3 sm:px-6 py-2  text-sm sm:text-base rounded-lg hover:shadow-lg transition-all duration-300"
-                                    onClick={() => navigate(`/user-profile/${existingUser._id}`)}>
-                                    <span className="material-symbols-outlined">person</span>
-                                </button>
+                    <nav className="fixed z-10 top-0 left-1/2 -translate-x-1/2 w-full   border border-black/5 bg-white/70 backdrop-blur-[24px] shadow-lg flex justify-between items-center px-4 sm:px-8 pt-[0.6rem] pb-[0.6rem]">
+                        <Link to={"/"}><div className="font-display-lg text-black tracking-tighter text-2xl flex item-center"><span className="material-symbols-outlined">arrow_back</span></div></Link>
+                        <div className="flex gap-4 items-center">
+                            {!token? <button className=" text-black font-bold px-3 sm:px-6 border border-black/5 hover:bg-surface transition-all shadow-sm py-2 rounded-lg duration-300"
+                                             onClick={() => {
+                                                 setOpen(true);
+                                                 setAuthMode('login')
+                                             }}>Sign In</button>
                                 :
-                                <button
-                                    className="text-black font-bold px-3 sm:px-6 py-2 text-sm sm:text-base rounded-lg hover:shadow-lg transition-all duration-300"
-                                    onClick={() => {
-                                        setOpen(true);
-                                        setAuthMode('login')
-                                    }}>
-                                    Sign In
+                                <button className=" text-black border border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                                        onClick={() => { navigate(`/user-profile/${existingUser._id}`);}}>
+                                    <span className="material-symbols-outlined  ">person</span> My account
+
                                 </button>
                             }
-
+                            {/*<button onClick={()=>navigate("/select-template")} className="bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300" >Create Resume</button>*/}
                         </div>
                     </nav>
 
 
-
-                    <main className="pt-24  sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+                    <main className="pt-24   sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
                         <header className="text-center mb-8 sm:mb-12">
                             <h1 className="font-display-lg text-3xl sm:text-4xl md:text-display-lg text-on-surface mb-3 sm:mb-4">
-                                Select your foundation
+                                Start with a Template
                             </h1>
                             <p className="font-body-lg text-sm sm:text-body-lg text-on-surface-variant max-w-2xl mx-auto px-2">
-                                Choose a professionally designed layout optimized for ATS and human recruiters. Every
-                                template is fully customizable by our AI.
+                                Pick a resume template and customize it to create your professional CV.
                             </p>
                         </header>
 
@@ -281,31 +272,33 @@ const TemplateList = () => {
                             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8">
                                 {(style === "all" ? templates : templates.filter(temps => temps.style === style)).map((temp) => (
                                     <div key={temp.id}
-                                         className={`${selectedTemp === temp.id ?`sm:border-primary group relative resume-preview-hover rounded-xl overflow-hidden bg-white border-2  md:hover:border-primary  transition-all ring-0 hover:ring-2 ring-primary/20 shadow-sm duration-500 hover:shadow-2xl hover:-translate-y-2`:`group relative resume-preview-hover rounded-xl overflow-hidden bg-white border-2 md:hover:border-primary   transition-all ring-0 hover:ring-2 ring-primary/20 shadow-sm duration-500 hover:shadow-2xl hover:-translate-y-2`}`}>
+                                         className={`${selectedTemp === temp.id ?`border-primary  md:border-gray-100 group relative resume-preview-hover rounded-xl overflow-hidden bg-white border-2  md:hover:border-primary  transition-all ring-0 hover:ring-2 ring-primary/20 shadow-sm duration-500 hover:shadow-2xl hover:-translate-y-2`:`group relative resume-preview-hover rounded-xl overflow-hidden bg-white border-2 md:hover:border-primary   transition-all ring-0 hover:ring-2 ring-primary/20 shadow-sm duration-500 hover:shadow-2xl hover:-translate-y-2`}`}>
                                         <div onClick={() => setSelectedTemp(temp.id)}
-                                             className="relative aspect-[3/4] bg-surface-container-low relative overflow-hidden">
+                                             className="relative aspect-[3/4] bg-surface-container-low  overflow-hidden">
                                             <img alt={`${temp.name} resume template preview`}
                                                  className="w-full h-full object-cover rounded-lg transition-transform duration-700 group-hover:scale-110"
                                                  src={temp.img}/>
-                                            <div className="absolute md:opacity-0 md:group-hover:opacity-100 inset-0 bg-primary/20 w-full h-full flex justify-center items-center">
+                                            <div className="absolute hidden md:flex md:opacity-0 md:group-hover:opacity-100 inset-0 backdrop-blur-[3px]  w-full h-full  justify-center items-center">
                                                 <button onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigate(`/choose-methode/${temp.id}`)
                                                 }}
-                                                        className=" hidden md:flex bg-gradient-to-r from-primary to-secondary text-white rounded-lg py-2 px-3  items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                                        className=" hidden md:flex bg-gradient-to-r from-primary to-secondary text-white rounded-lg py-2 px-3  items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity">
                                                     <p className="text-xs sm:text-sm font-bold">Use Template</p>
                                                 </button>
                                             </div>
 
 
-                                            {selectedTemp === temp.id &&<button onClick={(e) => {
-                                                e.stopPropagation();
-                                                setSelectedTemp(temp.id)
-                                            }}
-                                                                                className="absolute top-2 right-2 flex md:hidden bg-primary  text-white rounded-full py-0.5 px-1  items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                                            <span
-                                                className="material-symbols-outlined text-sm font-bold">check</span>
-                                            </button>}
+                                            {selectedTemp === temp.id &&
+                                                <div className="absolute flex md:hidden  inset-0 backdrop-blur-[2px]  w-full h-full  justify-center items-center">
+                                                        <button onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedTemp(temp.id)
+                                                    }} className="bg-primary  text-white rounded-full w-[32px] h-[32px] d-flex items-center justify-center   transition-opacity">
+                                                    <span
+                                                        className="material-symbols-outlined text-sm font-bold top-[1px] relative">check</span>
+                                                    </button>
+                                                </div>}
                                         </div>
 
                                         <div className="p-4 sm:p-6 hidden md:flex justify-between items-center gap-3">
@@ -352,23 +345,10 @@ const TemplateList = () => {
                             </div>
                         </div>
 
-                        <section
-                            className="mt-16 sm:mt-24 glass-card rounded-2xl p-6 sm:p-glass-padding text-center border border-primary-fixed/30">
-                            <h2 className="font-headline-lg text-xl sm:text-headline-lg text-on-surface mb-3 sm:mb-4">
-                                Need help choosing?
-                            </h2>
-                            <p className="font-body-md text-sm sm:text-body-md text-on-surface-variant mb-6 sm:mb-8 max-w-xl mx-auto px-2">
-                                Our AI can analyze your LinkedIn profile and recommend the template that best matches your
-                                industry and seniority.
-                            </p>
-                            <button
-                                className="bg-primary text-on-primary px-6 sm:px-10 py-3 sm:py-4 rounded-full font-label-md text-sm sm:text-label-md shadow-lg hover:scale-105 transition-transform flex items-center gap-2 mx-auto">
-                                <span className="material-symbols-outlined">psychology</span>
-                                Let AI Recommend
-                            </button>
-                        </section>
-                        <div className="flex md:hidden bottom-0 flex justify-center items-center fixed bg-surface-container-lowest w-full py-4 px-2 pe-8">
-                            <button onClick={()=> navigate(`/choose-methode/${selectedTemp}`)} className=" w-full bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300" >
+                        <div
+                            className="fixed flex md:hidden bottom-0  justify-center items-center  bg-surface-container-lowest w-full py-4 px-2 pe-8">
+                            <button onClick={() => navigate(`/choose-methode/${selectedTemp}`)}
+                                    className=" w-full bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300">
                                 Use Template
                             </button>
 

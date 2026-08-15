@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToList, updateList, removeFromList } from "../../../state/cvSlice.js"; // adjust path
 import { useNavigate } from "react-router-dom";
@@ -12,13 +12,13 @@ const EMPTY_FORM = { language: "", level: 2 };
 
 // ─── Level Slider (same as SkillsStep — reusable) ─────────────────────────────
 const LevelSlider = ({ level, onChange,}) => (
-    <div className="space-y-4">
-        <div className="flex justify-between items-center">
-            <label className="font-label-bold text-label-bold text-outline uppercase tracking-wider">Proficiency Level</label>
-            <span className="text-secondary font-bold text-body-lg">{LEVELS[level]}</span>
+    <div className="space-y-2">
+        <div className="flex justify-between space-y-2 items-center">
+            <label className="block font-label-md text-label-md text-on-surface-variant">Proficiency Level</label>
+            <span className="text-secondary font-semi-bold text-[14px]">{LEVELS[level]}</span>
         </div>
         <div className="h-12">
-            <div className="relative flex bg-surface-container-high rounded-xl h-4">
+            <div className="relative flex bg-secondary/10 rounded-xl h-4">
                 <div
                     className="absolute top-0 h-full bg-secondary rounded-xl transition-all duration-300"
                     style={{ width: `${100 / LEVELS.length}%`, left: `${(100 / LEVELS.length) * level}%` }}
@@ -39,14 +39,21 @@ const LevelSlider = ({ level, onChange,}) => (
 );
 
 // ─── Shared language form fields ───────────────────────────────────────────────
-const LanguageFormFields = ({ form, setForm, errors, clearError }) => (
-    <div className="space-y-6">
+const LanguageFormFields = ({ form, setForm, errors, clearError,setShowForm }) => (
+    <div className="relative">
+        {setShowForm&&<button
+            className="absolute right-0 top-0 rounded-xl transition-colors"
+            onClick={() => setShowForm(false)}
+        >
+            <span className="material-symbols-outlined text-[20px] text-primary/50 hover:text-primary">close</span>
+
+        </button>}
         <div className="space-y-2">
-            <label className="font-label-bold text-label-bold text-outline uppercase tracking-wider">
+            <label className="block font-label-md text-label-md text-on-surface-variant">
                 Language <span className="text-red-500">*</span>
             </label>
             <input
-                className={`w-full rounded-lg px-4 py-3 transition-all outline-none font-body-md text-body-md border ${
+                className={`w-full px-4 py-3 rounded-lg  text-on-surface-variant text-sm font-label-md border transition-all outline-none${
                     errors.language
                         ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-400"
                         : "bg-surface-container-low border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -57,13 +64,15 @@ const LanguageFormFields = ({ form, setForm, errors, clearError }) => (
             />
             <FieldError message={errors.language} />
         </div>
-        <LevelSlider level={form.level} onChange={level => setForm({ ...form, level })} />
+        <div className="space-y-2">
+            <LevelSlider level={form.level} onChange={level => setForm({ ...form, level })} />
+        </div>
     </div>
 );
 
 // ─── LanguagesStep ────────────────────────────────────────────────────────────
 // This is the LAST step — it also handles Save CV (PDF generation + store data)
-const LanguagesStep = ({ onBack,selectedTheme,temp_id }) => {
+const LanguagesStep = ({ onBack,selectedTheme,temp_id,resume_id }) => {
     const dispatch   = useDispatch();
     const navigate   = useNavigate();
     const languages  = useSelector(s => s.cv.cvData.languages);
@@ -90,7 +99,7 @@ const LanguagesStep = ({ onBack,selectedTheme,temp_id }) => {
     const clearError = (field) => setErrors(prev => { const e = { ...prev }; delete e[field]; return e; });
 
     const validate = () => {
-        if (!form.language.trim()) {
+        if ( showForm && !form.language.trim()) {
             setErrors({ language: "Language is required." });
             return false;
         }
@@ -147,6 +156,7 @@ const LanguagesStep = ({ onBack,selectedTheme,temp_id }) => {
             const pdfUrl      = pdfResponse.data.pdfUrl;
 
             const reqBody = {
+                resume_id: resume_id? resume_id:null,
                 personalInfo: {
                     ...personalInfo,
                     phone: personalInfo.phone
@@ -184,38 +194,40 @@ const LanguagesStep = ({ onBack,selectedTheme,temp_id }) => {
 
     return (
         <div>
-            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-8 sm:py-12 pb-28 block" id="edit-panel">                <div className="max-w-2xl mx-auto">
-                    <header className="mb-10">
+            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-4 md:py-8 sm:py-12 pb-28 block mb-20" id="edit-panel">                <div className="max-w-2xl mx-auto">
+                    <header className="mb-4">
                         <div
-                            className="flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
+                            className="opacity-100 md:hidden items-center text-center md:gap-4 mb-6 bg-surface-container-low px-3 pt-1 pb-3 rounded-xl border border-outline-variant/20">
+                            <span className="font-label-md text-[10px] text-primary  font-bold uppercase tracking-wider">Step 9 of 9: Languages</span>
+                            <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden mb-0.5">
+                                <div className="w-[331.99px] h-full bg-primary"></div>
+                            </div>
+                        </div>
+                        <div
+                            className=" hidden md:flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
                             <div className="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden">
                                 <div className="w-full h-full bg-primary"></div>
                             </div>
-                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 7 of 8: Skills</span>
+                            <span className="font-label-md text-[12px] text-primary font-bold uppercase tracking-wider">Step 9 of 9: Languages</span>
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-headline-md text-headline-md flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">Language</span>
                                 Languages
                             </h3>
-                            <button onClick={handleAddMore}
-                                    className="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
-                                <span className="material-symbols-outlined text-sm">add</span> Add Role
-                            </button>
-                        </div>
-                        <p className="font-body-sm text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
-                    </header>
-                    <div className="space-y-12">
 
-                        {/* Initial form (when list is empty) or Add More form */}
-                        {(showForm || !languages.length) && (
-                            <div className="bg-surface rounded-xl border border-outline-variant/50 p-6 relative group">
-                                <LanguageFormFields
-                                    form={form} setForm={setForm}
-                                    errors={errors} clearError={clearError}
-                                />
-                            </div>
-                        )}
+                        </div>
+                        {(languages.length === 0 && !showForm)&&<div
+                            className="border border-outline-variant/30 bg-surface-container-low rounded-lg p-6 flex flex-col justify-center gap-4 items-center">
+                            <p className="font-body-sm text-center text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
+                            <button onClick={handleAddMore}
+                                    className="text-primary border border-primary rounded-lg  px-8 py-2 font-label-md text-label-md flex items-center gap-1 hover:bg-primary hover:text-white">
+                                Add Language
+                            </button>
+                        </div>}                      </header>
+                    <div className="space-y-3">
+
+
 
                         {/* Existing items */}
                         {languages.map((l, index) => (
@@ -237,6 +249,32 @@ const LanguagesStep = ({ onBack,selectedTheme,temp_id }) => {
                             </ItemWrapper>
                         ))}
 
+                        {(!showForm&&languages.length>0)&&<div className="mt-4 mb-10">
+                            <button onClick={handleAddMore}
+                                    className=" border border-primary rounded-lg  px-8 py-2 font-label-md text-label-md flex items-center gap-1 bg-primary text-white">
+                                Add More Language
+                            </button>
+                        </div>}
+
+                        {/* Initial form (when list is empty) or Add More form */}
+                        {showForm  && (
+                            <div>
+                                <div className="bg-surface rounded-xl border border-outline-variant/50 p-6 relative group">
+                                    <LanguageFormFields
+                                        setShowForm={setShowForm}
+                                        form={form} setForm={setForm}
+                                        errors={errors} clearError={clearError}
+                                    />
+                                </div>
+                                <div className="mt-4 mb-10">
+                                    <button onClick={handleAddMore}
+                                            className=" border border-primary rounded-lg  px-8 py-2 font-label-md text-label-md flex items-center gap-1 bg-primary text-white">
+                                        Add More Language
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="fixed bottom-0 left-0 w-full xl:w-1/2 bg-white border-t border-outline-variant/30 px-4 sm:px-6 md:px-10 py-3 sm:py-4 z-40">
                             <div className="max-w-2xl mx-auto flex justify-between items-center gap-2">
                                 <button onClick={onBack}
@@ -254,6 +292,17 @@ const LanguagesStep = ({ onBack,selectedTheme,temp_id }) => {
             </section>
 
             <UserAuth isOpen={open} storeData={storeDataRef.current} onClose={() => setOpen(false)} />
+            {saving && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                    <div className="flex flex-col items-center gap-4 bg-surface px-10 py-8 rounded-2xl shadow-2xl border border-outline-variant/30 min-w-[220px]">
+                        <div className="relative w-12 h-12">
+                            <div className="absolute inset-0 rounded-full border-4 border-outline-variant/30"></div>
+                            <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+                        </div>
+                        <p className="font-label-md text-sm text-on-surface tracking-wide">Saving...</p>
+                    </div>
+                </div>
+            )}
 
         </div>
     );

@@ -34,7 +34,7 @@ const ResumeCard = ({ res, formatDate, onEdit, onDownload, onDelete }) => {
         // something inside Preview renders wider than expected (e.g. a
         // position: fixed element, which can escape the inner scale-box's
         // overflow: hidden in some browsers).
-        <div className="flex flex-col p-3 md:p-4 bg-gray-400/5 rounded-lg border border-outline-variant/20 hover:shadow-md transition-all w-full max-w-full overflow-hidden">
+        <div className="flex flex-col p-3 md:p-4 bg-gray-400/5 rounded-lg border border-outline-variant/30 hover:shadow-md transition-all w-full max-w-full overflow-hidden">
             <div className="flex flex-col items-center mb-2 text-center">
                 <h6 className="mb-1 text-xs md:text-body-md font-semibold text-on-surface line-clamp-1">
                     {res.title || "My Resume"}

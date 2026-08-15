@@ -36,7 +36,7 @@ const SummaryStep = ({ onNext, onBack }) => {
 
     return (
         <div>
-            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-4 md:py-8 sm:py-12 pb-28 block" id="edit-panel">                <div className="max-w-2xl mx-auto">
+            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-4 md:py-8 sm:py-12 pb-28 block mb-20" id="edit-panel">                <div className="max-w-2xl mx-auto">
                     <header className="mb-4">
                         <div
                             className=" hidden md:flex items-center gap-4 mb-6 bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">

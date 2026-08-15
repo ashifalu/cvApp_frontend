@@ -117,7 +117,7 @@ const AwardsStep = ({ onNext, onBack }) => {
 
     return (
         <div className="">
-            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-4 md:py-8 sm:py-12 pb-28 block" id="edit-panel">
+            <section className="min-h-[calc(100vh-112px)] bg-surface-container-lowest px-4 sm:px-6 md:px-10 py-4 md:py-8 sm:py-12 pb-28 block mb-20" id="edit-panel">
                 <div className="max-w-2xl mx-auto">
                     <header className="mb-4">
                         <div
@@ -143,7 +143,7 @@ const AwardsStep = ({ onNext, onBack }) => {
                         </div>
                         {(awards.length === 0 && !showForm)&&<div
                             className="border border-outline-variant/30 bg-surface-container-low rounded-lg p-6 flex flex-col justify-center gap-4 items-center">
-                            <p className="font-body-sm text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
+                            <p className="font-body-sm text-center text-body-sm text-on-surface-variant">Add certifications, awards, or recognitions you have earned..</p>
                             <button onClick={handleAddMore}
                                     className="text-primary border border-primary rounded-lg  px-8 py-2 font-label-md text-label-md flex items-center gap-1 hover:bg-primary hover:text-white">
                                 Add Award

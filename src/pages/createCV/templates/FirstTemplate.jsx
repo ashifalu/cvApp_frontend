@@ -8,7 +8,9 @@ const FirstTemplate = ({
                            projects,
                            experience,
                            certifications,
+                           awards,
                            education,
+                           languages,
                            theme,
                            onPageCount,
                            currentPage,
@@ -33,11 +35,12 @@ const FirstTemplate = ({
             ...(projects || []).map(p => ({ type: "project", data: p })),
             ...(experience || []).map(e => ({ type: "experience", data: e })),
             ...(certifications || []).map(c => ({ type: "certification", data: c })),
+            ...(awards || []).map(a => ({ type: "award", data: a })),
             ...(education || []).map(e => ({ type: "education", data: e })),
+            ...((languages && languages.length > 0) ? [{ type: "languages", data: languages }] : []),
         ];
-    }, [personalInfo, professionalSummary, skills, projects, experience, certifications, education]);
+    }, [personalInfo, professionalSummary, skills, projects, experience, certifications, awards, education, languages]);
 
-    // ── Pagination scaffolding (identical pattern to SecondTemplate) ──
     const measureRef = useRef();
     const [measureKey, setMeasureKey] = useState(0);
     const [pages, setPages] = useState([]);
@@ -108,7 +111,6 @@ const FirstTemplate = ({
         });
     }, [measureKey, blocks]);
 
-    // ── Section header with underline, matching the reference design ──
     const SectionHeading = ({ children }) => (
         <div className="mb-2">
             <h2 className="text-sm font-bold tracking-wide uppercase text-black">{children}</h2>
@@ -175,7 +177,7 @@ const FirstTemplate = ({
 
     const ProjectItem = ({ data, index }) => (
         <div className="px-8 py-2 thirdTempFont">
-            {index === (projects?.indexOf(data) === 0 ? projects.indexOf(data) : index) && projects?.indexOf(data) === 0 && (
+            {projects?.indexOf(data) === 0 && (
                 <SectionHeading>Projects</SectionHeading>
             )}
             <p style={{ color: selectedTheme.primary }} className="text-xs font-bold">{data.projectTitle}</p>
@@ -230,6 +232,22 @@ const FirstTemplate = ({
         </div>
     );
 
+    const AwardItem = ({ data }) => (
+        <div className="px-8 py-2 thirdTempFont">
+            {awards?.indexOf(data) === 0 && <SectionHeading>Awards</SectionHeading>}
+            <div className="flex justify-between items-baseline">
+                <p className="text-xs font-semibold">{data.awardName}</p>
+                {data.issueingDate && (
+                    <p className="text-xs font-medium text-gray-700">
+                        {data.issueingDate}{data.expirationDate ? ` - ${data.expirationDate}` : ""}
+                    </p>
+                )}
+            </div>
+            {data.issueingOrg && <p className="text-xs text-gray-600">{data.issueingOrg}</p>}
+            {data.description && <p className="text-xs text-gray-600 mt-0.5">{data.description}</p>}
+        </div>
+    );
+
     const EducationItem = ({ data }) => (
         <div className="px-8 py-2 thirdTempFont">
             {education?.indexOf(data) === 0 && <SectionHeading>Education</SectionHeading>}
@@ -247,6 +265,15 @@ const FirstTemplate = ({
         </div>
     );
 
+    const Languages = ({ data }) => (
+        <div className="px-8 py-3 thirdTempFont">
+            <SectionHeading>Languages</SectionHeading>
+            <p className="text-xs text-gray-800 leading-relaxed">
+                {data.map(l => l.language).join(" • ")}
+            </p>
+        </div>
+    );
+
     const renderBlock = (block, index) => {
         switch (block.type) {
             case "header":        return <Header data={block.data} />;
@@ -255,7 +282,9 @@ const FirstTemplate = ({
             case "project":       return <ProjectItem data={block.data} index={index} />;
             case "experience":    return <ExperienceItem data={block.data} index={index} />;
             case "certification": return <CertificationItem data={block.data} index={index} />;
+            case "award":         return <AwardItem data={block.data} index={index} />;
             case "education":     return <EducationItem data={block.data} index={index} />;
+            case "languages":     return <Languages data={block.data} />;
             default: return null;
         }
     };
@@ -287,25 +316,6 @@ const FirstTemplate = ({
             })}
 
             {createPortal(
-                // ── Zero-size, strictly-contained wrapper ──────────────────
-                // This is the fix. The measurement clone below MUST stay in the
-                // DOM (it's how pagination heights get measured), but portaling
-                // it straight to document.body as a bare `position: absolute;
-                // width: 794px` element means it sits directly on <body>,
-                // outside of ANY ancestor's overflow/contain rules — including
-                // ResumeCard's overflow:hidden and contain:layout, and even a
-                // page-level `overflow-x: hidden` on <body> isn't reliably
-                // enough on every browser once `position: fixed` interacts with
-                // transformed ancestors elsewhere on the page. Wrapping it in a
-                // `position: fixed; width: 0; height: 0; overflow: hidden;
-                // contain: strict` box pins it off in its own layout/paint
-                // universe: the outer box has zero size, `contain: strict`
-                // (layout + paint + size) guarantees nothing inside it can ever
-                // influence the size or scroll area of anything outside it, and
-                // `position: fixed` takes it out of normal document flow
-                // entirely. This is what was making every rendered resume card
-                // contribute an invisible 794px-wide box to the page, which is
-                // why the fixed nav icon appeared to vanish on mobile.
                 <div
                     style={{
                         position: "fixed",

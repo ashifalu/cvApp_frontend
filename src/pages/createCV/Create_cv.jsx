@@ -7,12 +7,13 @@ import EducationStep from "./steps/Educationstep.jsx";
 import SummaryStep from "./steps/Summarystep.jsx";
 import PersonalInfoStep from "./steps/PersonalInfoStep.jsx";
 import React, {useEffect, useRef, useState} from "react";
-import {useNavigate, useParams, useLocation} from "react-router-dom";
+import {useNavigate, useParams, useLocation, Link} from "react-router-dom";
 import SkillsStep from "./steps/Skillsstep.jsx";
 import LanguagesStep from "./steps/Languagesstep.jsx";
 import {generatePdfApi, storeDataApi} from "../../services/allApi.js";
 import UserAuth from "../../users/components/UserAuth.jsx";
 import {useSelector, useDispatch} from "react-redux";
+import Modal from "../../Modal.jsx";
 
 
 const  Create_cv = () => {
@@ -28,6 +29,7 @@ const  Create_cv = () => {
     const languages = useSelector(s => s.cv.cvData.languages)
 
     const temp_id = useParams().temp;
+    const resume_id = useParams().resume_id;
     console.log(temp_id)
     const location = useLocation();
     const resumeTheme = location.state
@@ -71,7 +73,7 @@ const  Create_cv = () => {
     };
 
     const stepComponents = {
-        personalInfo:        <PersonalInfoStep onNext={goNext}  />,
+        personalInfo:        <PersonalInfoStep onNext={goNext} temp_id={temp_id} />,
         professionalSummary: <SummaryStep onNext={goNext} onBack={goBack}  />,
         education:           <EducationStep onNext={goNext} onBack={goBack}  />,
         experience:          <ExperienceStep onNext={goNext} onBack={goBack}  />,
@@ -79,7 +81,7 @@ const  Create_cv = () => {
         awards:              <AwardsStep onNext={goNext} onBack={goBack}  />,
         certifications:      <CertificationsStep onNext={goNext} onBack={goBack}  />,
         skills:              <SkillsStep onNext={goNext} onBack={goBack} />,
-        languages:           <LanguagesStep onBack={goBack} temp_id={temp_id} selectedTheme={selectedTheme}  />,
+        languages:           <LanguagesStep onBack={goBack} temp_id={temp_id} selectedTheme={selectedTheme} resume_id={resume_id} />,
     };
 
     const handleSave = async () => {
@@ -140,27 +142,24 @@ const  Create_cv = () => {
     return (
         <div className="creteCv_body bg-surface text-on-surface">
             {/* ── Header ─────────────────────────────────────────────── */}
-            <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 sm:px-margin-mobile md:px-margin-desktop h-16 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
-                <div className="flex items-center gap-3 sm:gap-6 min-w-0">
-                    <div onClick={()=>navigate("/")} className="font-headline-md text-lg sm:text-headline-md font-bold text-primary truncate">
-                        ResumeElite
-                    </div>
-
-                </div>
-
-                <div className="flex items-center gap-2 md:gap-3 shrink-0">
-                    {!token? <button className=" text-black font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+            <nav className="fixed top-0 left-1/2 -translate-x-1/2 w-full   border border-black/5 bg-surface/80 backdrop-blur-[24px] shadow-md flex justify-between items-center px-4 sm:px-8 z-50 pt-[0.6rem] pb-[0.6rem]">
+                <Link to={`/choose-methode/${temp_id}`}><div className="font-display-lg text-black tracking-tighter text-2xl flex item-center"><span className="material-symbols-outlined">arrow_back</span></div></Link>
+                <div className="flex gap-4 items-center">
+                    {!token? <button className=" text-black font-bold px-3 sm:px-6 border border-black/5 hover:bg-surface transition-all shadow-sm py-2 rounded-lg duration-300"
                                      onClick={() => {
                                          setOpen(true);
                                          setAuthMode('login')
                                      }}>Sign In</button>
                         :
-                        <button className="text-black font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                        <button className=" text-black border border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
                                 onClick={() => { navigate(`/user-profile/${existingUser._id}`);}}>
-                            <span className="material-symbols-outlined">person</span>
-                        </button>}
+                            <span className="material-symbols-outlined  ">person</span> My account
+
+                        </button>
+                    }
+                    {/*<button onClick={()=>navigate("/select-template")} className="bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300" >Create Resume</button>*/}
                 </div>
-            </header>
+            </nav>
 
             {/* ── Mobile / tablet tab switcher ──────────────────────────── */}
             <div className="fixed top-16 left-0 w-full z-40 flex bg-surface border-b border-outline-variant/30 xl:hidden">
@@ -187,7 +186,7 @@ const  Create_cv = () => {
             </main>
 
             {/* ── Mobile / tablet single-panel view (below xl) ──────────── */}
-            <main className="mt-[112px] w-full  xl:hidden min-h-[calc(100vh-112px)]">
+            <main className="mt-[109px] w-full  xl:hidden min-h-[calc(100vh-109px)]">
                 {switchTab === "edit" &&
                     <div className=" w-full min-h-[calc(100vh-112px)]">
                         {stepComponents[currentStep]}
@@ -198,7 +197,19 @@ const  Create_cv = () => {
                     </div>}
             </main>
 
-            <UserAuth isOpen={open} storeData={storeDataRef.current} onClose={() => setOpen(false)} />
+
+            <UserAuth isOpen={open} storeData={storeDataRef.current}  onClose={() => setOpen(false)} />
+            {saving===true && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                    <div className="flex flex-col items-center gap-4 bg-surface px-10 py-8 rounded-2xl shadow-2xl border border-outline-variant/30 min-w-[220px]">
+                        <div className="relative w-12 h-12">
+                            <div className="absolute inset-0 rounded-full border-4 border-outline-variant/30"></div>
+                            <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+                        </div>
+                        <p className="font-label-md text-sm text-on-surface tracking-wide">Saving...</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

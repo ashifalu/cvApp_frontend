@@ -22,7 +22,7 @@ const EighthTemplate = ({
 
     const PAGE_WIDTH = 794;
     const PAGE_HEIGHT = 1123;
-    const PAGE_1_HEIGHT = 1035;
+    const PAGE_1_HEIGHT = 1065;
     const PAGE_N_HEIGHT = 1000;
 
     const blocks = useMemo(() => {

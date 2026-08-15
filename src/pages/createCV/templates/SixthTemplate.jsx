@@ -25,7 +25,7 @@ const SixthTemplate = ({
     const PAGE_WIDTH = 794;
     const MAIN_WIDTH = PAGE_WIDTH - SIDEBAR_WIDTH;
     const PAGE_HEIGHT = 1123;
-    const PAGE_1_MAIN_HEIGHT = PAGE_HEIGHT - HEADER_HEIGHT - 60;
+    const PAGE_1_MAIN_HEIGHT = 800;
     const PAGE_N_MAIN_HEIGHT = PAGE_HEIGHT - 60;
 
     // ── Main column blocks only — sidebar is static, page 1 only ──

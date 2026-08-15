@@ -1,6 +1,7 @@
 import {resumeParseApi} from "../services/allApi.js";
-import {useNavigate, useParams} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import  {useEffect, useState} from 'react'
+import {Link, useNavigate, useParams} from "react-router-dom";
+import {useDispatch,} from "react-redux";
 import {
     setEducation,
     addPersonalInfo,
@@ -10,13 +11,29 @@ import {
     setLanguages,
     setAwards, addProfessionalSummary
 } from "../state/cvSlice.js";
+import React from "react";
 
 const UploadResume = () => {
     console.log(useParams())
     const temp_id = useParams().temp_id
 
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [open, setOpen] = useState(false)
+        const [authMode, setAuthMode] = useState('login')
+        const [token, setToken] = useState('')
+        const [existingUser, setExistingUser] = useState({})
+
+
+        useEffect(() => {
+
+            if (sessionStorage.getItem("token")) {
+                setToken(sessionStorage.getItem("token"))
+                setExistingUser(JSON.parse(sessionStorage.getItem("existingUser")))
+            }
+            console.log(existingUser._id);
+            console.log(token);
+        }, [])
 
     const handleResume = async(e) => {
         const resume_file = e.target.files[0];
@@ -71,23 +88,35 @@ const UploadResume = () => {
 
     return (
         <div>
+            <nav className="fixed top-0 left-1/2 -translate-x-1/2 w-full   border border-black/5 bg-white/70 backdrop-blur-[24px] shadow-lg flex justify-between items-center px-4 sm:px-8 py-4 z-50">
+                <Link to={`/choose-methode/${temp_id}`}><div className="font-display-lg text-black tracking-tighter text-2xl flex item-center"><span className="material-symbols-outlined">arrow_back</span></div></Link>
+                <div className="flex gap-4 items-center">
+                    {!token? <button className=" text-black font-bold px-3 sm:px-6 border border-black/5 hover:bg-surface transition-all shadow-sm py-2 rounded-lg duration-300"
+                                     onClick={() => {
+                                         setOpen(true);
+                                         setAuthMode('login')
+                                     }}>Sign In</button>
+                        :
+                        <button className=" text-black border border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                                onClick={() => { navigate(`/user-profile/${existingUser._id}`);}}>
+                            <span className="material-symbols-outlined  ">person</span> My account
+
+                        </button>
+                    }
+                    {/*<button onClick={()=>navigate("/select-template")} className="bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300" >Create Resume</button>*/}
+                </div>
+            </nav>
+
             <div className="mesh-bg min-h-screen flex flex-col font-body-md text-on-surface">
                 <main
                     className="flex-grow flex flex-col items-center justify-center px-4 sm:px-margin-mobile md:px-margin-desktop py-12 sm:py-section-gap">
                     <div className="w-full max-w-3xl">
-                        <div className="mb-6 sm:mb-8 animate-fade-in">
-                            <a className="inline-flex items-center text-primary font-button text-button group" href="/choose-methode">
-                            <span
-                                className="material-symbols-outlined mr-2 transition-transform group-hover:-translate-x-1">arrow_back</span>
-                                <span className="text-sm sm:text-base">Back</span>
-                            </a>
-                        </div>
                         <div className="text-center mb-8 sm:mb-12">
                             <h1 className="font-headline-lg text-3xl sm:text-headline-lg-mobile md:text-headline-lg text-on-surface mb-3 sm:mb-4">
                                 Import Your Resume
                             </h1>
                             <p className="text-on-surface-variant text-sm sm:text-base max-w-lg mx-auto px-2 sm:px-0">
-                                Let our high-performance AI handle the heavy lifting. Parse your existing data into a professional template in seconds.
+                                Upload your existing resume and convert it into a professional template in seconds.
                             </p>
                         </div>
                         <div
@@ -107,7 +136,7 @@ const UploadResume = () => {
                                     Drag and drop your resume here
                                 </h2>
                                 <p className="text-on-surface-variant mb-6 sm:mb-8 font-body-md text-sm sm:text-base">
-                                    or choose a file from your computer
+                                    or choose a file from your device
                                 </p>
                                 <div className="inline-block">
                                     <button
@@ -126,26 +155,6 @@ const UploadResume = () => {
                                     <span>TXT</span>
                                 </div>
                             </div>
-                        </div>
-                        <div
-                            className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 bg-primary-container/10 p-5 sm:p-6 rounded-2xl border border-primary-container/20 text-center sm:text-left">
-                            <div
-                                className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 bg-primary-container flex items-center justify-center rounded-xl shadow-lg shadow-primary/10">
-                                <span className="material-symbols-outlined text-on-primary-container">bolt</span>
-                            </div>
-                            <div>
-                            <span
-                                className="font-label-bold text-primary uppercase text-[11px] sm:text-[12px] block mb-1">Pro Tip</span>
-                                <p className="text-on-surface-variant font-body-md text-sm sm:text-base">
-                                    Our AI parses your existing resume in seconds to save you time. We automatically extract skills, experience, and contact details with 99% accuracy.
-                                </p>
-                            </div>
-                        </div>
-                        <div className="mt-8 sm:mt-12 text-center">
-                            <button
-                                className="text-on-surface-variant hover:text-primary font-button text-sm sm:text-button transition-colors underline underline-offset-4">
-                                Choose another method
-                            </button>
                         </div>
                     </div>
                 </main>

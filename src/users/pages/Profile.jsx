@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import ResumeCard from "../components/ResumeCard.jsx";
 import { deleteResumeApi, getAllResumesApi, storeDataApi } from "../../services/allApi";
@@ -24,6 +24,9 @@ const Profile = () => {
     const [isDeleted, seIsDeleted] = useState(false)
     const [profilelistOpen, setProfilelistOpen] = useState(false)
     const [activeNav, setActiveNav] = useState('resumes')
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+    const [deleteConfirmation, setDeleteConfirmation] = useState(false)
+    const [deleteId, setDeleteId] = useState(null)
 
     const profileMenuRef = useRef(null)
 
@@ -34,6 +37,7 @@ const Profile = () => {
 
 
     const handleEditResume = (editData) => {
+        console.log(editData)
         dispatch(addPersonalInfo(editData.previewData.personalInfo))
         if (editData.previewData.professionalSummary) {
             dispatch(addProfessionalSummary(editData.previewData.professionalSummary))
@@ -56,7 +60,7 @@ const Profile = () => {
         if (editData.previewData.awards.length !== 0) {
             dispatch(setAwards(editData.previewData.awards));
         }
-        navigate(`/create-cv/${editData.template}`, {
+        navigate(`/create-cv/${editData.template}/${editData._id}`, {
             state: editData.theme
         });
     }
@@ -125,17 +129,19 @@ const Profile = () => {
     }
 
     const handleDelete = async (id) => {
-        try {
-            const result = await deleteResumeApi(id);
-            if (result.status === 200) {
-                seIsDeleted(!isDeleted);
-            } else {
-                alert("Failed to delete resume");
+
+            try {
+                const result = await deleteResumeApi(id);
+                if (result.status === 200) {
+                    seIsDeleted(!isDeleted);
+                    setOpenDeleteDialog(false)
+                } else {
+                    alert("Failed to delete resume");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Something went wrong while deleting the resume");
             }
-        } catch (error) {
-            console.error(error);
-            alert("Something went wrong while deleting the resume");
-        }
     };
 
     useEffect(() => {
@@ -171,24 +177,22 @@ const Profile = () => {
 
             {/* NAVBAR */}
             <nav
-                className="fixed top-0 left-0 z-50 flex justify-between items-center w-full px-4 sm:px-6 md:px-margin-desktop py-3 sm:py-4 bg-surface/70 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
-                <div className="flex items-center gap-8">
-                    <span className="font-headline-md text-lg sm:text-xl md:text-headline-md font-bold text-primary">
-                        ResumeElite
-                    </span>
-                </div>
+                className="fixed top-0 left-0 z-10 flex justify-between items-center w-full px-4 sm:px-6 md:px-margin-desktop py-3 sm:py-4 bg-surface/70 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
+                <Link to={"/"}><div className="font-display-lg text-black tracking-tighter text-2xl flex item-center"><span className="material-symbols-outlined">arrow_back</span></div></Link>
+
 
                 {/* Profile icon + dropdown, anchored as a single relative unit */}
                 <div className="relative" ref={profileMenuRef}>
+
                     <button
-                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center hover:border hover:border-primary/30 hover:bg-primary/5 rounded-lg transition-all"
+                        className="text-black border text-[14px] border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-3 sm:px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
                         onClick={() => setProfilelistOpen(o => !o)}
                         aria-haspopup="true"
                         aria-expanded={profilelistOpen}
                         aria-label="Toggle profile menu">
                         <span className="material-symbols-outlined">
                             {profilelistOpen ? 'close' : 'person'}
-                        </span>
+                        </span> My Account
                     </button>
 
                     {profilelistOpen && (
@@ -220,16 +224,16 @@ const Profile = () => {
                     </section>
                 ) : (
                     <section className="space-y-6">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                            <div className="flex items-center gap-3 my-2 sm:my-6">
+                        <div className="flex justify-between items-center gap-4">
+                            <div className="flex items-center gap-1">
                                 <span className="material-symbols-outlined text-primary">description</span>
-                                <h2 className="font-headline-md text-xl sm:text-headline-md">My Resumes</h2>
+                                <h2 className="font-headline-md text-md font-semibold sm:text-headline-md">My Resumes</h2>
                             </div>
 
-                            <button onClick={() => navigate('/select-template')}
+                           <a href='/select-template'
                                     className="self-start sm:self-auto px-5 sm:px-6 py-2.5 font-label-md text-label-md bg-primary text-xs text-on-primary rounded-lg shadow-sm hover:scale-[0.98] transition-transform active:scale-95 whitespace-nowrap">
-                                New Resume
-                            </button>
+                                Create Resume
+                            </a>
                         </div>
 
                         {resumes.length === 0 ? (
@@ -256,7 +260,9 @@ const Profile = () => {
                                                 formatDate={formatDate}
                                                 onEdit={handleEditResume}
                                                 onDownload={handleDownload}
-                                                onDelete={handleDelete}
+                                                onDelete={()=>{setOpenDeleteDialog(true)
+                                                    setDeleteId(res._id)
+                                            }}
                                             />
                                         </div>
                                     ))}
@@ -266,6 +272,22 @@ const Profile = () => {
                 )}
 
             </div>
+            {openDeleteDialog&&<div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                <div
+                    className="flex flex-col items-center gap-4 bg-surface px-10 py-8 rounded-2xl shadow-2xl border border-outline-variant/30 max-w-[350px] ">
+                    <div className="flex flex-col items-center justify-center text-center  ">
+                        <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center mb-6 animate-in zoom-in duration-300">
+                            <span className="material-symbols-outlined text-red-600 text-[44px]">delete</span>
+                        </div>
+                        <h2 className="font-headline-lg text-[28px] text-on-surface mb-2">Confirm Deletion</h2>
+                        <p className="font-body-md text-on-surface-variant mb-4">This resume will be permanently deleted. Do you want to continue?</p>
+                        <div className='flex align-center w-full justify-center mt-2 gap-2'>
+                            <button onClick={()=>setOpenDeleteDialog(false)} className="px-4 w-full py-1 rounded-lg border border-primary">No</button>
+                            <button onClick={()=>handleDelete(deleteId)} className="px-4 w-full py-1 rounded-lg bg-red-600 text-white">Yes,Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>}
         </div>
     )
 }

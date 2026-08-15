@@ -8,7 +8,9 @@ const FifthTemplate = ({
                            projects,
                            experience,
                            certifications,
+                           awards,
                            education,
+                           languages,
                            theme,
                            onPageCount,
                            currentPage
@@ -23,23 +25,24 @@ const FifthTemplate = ({
     const PAGE_WIDTH = 794;
     const MAIN_WIDTH = PAGE_WIDTH - SIDEBAR_WIDTH;
     const PAGE_HEIGHT = 1123;
-    const PAGE_1_MAIN_HEIGHT = 783; // main col starts below header on page 1
-    const PAGE_N_MAIN_HEIGHT = PAGE_HEIGHT - 40; // full height on later pages (no header/sidebar)
+    const PAGE_1_MAIN_HEIGHT = 783;
+    const PAGE_N_MAIN_HEIGHT = PAGE_HEIGHT - 40;
 
-    // ── Main column blocks only — sidebar (Profile/Contact/Address/Skills) is static, not paginated ──
-    const blocks = useMemo(() =>{
-        const result= []
+    const blocks = useMemo(() => {
+        const result = [];
         if (professionalSummary) {
             result.push({ type: "summary", data: professionalSummary });
         }
 
-        return[
+        return [
             ...result,
-        ...(projects || []).map(p => ({ type: "project", data: p })),
-        ...(experience || []).map(e => ({ type: "experience", data: e })),
-        ...(certifications || []).map(c => ({ type: "certification", data: c })),
-        ...(education || []).map(e => ({ type: "education", data: e })),
-    ]}, [ professionalSummary,projects, experience, certifications, education]);
+            ...(projects || []).map(p => ({ type: "project", data: p })),
+            ...(experience || []).map(e => ({ type: "experience", data: e })),
+            ...(certifications || []).map(c => ({ type: "certification", data: c })),
+            ...(awards || []).map(a => ({ type: "award", data: a })),
+            ...(education || []).map(e => ({ type: "education", data: e })),
+        ];
+    }, [professionalSummary, projects, experience, certifications, awards, education]);
 
     const measureRef = useRef();
     const [measureKey, setMeasureKey] = useState(0);
@@ -104,13 +107,11 @@ const FifthTemplate = ({
 
     }, [measureKey, blocks]);
 
-    // ─── Header (photo + name + title) — page 1 only, full width ───
     const Header = ({ data }) => {
-        console.log(data.photo)
         const initials = [data?.firstName?.[0], data?.lastName?.[0]].filter(Boolean).join("").toUpperCase();
         return (
             <div className="flex items-center gap-8 px-10 pt-10 pb-6 fifthTempFont" style={{ height: HEADER_HEIGHT }}>
-                <div
+                {data?.photo && <div
                     className="w-[190px] h-[190px] rounded-full flex items-center justify-center shrink-0 overflow-hidden"
                     style={{ border: `4px solid ${selectedTheme.primary}` }}
                 >
@@ -118,7 +119,7 @@ const FifthTemplate = ({
                         ? <img src={data.photo} alt="profile" className="w-full h-full object-cover" />
                         : <span className="text-4xl font-bold" style={{ color: selectedTheme.primary }}>{initials || "?"}</span>
                     }
-                </div>
+                </div>}
                 <div>
                     <h1 className="text-5xl font-light text-black">
                         {data?.firstName || "Your Name"} {data?.lastName || ""}
@@ -134,16 +135,14 @@ const FifthTemplate = ({
         );
     };
 
-    // ─── Sidebar — Profile / Contact / Address / Skills, page 1 only ───
     const SidebarHeading = ({ children }) => (
         <div className="mb-3">
             <h3 className="text-sm font-bold tracking-wide uppercase text-black">{children}</h3>
         </div>
     );
 
-    const Sidebar = ({ data, skills }) => (
-        <div style={{ width: SIDEBAR_WIDTH, backgroundColor: `${selectedTheme.primary}26`, }} className="px-6 py-6  fifthTempFont">
-
+    const Sidebar = ({ data, skills, languages }) => (
+        <div style={{ width: SIDEBAR_WIDTH, backgroundColor: `${selectedTheme.primary}26` }} className="px-6 py-6 fifthTempFont">
 
             {(data?.phone || data?.email || data?.portfolioUrl) && (
                 <div className="mb-6">
@@ -183,7 +182,7 @@ const FifthTemplate = ({
             )}
 
             {skills && skills.length > 0 && (
-                <div>
+                <div className="mb-6">
                     <SidebarHeading>Skills</SidebarHeading>
                     <ul className="space-y-2 text-xs text-gray-700">
                         {skills.map((s, i) => (
@@ -193,29 +192,43 @@ const FifthTemplate = ({
                             </li>
                         ))}
                     </ul>
+                    <div style={{ backgroundColor: selectedTheme.primary }} className="h-[2px] w-full mt-4" />
+                </div>
+            )}
+
+            {languages && languages.length > 0 && (
+                <div>
+                    <SidebarHeading>Languages</SidebarHeading>
+                    <ul className="space-y-2 text-xs text-gray-700">
+                        {languages.map((l, i) => (
+                            <li key={i} className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full border" style={{ borderColor: selectedTheme.primary }} />
+                                {l.language}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )}
         </div>
     );
 
-    // ─── Main column sections ───
     const SectionHeading = ({ children }) => (
         <div className="mb-3">
             <h2 className="text-sm font-bold tracking-wide uppercase text-black">{children}</h2>
         </div>
     );
 
-    const Summary = ({ data}) => (
+    const Summary = ({ data }) => (
         <div className="mb-4">
-        {data && (
-            <div className="mb-6">
-                <SidebarHeading>Profile</SidebarHeading>
-                <p className="text-xs text-gray-600 leading-relaxed">{data}</p>
-                <div style={{ backgroundColor: selectedTheme.primary }} className="h-[2px] w-full mt-4" />
-            </div>
-        )}
+            {data && (
+                <div className="mb-6">
+                    <SidebarHeading>Profile</SidebarHeading>
+                    <p className="text-xs text-gray-600 leading-relaxed">{data}</p>
+                    <div style={{ backgroundColor: selectedTheme.primary }} className="h-[2px] w-full mt-4" />
+                </div>
+            )}
         </div>
-    )
+    );
 
     const ProjectItem = ({ data, index }) => (
         <div className="mb-4">
@@ -233,7 +246,6 @@ const FifthTemplate = ({
             )}
         </div>
     );
-
 
     const ExperienceItem = ({ data, index }) => (
         <div className="mb-4">
@@ -270,6 +282,22 @@ const FifthTemplate = ({
         </div>
     );
 
+    const AwardItem = ({ data, index }) => (
+        <div className="mb-4">
+            {(awards.indexOf(data) === 0 || index === 0) && <SectionHeading>Awards</SectionHeading>}
+            <div className="flex justify-between items-baseline">
+                <p className="text-sm font-bold" style={{ color: selectedTheme.primary }}>{data.awardName}</p>
+                {data.issueingDate && (
+                    <p className="text-xs text-gray-600">
+                        {data.issueingDate}{data.expirationDate ? ` - ${data.expirationDate}` : ""}
+                    </p>
+                )}
+            </div>
+            {data.issueingOrg && <p className="text-xs text-gray-500">{data.issueingOrg}</p>}
+            {data.description && <p className="text-xs text-gray-500 mt-0.5">{data.description}</p>}
+        </div>
+    );
+
     const EducationItem = ({ data, index }) => (
         <div className="mb-4">
             {(education.indexOf(data) === 0 || index === 0) && <SectionHeading>Education</SectionHeading>}
@@ -293,6 +321,7 @@ const FifthTemplate = ({
             case "project":       return <ProjectItem data={block.data} index={index} />;
             case "experience":    return <ExperienceItem data={block.data} index={index} />;
             case "certification": return <CertificationItem data={block.data} index={index} />;
+            case "award":         return <AwardItem data={block.data} index={index} />;
             case "education":     return <EducationItem data={block.data} index={index} />;
             default: return null;
         }
@@ -322,7 +351,7 @@ const FifthTemplate = ({
                         {isFirstPage && <Header data={personalInfo} />}
                         <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
                             {isFirstPage
-                                ? <Sidebar data={personalInfo} summary={professionalSummary} skills={skills} />
+                                ? <Sidebar data={personalInfo} skills={skills} languages={languages} />
                                 : <div style={{ width: SIDEBAR_WIDTH, backgroundColor: "#EAF0F6" }} />
                             }
                             <div style={{ width: MAIN_WIDTH }} className="px-8 py-6 fifthTempFont">
@@ -334,25 +363,6 @@ const FifthTemplate = ({
             })}
 
             {createPortal(
-                // ── Zero-size, strictly-contained wrapper ──────────────────
-                // This is the fix. The measurement clone below MUST stay in the
-                // DOM (it's how pagination heights get measured), but portaling
-                // it straight to document.body as a bare `position: absolute;
-                // width: 794px` element means it sits directly on <body>,
-                // outside of ANY ancestor's overflow/contain rules — including
-                // ResumeCard's overflow:hidden and contain:layout, and even a
-                // page-level `overflow-x: hidden` on <body> isn't reliably
-                // enough on every browser once `position: fixed` interacts with
-                // transformed ancestors elsewhere on the page. Wrapping it in a
-                // `position: fixed; width: 0; height: 0; overflow: hidden;
-                // contain: strict` box pins it off in its own layout/paint
-                // universe: the outer box has zero size, `contain: strict`
-                // (layout + paint + size) guarantees nothing inside it can ever
-                // influence the size or scroll area of anything outside it, and
-                // `position: fixed` takes it out of normal document flow
-                // entirely. This is what was making every rendered resume card
-                // contribute an invisible 794px-wide box to the page, which is
-                // why the fixed nav icon appeared to vanish on mobile.
                 <div
                     style={{
                         position: "fixed",

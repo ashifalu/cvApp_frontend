@@ -17,6 +17,16 @@ export const googleloginApi = async (reqBody) => {
     return await commonApi('POST',`${serverurl}/google-login`,reqBody)
 }
 
+export const forgotPasswordApi = async (reqBody) => {
+    return await commonApi('POST',`${serverurl}/forgot-password`,reqBody)
+}
+
+export const resetPasswordApi = async (reqBody) => {
+    return await commonApi('POST',`${serverurl}/reset-password`,reqBody)
+}
+
+
+
 export const resumeParseApi = async(reqBody) => {
     return await axios({
         method: "POST",
@@ -50,4 +60,16 @@ export const getAllResumesApi = async(reqHeader) => {
 
 export const deleteResumeApi = async(id) => {
     return await commonApi("DELETE",`${serverurl}/delete-resume/${id}`,)
+}
+
+export const sendSetupPasswordOtpApi = async (reqHeader) => {
+    return await commonApi('POST',`${serverurl}/send-setup-password-otp`,{},reqHeader)
+}
+
+export const setupPasswordApi = async (reqBody,reqHeader) => {
+    return await commonApi('POST',`${serverurl}/setup-password`,reqBody,reqHeader)
+}
+
+export const deleteAccountApi = async (reqHeader) => {
+    return await commonApi('DELETE',`${serverurl}/delete-account`,"",reqHeader)
 }

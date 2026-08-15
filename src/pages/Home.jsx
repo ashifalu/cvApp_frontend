@@ -43,11 +43,11 @@ const Home = () => {
 
                 <main>
                     {/* ── HERO ─────────────────────────────────────────────── */}
-                    <section className="relative min-h-screen pt-8 sm:pt-20 md:pt-40 pb-16 md:pb-20 px-8 sm:px-6 flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-[#fcfbff] to-[#f4efff]">
-                        <div className="absolute top-[-10%] left-[-10%] w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
-                        <div className="absolute bottom-[-10%] right-[-10%] w-[350px] h-[350px] sm:w-[600px] sm:h-[600px] bg-secondary/5 rounded-full blur-[120px] pointer-events-none"></div>
+                    <section className="relative min-h-screen pt-8r sm:pt-40 pb-16 md:pb-20 px-4 sm:px-6 flex items-center justify-center overflow-hidden bg-white">
+                        <div className="absolute top-[-10%] left-[-10%] w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] rounded-full blur-[120px] pointer-events-none"></div>
+                        <div className="absolute bottom-[-10%] right-[-10%] w-[350px] h-[350px] sm:w-[600px] sm:h-[600px]  rounded-full blur-[120px] pointer-events-none"></div>
                         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16 items-center">
-                            <div className="flex flex-col gap-6 sm:gap-8 text-center lg:text-left items-center lg:items-start">
+                            <div className="flex flex-col gap-4 sm:gap-8 text-center lg:text-left items-center lg:items-start">
                                 <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/10 px-4 py-1 rounded-full w-fit">
                                     <span className="material-symbols-outlined text-primary text-sm">bolt</span>
                                     <span className="text-primary font-label-caps text-[10px] uppercase tracking-wider font-bold">AI-Powered Resume Builder</span>
@@ -58,15 +58,15 @@ const Home = () => {
                                 <p className="font-body-lg text-sm sm:text-body-lg text-on-surface-variant max-w-xl">
                                     Harness the power of high-performance AI to craft ATS-optimized resumes in minutes. Designed for professionals who demand excellence.
                                 </p>
-                                <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-2 sm:pt-4 w-full sm:w-auto">
+                                <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-2 sm:pt-4 w-full sm:w-auto px-5 sm:px-0">
                                     <a href="/select-template" className="w-full sm:w-auto">
                                         <button className="w-full sm:w-auto bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg shadow-primary/10 hover:shadow-xl transition-all">
                                             Create Resume
                                         </button>
                                     </a>
-                                    <button className="w-full sm:w-auto bg-white text-on-surface font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-base sm:text-lg border border-black/5 hover:bg-surface transition-all shadow-sm">
+                                    <a href="/select-template" className="w-full sm:w-auto bg-white text-on-surface font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-base sm:text-lg border border-black/5 hover:bg-surface transition-all shadow-sm">
                                         View Templates
-                                    </button>
+                                    </a>
                                 </div>
                                 <div className="flex items-center gap-4 mt-2 sm:mt-4">
                                     <div className="flex -space-x-3">
@@ -79,30 +79,64 @@ const Home = () => {
                             </div>
 
                             {/* Hero visual — hidden on mobile to avoid overflow/clutter, shown from sm up */}
-                            <div className="relative h-[420px] sm:h-[520px] lg:h-[600px] hidden sm:flex items-center justify-center px-4">
-                                <div className="relative w-full max-w-md aspect-[3/4] glass-card rounded-2xl p-6 sm:p-8 glow-violet overflow-hidden">
-                                    <div className="flex flex-col gap-4 sm:gap-6">
-                                        <div className="w-24 h-4 bg-primary/10 rounded-full"></div>
-                                        <div className="w-full h-8 bg-black/5 rounded-lg"></div>
-                                        <div className="space-y-3">
-                                            <div className="w-3/4 h-3 bg-black/5 rounded-full"></div>
-                                            <div className="w-1/2 h-3 bg-black/5 rounded-full"></div>
-                                        </div>
-                                        <div className="pt-6 sm:pt-8 border-t border-black/5 space-y-4">
-                                            <div className="flex justify-between items-center">
-                                                <div className="w-20 h-4 bg-secondary/10 rounded-full"></div>
-                                                <div className="w-12 h-3 bg-black/5 rounded-full"></div>
-                                            </div>
-                                            <div className="w-full h-20 sm:h-24 bg-surface-container rounded-xl border border-black/5"></div>
-                                            <div className="w-full h-20 sm:h-24 bg-surface-container rounded-xl border border-black/5 opacity-50"></div>
+                            <div className="relative items-center justify-center px-4">
+                                <div className="vertical-slider hidden lg:flex">
+                                    <div className="v-column v-up">
+                                        <div className="v-track">
+                                            <img src="/images/template2.png" alt=""/>
+                                            <img src="/images/template10.png" alt=""/>
+                                            <img src="/images/template13.png" alt=""/>
+                                            <img src="/images/template14.png" alt=""/>
+
+                                            <img src="/images/template2.png" alt=""/>
+                                            <img src="/images/template10.png" alt=""/>
+                                            <img src="/images/template13.png" alt=""/>
+                                            <img src="/images/template14.png" alt=""/>
                                         </div>
                                     </div>
-                                    <div className="absolute -top-6 -right-6 sm:-top-10 sm:-right-10 w-20 h-20 sm:w-32 sm:h-32 glass-card rounded-xl flex items-center justify-center rotate-12 shadow-xl border-black/5">
-                                        <span className="material-symbols-outlined text-secondary text-2xl sm:text-4xl" data-weight="fill">verified</span>
+
+                                    <div className="v-column v-down">
+                                        <div className="v-track">
+                                            <img src="/images/template9.png" alt=""/>
+                                            <img src="/images/template5.png" alt=""/>
+                                            <img src="/images/template4.png" alt=""/>
+                                            <img src="/images/template1.png" alt=""/>
+
+                                            <img src="/images/template9.png" alt=""/>
+                                            <img src="/images/template5.png" alt=""/>
+                                            <img src="/images/template4.png" alt=""/>
+                                            <img src="/images/template1.png" alt=""/>
+                                        </div>
                                     </div>
-                                    <div className="absolute bottom-14 -left-6 sm:bottom-20 sm:-left-12 w-36 sm:w-48 h-16 sm:h-20 glass-card rounded-xl p-3 sm:p-4 flex flex-col justify-center -rotate-6 shadow-xl border-black/5">
-                                        <div className="text-[9px] sm:text-[10px] text-primary font-bold uppercase tracking-widest mb-1">ATS Score</div>
-                                        <div className="text-lg sm:text-2xl font-bold text-on-surface">98/100</div>
+                                </div>
+
+                                <div className="horizontal-slider lg:hidden">
+                                    <div className="h-row h-right">
+                                        <img src="/images/template2.png" alt=""/>
+                                        <img src="/images/template10.png" alt=""/>
+                                        <img src="/images/template13.png" alt=""/>
+                                        <img src="/images/template14.png" alt=""/>
+                                        <img src="/images/template9.png" alt=""/>
+
+                                        <img src="/images/template2.png" alt=""/>
+                                        <img src="/images/template10.png" alt=""/>
+                                        <img src="/images/template13.png" alt=""/>
+                                        <img src="/images/template14.png" alt=""/>
+                                        <img src="/images/template9.png" alt=""/>
+                                    </div>
+
+                                    <div className="h-row h-left">
+                                        <img src="/images/template5.png" alt=""/>
+                                        <img src="/images/template4.png" alt=""/>
+                                        <img src="/images/template1.png" alt=""/>
+                                        <img src="/images/template7.png" alt=""/>
+                                        <img src="/images/template16.png" alt=""/>
+
+                                        <img src="/images/template5.png" alt=""/>
+                                        <img src="/images/template4.png" alt=""/>
+                                        <img src="/images/template1.png" alt=""/>
+                                        <img src="/images/template7.png" alt=""/>
+                                        <img src="/images/template16.png" alt=""/>
                                     </div>
                                 </div>
                             </div>
@@ -112,13 +146,25 @@ const Home = () => {
                     {/* ── LOGOS ─────────────────────────────────────────────── */}
                     <section className="py-8 sm:py-12 border-y border-black/5 bg-white">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                            <p className="text-center text-on-surface-variant font-label-caps text-label-caps mb-6 sm:mb-10">Trusted by professionals at top companies</p>
-                            <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-12 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-                                <div className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">Google</div>
-                                <div className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">Meta</div>
-                                <div className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">OpenAI</div>
-                                <div className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">Amazon</div>
-                                <div className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">Netflix</div>
+                            <p className="text-center text-on-surface-variant font-label-caps text-label-caps mb-6 sm:mb-10">Trusted
+                                by professionals at top companies</p>
+                            <div
+                                className="flex flex-wrap justify-center items-center gap-6 sm:gap-12 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
+                                <div
+                                    className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">Google
+                                </div>
+                                <div
+                                    className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">Meta
+                                </div>
+                                <div
+                                    className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">OpenAI
+                                </div>
+                                <div
+                                    className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">Amazon
+                                </div>
+                                <div
+                                    className="text-lg sm:text-2xl font-extrabold text-on-surface tracking-tighter">Netflix
+                                </div>
                             </div>
                         </div>
                     </section>

@@ -8,7 +8,7 @@ export default {
       extend: {
         "colors": {
                 "surface-container-low": "#f3f4f5",
-                "background": "#f8f9fa",
+                "background": "#ffffff",
                 "primary-fixed-dim": "#d3bbff",
                 "error-container": "#ffdad6",
                 "primary-container": "#5b21b6",
