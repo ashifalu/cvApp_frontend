@@ -298,7 +298,7 @@ const Settings = () => {
                                                 className="w-full px-4 py-3.5 bg-surface-container-low border-transparent rounded-xl focus:bg-white focus:border-primary focus:ring-0 transition-all text-on-surface tracking-[0.3em]"
                                                 value={otp}
                                                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                                                placeholder="123456"
+                                                placeholder="000000"
                                                 inputMode="numeric"
                                                 maxLength={6}
                                                 disabled={passwordProcessing}

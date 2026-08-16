@@ -91,9 +91,9 @@ const TemplateList = () => {
                                                  setAuthMode('login')
                                              }}>Sign In</button>
                                 :
-                                <button className=" text-black border border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                                <button className="text-black border text-[14px] border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-3 sm:px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
                                         onClick={() => { navigate(`/user-profile/${existingUser._id}`);}}>
-                                    <span className="material-symbols-outlined  ">person</span> My account
+                                    <span className="material-symbols-outlined  ">person</span> My Account
 
                                 </button>
                             }
@@ -101,12 +101,12 @@ const TemplateList = () => {
                         </div>
                     </nav>
 
-                    <div className="flex flex-col lg:flex-row flex-1 min-h-0  overflow-hidden">
+                    <div className="mt-16 min-h-[calc(100vh-64px)] flex flex-col lg:flex-row flex-1  overflow-hidden">
 
                         {/* ── Template grid ────────────────────────────────────────── */}
                         <div
                             className={`w-full lg:w-[400px] xl:w-[460px] border-b lg:border-b-0 lg:border-r border-outline-variant/30 bg-white shrink-0 lg:overflow-y-auto no-scrollbar
-                            ${mobileTemplatesOpen ? 'max-h-[60vh] overflow-y-auto' : 'max-h-[210px] overflow-hidden'} lg:max-h-none`}>
+                            ${mobileTemplatesOpen ? 'max-h-[60vh] overflow-y-auto' : 'max-h-[250px] overflow-hidden'} lg:max-h-none`}>
                             <div className="flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-6">
                                 <h1 className="font-headline-md text-xl sm:text-2xl font-bold mb-0 lg:mb-6">Templates</h1>
                                 <button
@@ -130,7 +130,7 @@ const TemplateList = () => {
                                                      className="w-full h-full object-cover grayscale-[0.2]"
                                                      src={t.img}/>
                                                 {selectedTemp == t.id && <div
-                                                    className="absolute top-2 right-2 bg-primary text-white rounded-full p-0.5 flex items-center justify-center">
+                                                    className="absolute top-2 right-2 bg-primary text-white rounded-full p-0.5 w-[32px] h-[32px] flex items-center justify-center ">
                                                     <span
                                                         className="material-symbols-outlined text-sm font-bold">check</span>
                                                 </div>}
@@ -163,13 +163,9 @@ const TemplateList = () => {
                                 </div>
 
                                 <div className="flex gap-3 sm:gap-4 w-full sm:w-auto">
-                                    <button
-                                        className="flex-1 sm:flex-none bg-white border border-outline-variant/50 text-on-surface font-medium px-4 py-2 rounded-lg text-sm hover:bg-white/80 transition-colors">
-                                        Download
-                                    </button>
                                     <button onClick={() => navigate(`/create-cv/${selectedTemp}`, { state: selectedTheme })}
                                             className="flex-1 sm:flex-none bg-primary text-white font-bold px-6 py-2 rounded-lg text-sm shadow-lg hover:shadow-xl active:scale-95 transition-all">
-                                        Finalize
+                                        Use Template
                                     </button>
                                 </div>
                             </div>
@@ -231,9 +227,9 @@ const TemplateList = () => {
                                                  setAuthMode('login')
                                              }}>Sign In</button>
                                 :
-                                <button className=" text-black border border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                                <button className=" text-black border text-[14px] border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-3 sm:px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
                                         onClick={() => { navigate(`/user-profile/${existingUser._id}`);}}>
-                                    <span className="material-symbols-outlined  ">person</span> My account
+                                    <span className="material-symbols-outlined  ">person</span> My Account
 
                                 </button>
                             }

@@ -151,7 +151,7 @@ const  Create_cv = () => {
                                          setAuthMode('login')
                                      }}>Sign In</button>
                         :
-                        <button className=" text-black border border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                        <button className=" text-black border text-[14px] border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-3 sm:px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
                                 onClick={() => { navigate(`/user-profile/${existingUser._id}`);}}>
                             <span className="material-symbols-outlined  ">person</span> My account
 

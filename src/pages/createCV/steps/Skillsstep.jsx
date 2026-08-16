@@ -15,7 +15,7 @@ const LevelSlider = ({ level, onChange }) => (
             <span className="text-secondary font-semi-bold text-[14px]">{LEVELS[level]}</span>
         </div>
         <div className="h-12">
-            <div className="relative flex bg-surface-container-high rounded-xl h-4">
+            <div className="relative flex bg-secondary/10 rounded-xl h-4">
                 <div
                     className="absolute top-0 h-full bg-secondary rounded-xl transition-all duration-300"
                     style={{ width: `${100 / LEVELS.length}%`, left: `${(100 / LEVELS.length) * level}%` }}
@@ -53,7 +53,7 @@ const SkillFormFields = ({ form, setForm, errors, clearError,setShowForm,showFor
                 className={`w-full rounded-lg px-4 py-3 transition-all outline-none font-body-md text-body-md border ${
                     (errors.skill&& showForm === true)
                         ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-400"
-                        : "border-outline-variant/30 bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                        : "border-outline-variant/30 bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                 }`}
                 placeholder="e.g. JavaScript, React, Node.js"
                 value={form.skill}

@@ -97,7 +97,7 @@ const UploadResume = () => {
                                          setAuthMode('login')
                                      }}>Sign In</button>
                         :
-                        <button className=" text-black border border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+                        <button className="text-black border text-[14px] border-black/5 hover:bg-surface flex items-center justify-center gap-2  shadow-sm font-bold px-3 sm:px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
                                 onClick={() => { navigate(`/user-profile/${existingUser._id}`);}}>
                             <span className="material-symbols-outlined  ">person</span> My account
 
@@ -107,9 +107,9 @@ const UploadResume = () => {
                 </div>
             </nav>
 
-            <div className="mesh-bg min-h-screen flex flex-col font-body-md text-on-surface">
+            <div className="min-h-[calc(100vh-80px)] sm:min-h-[calc(100vh-120px)] flex flex-col items-center justify-center px-4 sm:px-margin-mobile md:px-margin-desktop mt-16 sm:mt-20 py-12 sm:py-section-gap hero-gradient">
                 <main
-                    className="flex-grow flex flex-col items-center justify-center px-4 sm:px-margin-mobile md:px-margin-desktop py-12 sm:py-section-gap">
+                    className="flex-grow flex flex-col items-center justify-center px-4 sm:px-margin-mobile md:px-margin-desktop pt-0 py-12 sm:py-section-gap">
                     <div className="w-full max-w-3xl">
                         <div className="text-center mb-8 sm:mb-12">
                             <h1 className="font-headline-lg text-3xl sm:text-headline-lg-mobile md:text-headline-lg text-on-surface mb-3 sm:mb-4">

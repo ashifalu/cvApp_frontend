@@ -11,9 +11,6 @@ import TenthTemplate from "../templates/TenthTemplate.jsx";
 import EleventhTemplate from "../templates/EleventhTemplate.jsx";
 import TemplateTwelve from "../templates/TemplateTwelve.jsx";
 import TemplateThirteen from "../templates/TemplateThirteen.jsx";
-import TemplateFourteen from "../templates/TemplateFourteen.jsx";
-import TemplateFifteen from "../templates/TemplateFifteen.jsx";
-import TemplateSixteen from "../templates/TemplateSixteen.jsx";
 
 const Preview = ({ previewData, temp, theme, onPageCount, currentPage }) => {
 
@@ -31,9 +28,7 @@ const Preview = ({ previewData, temp, theme, onPageCount, currentPage }) => {
         case "11": return <EleventhTemplate  {...previewData} theme={theme} onPageCount={onPageCount} currentPage={currentPage}/>
         case "12": return <TemplateTwelve  {...previewData} theme={theme} onPageCount={onPageCount} currentPage={currentPage}/>
         case "13": return <TemplateThirteen  {...previewData} theme={theme} onPageCount={onPageCount} currentPage={currentPage}/>
-        case "14": return <TemplateFourteen  {...previewData} theme={theme} onPageCount={onPageCount} currentPage={currentPage}/>
-        case "15": return <TemplateFifteen  {...previewData} theme={theme} onPageCount={onPageCount} currentPage={currentPage}/>
-        case "16": return <TemplateSixteen  {...previewData} theme={theme} onPageCount={onPageCount} currentPage={currentPage}/>
+
 
 
 

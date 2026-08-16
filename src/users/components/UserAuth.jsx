@@ -231,7 +231,7 @@ const UserAuth = ({ isOpen, onClose, mode, storeData }) => {
       sessionStorage.setItem("token", result.data.token);
       const reqHeader = { authorization: `Bearer ${result.data.token}` };
 
-      if (Object.keys(storeData).length !== 0) {
+      if (storeData && Object.keys(storeData).length !== 0) {
         await storeDataApi(storeData, reqHeader);
       }
 
@@ -533,7 +533,7 @@ const UserAuth = ({ isOpen, onClose, mode, storeData }) => {
                                   value={forgotOtp}
                                   onChange={(e) => setForgotOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
                                   id="reset-otp"
-                                  placeholder="123456"
+                                  placeholder="000000"
                                   type="text"
                                   inputMode="numeric"
                                   maxLength={6}
@@ -650,7 +650,7 @@ const UserAuth = ({ isOpen, onClose, mode, storeData }) => {
                             value={userOtp}
                             onChange={(e) => setUserOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
                             id="otp"
-                            placeholder="123456"
+                            placeholder="000000"
                             type="text"
                             inputMode="numeric"
                             maxLength={6}

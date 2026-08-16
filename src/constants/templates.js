@@ -30,7 +30,7 @@ const templates = [
     {   id: "2", name: "Modern Pro",
         stat: "31% of your peers",
         img: "/images/template2.png",
-        style: "executive",
+        style: "ats",
         photoSupport: false,
         themes: [
             {
@@ -57,7 +57,7 @@ const templates = [
 
     {   id: "3", name: "Minimal Clean",
         stat: "15% of your peers",
-        img: "/images/template3.jpeg",
+        img: "/images/template3.png",
         style: "executive",
         photoSupport: false,
         themes: [{
@@ -356,96 +356,7 @@ const templates = [
             },
         ]
     },
-    {   id: "14", name: "Bold Impact",
-        stat: "11% of your peers",
-        img: "/images/template14.png",
-        style: "ats",
-        photoSupport: false,
-        themes: [
-            {
-                primary : "#1E2749",
-                secondary: "#EBD9B4"
-            },
 
-            {
-                primary : "#004b23",
-                secondary: "#efebce"
-            },
-            {
-                primary : "#260701",
-                secondary: "#e3d5ca"
-            },
-            {
-                primary : "#4a1942",
-                secondary: "#e9d3d0"
-
-            },
-            {
-                primary : "#6a040f",
-                secondary: "#fdf0d5"
-            },
-        ]
-    },
-    {   id: "15", name: "Bold Impact",
-        stat: "11% of your peers",
-        img: "/images/template15.png",
-        style: "modern",
-
-        themes: [
-            {
-                primary : "#1E2749",
-                secondary: "#EBD9B4"
-            },
-
-            {
-                primary : "#004b23",
-                secondary: "#efebce"
-            },
-            {
-                primary : "#260701",
-                secondary: "#e3d5ca"
-            },
-            {
-                primary : "#4a1942",
-                secondary: "#e9d3d0"
-
-            },
-            {
-                primary : "#6a040f",
-                secondary: "#fdf0d5"
-            },
-        ]
-    },
-    {   id: "16", name: "Bold Impact",
-        stat: "11% of your peers",
-        img: "/images/template16.png",
-        style: "executive",
-        photoSupport: true,
-        themes: [
-            {
-                primary : "#1E2749",
-                secondary: "#EBD9B4"
-            },
-
-            {
-                primary : "#004b23",
-                secondary: "#efebce"
-            },
-            {
-                primary : "#260701",
-                secondary: "#e3d5ca"
-            },
-            {
-                primary : "#4a1942",
-                secondary: "#e9d3d0"
-
-            },
-            {
-                primary : "#6a040f",
-                secondary: "#fdf0d5"
-            },
-        ]
-    },
 
 
 ]

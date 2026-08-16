@@ -72,8 +72,8 @@ const ResumeCard = ({ res, formatDate, onEdit, onDownload, onDelete }) => {
                 </div>
 
                 <div
-                    className="absolute left-0 flex gap-2 md:gap-3  items-center justify-center w-full"
-                    style={{ top: dims.height - 30 }} // pin buttons just above bottom of the *actual* box
+                    className="absolute left-0 flex gap-2 md:gap-3  items-center justify-center w-full bottom-0 py-3 bg-white border-t border-gray-100"
+
                 >
                     <button
                         onClick={() => onEdit(res)}

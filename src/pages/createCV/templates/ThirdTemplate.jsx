@@ -414,9 +414,7 @@ const ThirdTemplate = (
                     className="bg-white border border-gray-300 print-page overflow-hidden mb-5"
                     style={{
                         boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
-                        marginTop: 20,
                         paddingTop: pageIndex !== 0 ? 15 : 0,
-                        paddingBottom: 15,
                         width: 794,
                         height: PAGE_HEIGHT,
                     }}

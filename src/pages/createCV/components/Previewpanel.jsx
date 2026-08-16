@@ -93,8 +93,8 @@ const PreviewPanel = ({ temp_id, selectedTheme, setSelectedTheme }) => {
                 </div>
                 <button onClick={() => navigate(`/select-template/${temp_id}`)}
                         className="px-4 py-2 text-label-md font-label-md rounded-lg bg-surface border border-outline-variant/30 text-on-surface-variant hover:bg-surface-variant transition-all flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[18px]">dashboard</span>
-                    Template
+                    <span className="material-symbols-outlined text-[16px]">dashboard</span>
+                    Templates
                 </button>
             </div>
 
