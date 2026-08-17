@@ -4,7 +4,7 @@ import { addToList, updateList, removeFromList } from "../../../state/cvSlice"; 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ItemWrapper from "../components/Itemwrapper.jsx";
-import { fieldClass, formatMonthYear } from "../utils";
+import { fieldClass, formatMonthYear } from "../Utils.js";
 
 const EMPTY_FORM = {
     certificationName: "", issuingOrg: "", credentialId: "",
