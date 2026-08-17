@@ -61,7 +61,7 @@ const templates = [
         style: "executive",
         photoSupport: false,
         themes: [{
-            primary : "#810B38",
+            primary : "#583101",
 
         },
             {
@@ -88,13 +88,13 @@ const templates = [
 
         },
         {
-            primary : "#0C95C6",
+            primary : "#0e9594",
         },
         {
             primary : "#4a7f39",
         },
         {
-            primary : "#354f52",
+            primary : "#a14a76",
         },
         {
             primary : "#031a6b"
@@ -346,7 +346,7 @@ const templates = [
                 secondary: "#e3d5ca"
             },
             {
-                primary : "#4a1942",
+                primary : "#a14a76",
                 secondary: "#e9d3d0"
 
             },

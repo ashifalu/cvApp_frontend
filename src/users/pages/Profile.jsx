@@ -177,8 +177,10 @@ const Profile = () => {
 
             {/* NAVBAR */}
             <nav
-                className="fixed top-0 left-0 z-10 flex justify-between items-center w-full px-4 sm:px-6 md:px-margin-desktop py-3 sm:py-4 bg-surface/70 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
-                <Link to={"/"}><div className="font-display-lg text-black tracking-tighter text-2xl flex item-center"><span className="material-symbols-outlined">arrow_back</span></div></Link>
+                className="z-10 fixed top-0 left-1/2 -translate-x-1/2 w-full   border border-black/5 bg-white/70 backdrop-blur-[24px] shadow-lg flex justify-between items-center px-4 sm:px-8 py-4">
+                <Link to={"/"}><div className=" w-[140px]  text-primary tracking-tighter text-2xl">
+                    <img className="" src="/images/pro-cv-logo.svg"/>
+                </div></Link>
 
 
                 {/* Profile icon + dropdown, anchored as a single relative unit */}

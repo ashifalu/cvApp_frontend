@@ -14,6 +14,14 @@ export const formatMonthYear = (date) => {
     return `${month} ${date.getFullYear()}`;
 };
 
+import { parse } from "date-fns";
+
+export const parseMonthYear = (str) => {
+    if (!str || str === "Present") return null;
+    const parsed = parse(str, "MMM yyyy", new Date());
+    return isNaN(parsed) ? null : parsed;
+};
+
 // ─── LEVELS ──────────────────────────────────────────────────────────────────
 export const LEVELS = ["Beginner", "Basic", "Skillful", "Advanced", "Expert"];
 

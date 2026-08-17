@@ -23,7 +23,9 @@ const Navbar = () => {
     return (
         <>
         <nav className="z-10 fixed top-0 left-1/2 -translate-x-1/2 w-full   border border-black/5 bg-white/70 backdrop-blur-[24px] shadow-lg flex justify-between items-center px-4 sm:px-8 py-4 ">
-        <div className="font-display-lg text-primary tracking-tighter text-2xl">ResumeAI</div>
+        <div className="font-display-lg w-[140px]  text-primary tracking-tighter text-2xl">
+            <img className="" src="/images/pro-cv-logo.svg"/>
+        </div>
 {/*<div className="hidden md:flex gap-8 items-center">*/}
 {/*    <a className="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Home</a>*/}
 {/*    <a className="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Features</a>*/}

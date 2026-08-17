@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ItemWrapper, { TrashSvg } from "../components/ItemWrapper";
 import FieldError from "../components/FieldError";
 import { fieldClass, formatMonthYear } from "../utils";
+import { parseMonthYear } from "../utils";
 
 const EMPTY_FORM = {
     jobTitle: "", employer: "", startDate: null, endDate: null,
@@ -198,7 +199,12 @@ const ExperienceStep = ({ onNext, onBack }) => {
     };
 
     const handleEdit = (index) => {
-        setForm(experience[index]);
+        const exp = experience[index];
+        setForm({
+            ...exp,
+            startDate: parseMonthYear(exp.startDate),
+            endDate: exp.currentlyWorking ? "Present" : parseMonthYear(exp.endDate),
+        });
         setEditingIndex(index);
         setShowForm(false);
         setErrors({});
@@ -207,7 +213,14 @@ const ExperienceStep = ({ onNext, onBack }) => {
     const handleUpdate = () => {
         if (!validate()) return;
         const finalForm = flushAndGetForm();
-        dispatch(updateList({ index: editingIndex, data: finalForm, step: "experience" }));
+        const normalized = {
+            ...finalForm,
+            startDate: finalForm.startDate instanceof Date ? formatMonthYear(finalForm.startDate) : finalForm.startDate,
+            endDate: finalForm.currentlyWorking
+                ? "Present"
+                : (finalForm.endDate instanceof Date ? formatMonthYear(finalForm.endDate) : finalForm.endDate),
+        };
+        dispatch(updateList({ index: editingIndex, data: normalized, step: "experience" }));
         setForm(EMPTY_FORM);
         setEditingIndex(null);
         setErrors({});

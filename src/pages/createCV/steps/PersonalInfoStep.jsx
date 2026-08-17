@@ -15,6 +15,24 @@ const EMPTY_FORM = {
     country: "", countryCode: "", city: "", nationality: "", portfolioUrl: "",
 };
 
+// ─── Phone combine/split helpers ──────────────────────────────────────────────
+// Redux stores phone as a single combined string: "<countryCode> <number>" (e.g. "+91 9876543210").
+// The form/PhoneInput UI needs them split apart, so we combine on save and split on load.
+const combinePhone = (countryCode, phone) => {
+    if (!phone?.trim()) return "";
+    return `${countryCode} ${phone.trim()}`;
+};
+
+const splitPhone = (fullPhone) => {
+    if (!fullPhone) return { phoneCountryCode: "+1", phone: "" };
+    // Matches a leading "+<digits>" as the country code, everything after (trimmed) as the number
+    const match = fullPhone.match(/^(\+\d+)\s?(.*)$/);
+    if (match) {
+        return { phoneCountryCode: match[1], phone: match[2] };
+    }
+    return { phoneCountryCode: "+1", phone: fullPhone };
+};
+
 // ─── react-select shared styles (matches your field look) ────────────────────
 const selectStyles = {
     control: (base, state) => ({
@@ -112,6 +130,13 @@ const PersonalInfoStep = ({ onNext,temp_id }) => {
                     );
                     if (match) merged.countryCode = match.isoCode;
                 }
+                // Redux holds phone as a combined "+countryCode number" string —
+                // split it back into the two separate fields the form/PhoneInput need.
+                if (merged.phone) {
+                    const { phoneCountryCode, phone } = splitPhone(merged.phone);
+                    merged.phoneCountryCode = phoneCountryCode;
+                    merged.phone = phone;
+                }
                 return merged;
             });
         }
@@ -192,7 +217,13 @@ const PersonalInfoStep = ({ onNext,temp_id }) => {
 
     const handleNext = () => {
         if (!validate()) return;
-        dispatch(addPersonalInfo(form));
+        // Combine country code + number into a single string right before it hits Redux,
+        // while the local `form` state (used for editing) keeps them separate.
+        const finalForm = {
+            ...form,
+            phone: combinePhone(form.phoneCountryCode, form.phone),
+        };
+        dispatch(addPersonalInfo(finalForm));
         onNext();
     };
 
