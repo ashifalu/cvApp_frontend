@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProfessionalSummary } from "../../../state/cvSlice"; // adjust path
-import FieldError from "../components/FieldError";
+import { addProfessionalSummary } from "../../../state/cvSlice.js"; // adjust path
+import FieldError from "../components/Fielderror.jsx";
 
 // ─── SummaryStep ──────────────────────────────────────────────────────────────
 // Props:

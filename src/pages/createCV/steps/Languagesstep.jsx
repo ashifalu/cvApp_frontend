@@ -2,9 +2,9 @@ import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToList, updateList, removeFromList } from "../../../state/cvSlice.js"; // adjust path
 import { useNavigate } from "react-router-dom";
-import ItemWrapper from "../components/ItemWrapper";
-import FieldError from "../components/FieldError";
-import { LEVELS } from "../utils";
+import ItemWrapper from "../components/Itemwrapper.jsx";
+import FieldError from "../components/Fielderror.jsx";
+import { LEVELS } from "../Utils.js";
 import { generatePdfApi, storeDataApi } from "../../../services/allApi.js";
 import UserAuth from "../../../users/components/UserAuth.jsx"; // adjust path
 

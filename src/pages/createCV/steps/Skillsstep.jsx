@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToList, updateList, removeFromList } from "../../../state/cvSlice"; // adjust path
-import ItemWrapper from "../components/ItemWrapper";
-import FieldError from "../components/FieldError";
-import { LEVELS } from "../utils";
+import ItemWrapper from "../components/Itemwrapper.jsx";
+import FieldError from "../components/Fielderror.jsx";
+import { LEVELS } from "../Utils.js";
 
 const EMPTY_FORM = { skill: "", level: 2 };
 

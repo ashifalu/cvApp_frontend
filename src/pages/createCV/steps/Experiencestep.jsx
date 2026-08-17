@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToList, updateList, removeFromList } from "../../../state/cvSlice"; // adjust path
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ItemWrapper, { TrashSvg } from "../components/ItemWrapper";
-import FieldError from "../components/FieldError";
-import { fieldClass, formatMonthYear } from "../utils";
-import { parseMonthYear } from "../utils";
+import ItemWrapper, { TrashSvg } from "../components/Itemwrapper.jsx";
+import FieldError from "../components/Fielderror.jsx";
+import { fieldClass, formatMonthYear } from "../Utils.js";
+import { parseMonthYear } from "../Utils.js";
 
 const EMPTY_FORM = {
     jobTitle: "", employer: "", startDate: null, endDate: null,

@@ -1,11 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Country, City } from "country-state-city";
-import Select from "react-select";
-import { addPersonalInfo,setPhoto  } from "../../../state/cvSlice";
-import PhoneInput from "../components/PhoneInput";
-import FieldError from "../components/FieldError";
-import { fieldClass } from "../utils";
+import { addPersonalInfo,setPhoto  } from "../../../state/cvSlice.js";
+import PhoneInput from "../components/Phoneinput.jsx";
+import FieldError from "../components/Fielderror.jsx";
+import { fieldClass } from "../Utils.js";
 import {templates} from "../../../constants/templates.js";
 
 const EMPTY_FORM = {

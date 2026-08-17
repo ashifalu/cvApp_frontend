@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToList, updateList, removeFromList } from "../../../state/cvSlice"; // adjust path
-import ItemWrapper, { TrashSvg } from "../components/ItemWrapper";
-import { fieldClass } from "../utils";
+import ItemWrapper, { TrashSvg } from "../components/Itemwrapper.jsx";
+import { fieldClass } from "../Utils.js";
 
 const EMPTY_FORM = {
     projectTitle: "", keyFeatures: [], projectUrl: "", gitHubUrl: "",
