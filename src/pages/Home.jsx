@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar'
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
@@ -61,14 +61,14 @@ const Home = () => {
                                     Harness the power of high-performance AI to craft ATS-optimized resumes in minutes. Designed for professionals who demand excellence.
                                 </p>
                                 <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-2 sm:pt-4 w-full sm:w-auto px-5 sm:px-0">
-                                    <a href="/select-template" className="w-full sm:w-auto">
+                                    <Link to="/select-template" className="w-full sm:w-auto">
                                         <button className="w-full sm:w-auto bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg shadow-primary/10 hover:shadow-xl transition-all">
                                             Create Resume
                                         </button>
-                                    </a>
-                                    <a href="/select-template" className="w-full sm:w-auto bg-white text-on-surface font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-base sm:text-lg border border-black/5 hover:bg-surface transition-all shadow-sm">
+                                    </Link>
+                                    <Link to={"/select-template"} className="w-full sm:w-auto bg-white text-on-surface font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-base sm:text-lg border border-black/5 hover:bg-surface transition-all shadow-sm">
                                         View Templates
-                                    </a>
+                                    </Link>
                                 </div>
                                 <div className="flex items-center gap-4 mt-2 sm:mt-4">
                                     <div className="flex -space-x-3">
