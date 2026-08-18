@@ -8,6 +8,8 @@ import ChooseMethode from './pages/ChooseMethode';
 import UploadResume from "./pages/UploadResume.jsx";
 import Create_cv from "./pages/createCV/Create_cv.jsx";
 import { ToastContainer } from "react-toastify";
+import FourNotFour from "./pages/Four-not-four.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -27,6 +29,9 @@ const App = () => {
             <Route path='/choose-methode' element={<ChooseMethode/>}/>
             <Route path='/upload-resume/:temp_id' element={<UploadResume/>}/>
             <Route path='/user-profile/:id' element={<Profile/>}/>
+            <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
+            <Route path='*' element={<FourNotFour/>}/>
+
         </Routes>
 
         <ToastContainer

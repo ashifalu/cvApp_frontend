@@ -221,13 +221,14 @@ const Home = () => {
                 <footer className="bg-white py-14 sm:py-20 px-4 sm:px-6 border-t border-black/5">
                     <div className="max-w-7xl mx-auto ">
                         <div className="flex flex-col sm:flex-row justify-center items-center sm:items-start gap-8 sm:gap-12 mb-10 sm:mb-14 text-center sm:text-left">
-                            <div className="max-w-xs">
+                            <div className="max-w-xs text-center flex flex-col items-center gap-8" >
                                 <div className="font-display-lg text-primary tracking-tighter text-2xl sm:text-3xl mb-3 sm:mb-4">
                                     <div className="font-display-lg w-[140px]  text-primary tracking-tighter text-2xl">
                                         <img className="" src="/images/pro-cv-logo.svg"/>
                                     </div>
                                 </div>
-                                <p className="text-on-surface-variant text-sm">Build a clean, ATS-ready resume in minutes — free, simple, and yours to keep.</p>
+                                <p className="text-on-surface-variant text-center text-sm">Build a clean, ATS-ready resume in minutes — free, simple, and yours to keep.</p>
+                                <Link to={'/privacy-policy'}><p className="text-xs text-center underline text-blue-600">Privacy Policy</p></Link>
                             </div>
 
                         </div>

@@ -825,13 +825,16 @@ const UserAuth = ({ isOpen, onClose, mode, storeData }) => {
                       </div>
                     </div>
 
-                    <div className="w-full">
-                      <GoogleLogin
-                          width={382}
-                          onSuccess={(credentialResponse) => { handleGoogleLogin(credentialResponse); }}
-                          onError={() => { console.log('Login Failed'); }}
-                      />
-                    </div>
+                    {isOpen && (
+                        <div className="w-full">
+                          <GoogleLogin
+                              width={382}
+                              onSuccess={(credentialResponse) => { handleGoogleLogin(credentialResponse); }}
+                              onError={() => { console.log('Login Failed'); }}
+                          />
+                        </div>
+                    )}
+
 
                     {checkMode === 'login' ? (
                         <p className="mt-10 text-center text-on-surface-variant text-sm">
